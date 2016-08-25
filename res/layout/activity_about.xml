@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/workspace_background_color"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+
+    <include
+        android:id="@id/title_bar"
+        layout="@layout/title_bar" />
+
+<!--     <TextView
+        android:id="@id/version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.03"
+        android:drawableTop="@drawable/logo"
+        android:gravity="center_vertical"
+        android:paddingTop="70.0dip"
+        android:textColor="@color/workspace_icon_text_color"
+        android:textSize="24.0sp" /> -->
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="0.0dip"
+        android:layout_weight="0.02"
+        android:gravity="center"
+        android:paddingBottom="20.0dip"
+        android:text="ISN Lab 306"
+        android:textColor="@color/hint_text"
+        android:textSize="16.0sp" />
+
+</LinearLayout>
+   <!--  <Button
+        android:id="@id/check_update"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12.0dip"
+        android:background="@drawable/button_bg"
+        android:clickable="true"
+        android:gravity="center"
+        android:padding="4.0dip"
+        android:text="@string/check_update"
+        android:textColor="@color/title_bar_background"
+        android:textSize="20.0sp" /> -->

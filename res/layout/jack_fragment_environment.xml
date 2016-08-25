@@ -1,0 +1,109 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/workspace_background_color"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal" >
+        
+        <TextView
+            android:layout_margin="5dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/sensorid"
+            android:gravity="center"
+            android:textColor="#000000"
+            android:textSize="12sp" />
+        
+        <TextView
+            android:layout_margin="5dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/online"
+            android:gravity="center"
+            android:textColor="#000000"
+            android:textSize="12sp" />
+
+        <TextView
+             android:layout_margin="5dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="@string/airtemp"
+            android:gravity="center"
+            android:textColor="#000000"
+            android:textSize="12sp" />
+        
+        <TextView
+             android:layout_margin="5dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="@string/airhum"
+            android:gravity="center"
+            android:textColor="#000000"
+            android:textSize="12sp" />
+
+        <TextView
+             android:layout_margin="5dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="@string/co2"
+            android:textColor="#000000"
+            android:textSize="12sp" />
+
+        <TextView
+             android:layout_margin="5dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="@string/soiltemp"
+            android:textColor="#000000"
+            android:textSize="12sp" />
+
+        <TextView
+             android:layout_margin="5dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="@string/soilhum"
+            android:textColor="#000000"
+            android:textSize="12sp" />
+
+        <TextView
+             android:layout_margin="5dp"
+             android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="@string/ph"
+            android:textColor="#000000"
+            android:textSize="12sp" />
+        
+         <TextView
+              android:layout_margin="5dp"
+             android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="@string/illum"
+            android:textColor="#000000"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="6" />
+
+
+</LinearLayout>

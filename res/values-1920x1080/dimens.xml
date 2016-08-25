@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="workspace_cell_width_land">148.0dip</dimen>
+    <dimen name="workspace_cell_height_land">135.0dip</dimen>
+    <dimen name="jack_width">150.0dip</dimen>
+    <dimen name="socket_background_padding_bottom">30.0dip</dimen>
+    <dimen name="socket_background_padding_right">14.0dip</dimen>
+    <dimen name="socket_background_padding_top">30.0dip</dimen>
+    <dimen name="socket_panel_padding_left">28.0dip</dimen>
+    <dimen name="socket_panel_padding_top">50.0dip</dimen>
+    <dimen name="socket_panel_padding_right">54.0dip</dimen>
+    <dimen name="socket_panel_padding_bottom">10.0dip</dimen>
+    <dimen name="jack_index_margin_top">16.0dip</dimen>
+    <dimen name="alarm_item_margin">6.0dip</dimen>
+    <dimen name="numberpicker_internal_max_height">200.0dip</dimen>
+    <dimen name="numberpicker_internal_min_width">64.0dip</dimen>
+    <dimen name="numberpicker_dim_text_size">32.0sp</dimen>
+    <dimen name="numberpicker_text_size">40.0sp</dimen>
+    <dimen name="ampm_picker_text_size">28.0sp</dimen>
+    <dimen name="ampm_picker_dim_text_size">18.0sp</dimen>
+    <dimen name="repeat_days_text_size">24.0sp</dimen>
+</resources>

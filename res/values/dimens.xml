@@ -1,0 +1,27 @@
+<resources>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    
+    <dimen name="qsb_bar_height">50.0dip</dimen>
+    <dimen name="qsb_bar_height_m">100.0dip</dimen>
+    
+    <dimen name="heaven_view_width">120.0dip</dimen>
+    <dimen name="heaven_view_width_m">160.0dip</dimen>
+     <dimen name="socket_background_padding_top">30.0dip</dimen>
+     <dimen name="socket_background_padding_right">14.0dip</dimen>
+     <dimen name="socket_background_padding_bottom">30.0dip</dimen>
+      <dimen name="socket_panel_padding_left">28.0dip</dimen>
+    <dimen name="socket_panel_padding_top">40.0dip</dimen>
+    <dimen name="socket_panel_padding_right">54.0dip</dimen>
+    <dimen name="socket_panel_padding_bottom">8.0dip</dimen>
+    
+     <dimen name="jack_index_margin_top">5.0dip</dimen>
+     <dimen name="jack_width">130.0dip</dimen>
+     <dimen name="jack_switcher_size">58.0dip</dimen>
+     <dimen name="sidebar_size">140.0dip</dimen>
+    
+    
+
+</resources>

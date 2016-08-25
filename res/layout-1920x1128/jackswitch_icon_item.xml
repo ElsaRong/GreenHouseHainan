@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:background="@drawable/linearlayout_border"
+    android:layout_margin="80dp"
+    android:orientation="vertical">
+
+    <com.greenhouse.widget.OptionButton
+        android:id="@+id/jackswitch"
+   	 	android:layout_height="0dp"
+    	android:layout_weight="2"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:layout_margin="5dp"
+        android:drawableLeft="@drawable/switcher_m"
+        android:clickable="true"
+        android:focusableInTouchMode="true"
+        android:padding="5.0dp" /> 
+
+    <TextView
+        android:id="@+id/jackname"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+    	android:layout_weight="1"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="30dp"
+        android:layout_gravity="center_horizontal"
+        android:clickable="false"
+        android:textSize="30sp"
+        android:textColor="#000000" />
+
+</LinearLayout>

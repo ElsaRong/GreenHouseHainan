@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/workspace_background_color"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+
+    <include
+       android:id="@id/title_bar"
+       layout="@layout/title_bar" /> 
+        
+	<android.support.v7.widget.RecyclerView
+	    android:id="@+id/sensor_recyclerview"
+	    android:layout_width="match_parent"
+	    android:layout_height="0dp"
+	    android:layout_weight="4"
+	    android:layout_marginTop="30dp"
+	    android:background="@color/workspace_background_color"
+	    android:scrollbars="horizontal" />
+	          
+	<Button
+        android:id="@+id/sensor_enter"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"            
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/button_bg"
+        android:text="设置"
+        android:textColor="@color/title_bar_background"
+        android:textSize="20.0sp" />
+
+</LinearLayout>

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/workspace_background_color" xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/title_bar" />
+
+    <Button
+        android:id="@+id/timer_btn"
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/button_bg"
+        android:clickable="true"
+        android:paddingBottom="30dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="10dp"
+        android:text="设置"
+        android:textColor="@color/title_bar_background"
+        android:textSize="50.0sp" />
+
+    <RelativeLayout
+        android:id="@+id/left_linear"
+        android:layout_width="1200dp"
+        android:layout_height="450dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="@color/workspace_background_color"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:id="@+id/left_linear_one"
+            android:layout_width="fill_parent"
+            android:layout_height="100dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+            android:padding="5dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="起始时间 :"
+                android:textColor="@color/workspace_icon_text_color"
+                android:layout_marginLeft="150dp"
+                android:textSize="50.0sp" />
+
+            <TextView
+                android:id="@+id/start_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edittext_shape"
+                android:ems="10"
+                android:gravity="left"
+                android:inputType="text"
+                android:singleLine="true"
+                android:layout_marginLeft="40dp"
+                android:textColorHint="@color/hint_text"
+                android:textSize="50sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/left_linear_two"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/left_linear_one"
+            android:orientation="horizontal"
+            android:padding="5dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="right"
+                android:text="打开时间 :"
+                android:textColor="@color/workspace_icon_text_color"
+                android:layout_marginLeft="150dp"
+                android:textSize="50sp" />
+
+            <TextView
+                android:id="@+id/power_on_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edittext_shape"
+                android:ems="10"
+                android:gravity="left"
+                android:inputType="text"
+                android:singleLine="true"
+                android:text="8:00 am "
+                android:layout_marginLeft="40dp"
+                android:textColorHint="@color/hint_text"
+                android:textSize="50sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/left_linear_three"
+            android:layout_width="fill_parent"
+            android:layout_height="100dp"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/left_linear_two"
+            android:orientation="horizontal"
+            android:padding="5dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="关闭时间 :"
+                android:textColor="@color/workspace_icon_text_color"
+                android:layout_marginLeft="150dp"
+                android:textSize="50.0sp" />
+            
+
+            <TextView
+                android:id="@+id/power_off_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edittext_shape"
+                android:ems="10"
+                android:gravity="left"
+                android:inputType="text"
+                android:singleLine="true"
+                android:layout_marginLeft="40dp"
+                android:textColorHint="@color/hint_text"
+                android:textSize="50sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/left_linear_four"
+            android:layout_width="fill_parent"
+            android:layout_height="100dp"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/left_linear_three"
+            android:orientation="horizontal"
+            android:padding="5dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="循环次数 :"
+                android:textColor="@color/workspace_icon_text_color"
+                android:layout_marginLeft="150dp"
+                android:textSize="50.0sp" />
+            
+            <TextView
+                android:id="@+id/circle_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edittext_shape"
+                android:ems="10"
+                android:gravity="left"
+                android:inputType="text"
+                android:singleLine="true"
+                android:text="1 个月"
+                android:layout_marginLeft="40dp"
+                android:textColorHint="@color/hint_text"
+                android:textSize="50sp" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

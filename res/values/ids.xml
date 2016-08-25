@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <item type="id" name="title_btn">false</item>
+    <item type="id" name="heaven">false</item>
+    <item type="id" name="refresh_btn">false</item>
+    
+    <item type="id" name="title_bar">false</item>
+    
+     <item type="id" name="version">false</item>
+      <item type="id" name="check_update">false</item>
+     
+    
+    
+</resources>

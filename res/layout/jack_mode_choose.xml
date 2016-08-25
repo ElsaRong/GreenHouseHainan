@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:android1="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/workspace_background_color" >
+
+    <include
+        android:id="@id/title_bar"
+        layout="@layout/title_bar" />
+
+    <TextView
+        android:id="@+id/txt_rename"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/jack_icon"
+        android:layout_below="@+id/jack_icon"
+        android:layout_marginTop="15dp"
+        android:gravity="center"
+        android:text="风机1"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/changname_btn"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="80dp"
+        android:layout_height="30dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="28dp"
+        android:background="@drawable/button_bg"
+        android:text="设置"
+        android:textColor="@color/title_bar_background"
+        android:textSize="15.0sp" />
+
+    <RadioGroup
+        android1:id="@+id/radioGroup1"
+        android1:layout_width="wrap_content"
+        android1:layout_height="wrap_content"
+        android1:layout_centerVertical="true"
+        android1:layout_marginLeft="33dp"
+        android1:layout_toRightOf="@+id/txt_rename" >
+
+        <RadioButton
+            android1:id="@+id/radio1"
+            android1:layout_width="wrap_content"
+            android1:layout_height="wrap_content"
+            android1:text="联动模式" />
+
+        <RadioButton
+            android1:id="@+id/radio0"
+            android1:layout_width="wrap_content"
+            android1:layout_height="wrap_content"
+            android1:checked="true"
+            android1:text="定时模式" />
+
+        <RadioButton
+            android1:id="@+id/radio2"
+            android1:layout_width="wrap_content"
+            android1:layout_height="wrap_content"
+            android1:text="按钮模式" />
+
+    </RadioGroup>
+
+    <TextView
+        android1:id="@+id/button_mode"
+        android1:layout_width="wrap_content"
+        android1:layout_height="wrap_content"
+        android1:layout_alignBottom="@+id/txt_rename"
+        android1:layout_toRightOf="@+id/changname_btn"
+        android1:text="" />
+
+    <TextView
+        android1:id="@+id/sensot_mode"
+        android1:layout_width="wrap_content"
+        android1:layout_height="wrap_content"
+        android1:layout_alignLeft="@+id/timer_mode"
+        android1:layout_alignParentRight="true"
+        android1:layout_alignTop="@+id/jack_icon"
+        android1:text="传感器类型：空气温度；门限值：26-28摄氏度" />
+
+    <TextView
+        android1:id="@+id/timer_mode"
+        android1:layout_width="wrap_content"
+        android1:layout_height="wrap_content"
+        android1:layout_alignLeft="@+id/button_mode"
+        android1:layout_centerVertical="true"
+        android1:text="起始时间：2016-04-14" />
+
+    <ImageView
+        android1:id="@+id/jack_icon"
+        android1:layout_width="80dp"
+        android1:layout_height="80dp"
+        android1:layout_alignBottom="@+id/timer_mode"
+        android1:layout_alignParentLeft="true"
+        android1:layout_marginLeft="58dp"
+        android1:background="@drawable/circle_outline"
+        android1:padding="8.0dip"
+        android1:src="@drawable/default_jack" />
+
+</RelativeLayout>

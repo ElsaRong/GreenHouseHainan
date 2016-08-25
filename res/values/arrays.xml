@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="slide_menu">
+        <item>添加控制器</item>
+        <item>测试</item>
+        <item>帮助</item>
+        <item>退出</item>
+    </string-array>
+    <string-array name="week_days_short">
+        <item>Mon</item>
+        <item>Tue</item>
+        <item>Wed</item>
+        <item>Thu</item>
+        <item>Fri</item>
+        <item>Sat</item>
+        <item>Sun</item>
+    </string-array>
+    <string-array name="led">
+        <item>Seeding</item>
+        <item>Grow up</item>
+        <item>Blossom</item>
+    </string-array>
+    <string-array name="hps">
+        <item>Seeding</item>
+        <item>Grow up</item>
+        <item>Blossom</item>
+    </string-array>
+    <string-array name="mh">
+        <item>Seeding</item>
+        <item>Grow up</item>
+        <item>Blossom</item>
+    </string-array>
+</resources>

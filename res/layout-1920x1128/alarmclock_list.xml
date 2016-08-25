@@ -1,0 +1,107 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/workspace_background_color"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+
+    <include
+        android:id="@id/title_bar"
+        layout="@layout/title_bar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.85"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/jackid"
+            android:gravity="center"
+            android:textColor="@color/workspace_icon_text_color"
+            android:textSize="40sp" />
+        
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="@string/start_time"
+            android:gravity="center"
+            android:textColor="@color/workspace_icon_text_color"
+            android:textSize="40sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/power_on_time"
+            android:textColor="@color/workspace_icon_text_color"
+            android:textSize="40sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/power_off_time"
+            android:textColor="@color/workspace_icon_text_color"
+            android:textSize="40sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/cycle_index"
+            android:textColor="@color/workspace_icon_text_color"
+            android:textSize="40sp" />
+
+        <TextView
+            android:id="@+id/map_Checkbox"
+             android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/check"
+            android:textColor="@color/workspace_icon_text_color"
+            android:textSize="40sp" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="6" >
+    </ListView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="center|center_horizontal|center_vertical"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/add_alarmclock"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/left_round_btn_bg"
+            android:text="@string/add_alarmclock"
+            android:textColor="@color/title_bar_background"
+            android:layout_marginLeft="500dp"
+            android:textSize="40.0sp" />
+
+        <Button
+            android:id="@+id/cancel_alarmclock"
+            style="?android:attr/buttonBarButtonStyle"
+             android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/right_round_btn_bg"
+            android:text="@string/cancel"
+            android:textColor="@color/title_bar_background"
+            android:textSize="40.0sp" />
+    </LinearLayout>
+
+</LinearLayout>

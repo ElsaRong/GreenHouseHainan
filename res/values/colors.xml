@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <color name="title_bar_background">#ffb0c93b</color>
+    <color name="workspace_background_color">#fff0f0f0</color>
+    
+     <color name="workspace_icon_text_color">#ff777777</color>
+    <color name="hint_text">#ffaeaeae</color>
+     <color name="outline_color">#ffe6e6e6</color>
+     <color name="timer_color">#ffb0c93b</color>
+     <color name="break_color">#ffff0033</color>
+     <color name="border_color">#ffcccccc</color>
+     <color name="sidebar_background_color">#ffeeeeee</color>
+     <color name="text_check_color">#FF8C00</color>
+     
+     
+    
+    
+</resources>

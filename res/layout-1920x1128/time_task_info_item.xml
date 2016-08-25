@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal"
+    android:orientation="vertical" >
+    
+    <TextView
+        android:id="@+id/starttime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="#292421"
+        android:text="起始时间：2016-5-21 8:00" />
+
+    <TextView
+        android:id="@+id/ontime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="#292421"
+        android:text="打开时间：01:00" />
+
+    <TextView
+        android:id="@+id/offtime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="#292421"
+        android:text="关闭时间：00:30" />
+    
+     <TextView
+        android:id="@+id/cycleindex"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="#292421"
+        android:text="循环次数：5次" />
+    
+
+</LinearLayout>

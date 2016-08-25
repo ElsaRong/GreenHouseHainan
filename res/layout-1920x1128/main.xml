@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relate"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#FFFFFF" >
+
+    <include
+        android:id="@id/title_bar"
+        layout="@layout/title_bar" />
+
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/title_bar"
+        android:background="#ffffff" >
+
+        <com.greenhouse.viewconfig.ScrollLayout
+            android:id="@+id/views"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@id/title_bar"
+            android:background="#ffffff" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_alignParentRight="true"
+            android:layout_margin="20dip"
+            android:background="@android:color/transparent">
+
+            <TextView
+                android:id="@+id/tv_page"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/pageid"
+                android:gravity="center"
+                android:text="1"
+                android:textColor="#ffffff" />
+
+            <ProgressBar
+                android:id="@+id/controller_waiting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:indeterminate="true"
+                android:indeterminateDrawable="@drawable/waiting_progress"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/txt_controllerwaiting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/tv_page"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="48dp"
+                android:text="@string/connectwaiting"
+                android:textColor="@color/hint_text"
+                android:textSize="18.0sp"
+                android:visibility="gone" />
+            
+        </RelativeLayout>
+
+        <ListView
+            android:id="@+id/slide_menu"
+            android:layout_width="240dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="@drawable/menu_background"
+            android:choiceMode="singleChoice"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="0dp"
+            android:paddingTop="@dimen/jack_index_margin_top" />
+    </android.support.v4.widget.DrawerLayout>
+
+    <ImageView
+        android:id="@+id/dels"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/del_check"
+        android:visibility="gone" />
+
+</RelativeLayout>

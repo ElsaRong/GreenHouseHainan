@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">大棚APP</string>
+    <string name="ani_time">350</string>
+    <string name="ani_time2">700</string>
+    <string name="devices">控制器</string>
+    <string name="refresh_btn">Refresh items.</string>
+    <string name="panel_btn">The switcher of the slide panel layout.</string>
+    <string name="check_update">Check update</string>
+    <string name="copyright">Designed by CRZ in Oregon , Assembled in China</string>
+    <string name="timer">定时器</string>
+    <string name="jackUI">插座</string>
+    <string name="sensorUI">添加传感器</string>
+    <string name="sensorSet">设置传感器</string>
+    <string name="jackSet">设置插座</string>
+    <string name="connectwaiting">正在连接控制器，请耐心等待…</string>
+    <string name="edit">编辑</string>
+    <string name="cancel">取消</string>
+    <string name="confirm">确定</string>
+    <string name="alarmclock_list">定时任务</string>
+    <string name="lock_all_text">全部锁定</string>
+    <string name="lock_cancel">取消</string>
+    <string name="lock">锁定</string>
+    <string name="add_alarmclock">添加</string>
+    
+    <string name="password">无线密码</string>
+    <string name="ssid">无线网络</string>
+    <string name="start_config">开始配置</string>
+    
+    <string name="jackid">插座编号</string>
+    
+    
+    <string name="start_time">起始时间</string>
+    <string name="power_on_time">打开时间</string>
+    <string name="power_off_time">关闭时间</string>
+    <string name="cycle_index">循环次数</string>
+    <string name="timer_start">设置</string>
+    <string name="cycle_index_eg">1个月</string>
+    <string name="check">选择</string>
+    
+    <string name="sensorid">编号</string>
+    <string name="online">在线</string>
+    <string name="airtemp">空气温度</string>
+    <string name="airhum">空气湿度</string>
+    <string name="co2">CO2浓度</string>
+    <string name="soiltemp">土壤温度</string>
+    <string name="soilhum">土壤湿度</string>
+    <string name="ph">土壤PH</string>
+    <string name="illum">光照度</string>
+    
+    <string name="timemode">定时模式</string>
+     <string name="sensormode">联动模式</string>
+      <string name="remomode">无模式</string>
+    
+    <string name="timeset">说明：白天黑夜设置可由用户自定义，采用24小时制，只能设置为整点时间。例如：白天设置为6:00，黑夜设置为18:00，
+        表示白天从北京时间6点整开始，到北京时间18点整结束；夜间从北京时间18点整开始，到次日凌晨6点整结束；依次循环。</string>
+        
+    <string name="timesethistory">\n    历史时间设置：\n    白天: 8点\n    夜间: 18点</string>
+
+</resources>

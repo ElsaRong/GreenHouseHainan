@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/socket_back" 
+        android:top="@dimen/socket_background_padding_top" 
+        android:right="@dimen/socket_background_padding_right" 
+        android:bottom="@dimen/socket_background_padding_bottom" />
+</layer-list>

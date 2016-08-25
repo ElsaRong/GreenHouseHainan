@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffb0c93b"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/xValue"
+        android:layout_width="100dp"
+        android:layout_height="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/yValue"
+        android:layout_width="100dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_toRightOf="@id/xValue"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/Temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:textSize="12sp"
+        android:layout_alignParentTop="true"
+        android:text="温度查询" />
+     <Button
+        android:id="@+id/Humi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="85dp"
+        android:textSize="12sp"
+        android:layout_alignParentTop="true"
+        android:text="湿度查询" />
+      <Button
+        android:id="@+id/Light"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="155dp"
+        android:layout_alignParentTop="true"
+        android:textSize="12sp"
+        android:text="光照强度" />
+      <Button
+        android:id="@+id/CO2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="225dp"
+        android:layout_alignParentTop="true"
+        android:textSize="12sp"
+        android:text="CO2浓度" />
+      <Button
+        android:id="@+id/soil_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="295dp"
+        android:layout_alignParentTop="true"
+        android:textSize="12sp"
+        android:text="土壤温度" />
+      <Button
+        android:id="@+id/soil_humi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="365dp"
+        android:layout_alignParentTop="true"
+        android:textSize="12sp"
+        android:text="土壤湿度" />
+      <Button
+        android:id="@+id/soil_PH"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="435dp"
+        android:layout_alignParentTop="true"
+        android:textSize="12sp"
+        android:text="土壤PH值" />
+       <LinearLayout
+        android:id="@+id/layout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="90dp"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp"
+            android:text="查询起始时间："
+            android:textColor="#000000"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/start_time"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:hint="年-月-日  时:分"
+            android:background="@drawable/textview_border" 
+            android:inputType="text"
+            android:textColor="#000000"
+            android:textColorHint="#ffaeaeae"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="查询结束时间："
+            android:layout_marginTop="10dp"
+            android:textColor="#000000"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/end_time"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:textColorHint="#ffaeaeae"
+            android:hint="年-月-日  时:分"
+            android:background="@drawable/textview_border" 
+            android:textColor="#000000"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/chart"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="45dp"
+        android:orientation="horizontal"
+        android:paddingLeft="125dp" >
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/new_series"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:text="新添加点" />
+
+</RelativeLayout>

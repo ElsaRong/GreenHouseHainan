@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/workspace_background_color"
+    android:orientation="vertical" >
+    
+        
+    
+    <include
+        android:id="@id/title_bar"
+        layout="@layout/title_bar" />
+
+        <RadioGroup
+            android:id="@+id/sensor_radio_group"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_alignParentTop="true"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal" >
+
+            <RadioButton
+                android:id="@+id/rb_soil_temp"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:gravity="center"
+                android:text="土壤温度"
+                android:textSize="30.0sp"
+                android:textColor="@drawable/workspace_icon_text_color" />
+
+            <RadioButton
+                android:id="@+id/rb_soil_hum"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="土壤湿度"
+                android:textSize="30.0sp"
+                android:textColor="@drawable/workspace_icon_text_color" />
+
+            <RadioButton
+                android:id="@+id/rb_soil_ph"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="土壤酸碱度"
+                android:textSize="30.0sp"
+                android:textColor="@drawable/workspace_icon_text_color" />
+            
+            <RadioButton
+                android:id="@+id/rb_air_temp"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="空气温度"
+                android:textSize="30.0sp"
+                android:textColor="@drawable/workspace_icon_text_color" />
+            
+            <RadioButton
+                android:id="@+id/rb_air_hum"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="空气湿度"
+                android:textSize="30.0sp"
+                android:textColor="@drawable/workspace_icon_text_color" />
+            
+            <RadioButton
+                android:id="@+id/rb_co2"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="CO2浓度"
+                android:textSize="30.0sp"
+                android:textColor="@drawable/workspace_icon_text_color" />
+            
+            <RadioButton
+                android:id="@+id/rb_illum"
+                android:layout_width="wrap_content"
+                android:layout_height="50sp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="光照强度"
+                android:textSize="30.0sp"
+                android:textColor="@drawable/workspace_icon_text_color" />
+        </RadioGroup>
+        
+        
+        <LinearLayout
+         	android:id="@+id/sensor_setting_fragment"
+        	android:layout_width="match_parent"
+       		android:layout_height="0dp"
+         	android:layout_weight="4"
+        	android:baselineAligned="false"
+        	android:orientation="horizontal" />
+
+        <Button
+		    android:id="@+id/sensor_setting"
+		    android:layout_width="wrap_content"
+		    android:layout_height="0dp"
+		    android:layout_weight="1"
+		    android:layout_gravity="center"
+		    android:background="@drawable/button_bg"
+		    android:clickable="true"
+		    android:gravity="center"
+		    android:text="设置"
+		    android:textColor="@color/workspace_icon_text_color"
+		    android:textSize="40.0sp" />
+
+</LinearLayout>

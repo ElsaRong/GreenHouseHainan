@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:clickable="false"
+    android:focusableInTouchMode="false"
+    android:gravity="center_vertical"
+    android:layout_margin="30dp"
+     android:background="@drawable/linearlayout_border"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/jackname1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_gravity="center_horizontal"
+        android:clickable="false"
+        android:gravity="center_horizontal"
+        android:textColor="#000000"
+        android:textSize="15sp" />
+
+     <Button
+         android:id="@+id/jacksettimebutton"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center_horizontal"
+         android:text="@string/timemode"
+         android:textSize="12sp" />
+ 
+       <Button
+           android:id="@+id/jackgoingbutton"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_gravity="center_horizontal"
+           android:text="@string/sensormode"
+           android:textSize="12sp"/>
+       
+        <Button
+           android:id="@+id/remomode"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_gravity="center_horizontal"
+           android:text="@string/remomode"
+           android:textSize="12sp"/>
+
+</LinearLayout>
