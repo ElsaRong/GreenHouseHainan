@@ -408,12 +408,12 @@ public class MessageHandle {
 	   //将传感器实时值[在每天的8，12，17，19点的四个时间点]保存到统计查询表
 	   setSensorCurrentValueToStatistic(soiltemp, soilhum, soilph, airtemp, airhum, co2, illu);
 			
-		Log.i(TAG, "Sensor" + sensorid + "-" + soiltemp + "-" + soilhum + "-" + soilph + "-" + airtemp + "-" + airhum + "-" + co2 + "-" + illu);
+		Log.i(TAG, "sensor" + sensorid + "-" + soiltemp + "-" + soilhum + "-" + soilph + "-" + airtemp + "-" + airhum + "-" + co2 + "-" + illu);
 	}
 	
 	/**
 	 * @Title:       setSensorCurrentValueToStatistic
-	 * @description: TODO 将传感器实时值[在每天的8，12，17，19点的四个时间点]保存到统计查询表
+	 * @description: TODO 将传感器实时值每小时保存一次到统计查询表
 	 * @param        
 	 * @return       void
 	 * @throws
@@ -424,12 +424,18 @@ public class MessageHandle {
 			Integer airtemp, Integer airhum, Integer co2, Integer illu) {
 		Calendar c = Calendar.getInstance();
 		Integer hour = Integer.valueOf(c.get(Calendar.HOUR_OF_DAY));
+		Integer minute = Integer.valueOf(c.get(Calendar.MINUTE));
+		Integer seconed = Integer.valueOf(c.get(Calendar.SECOND));
 		Integer year = Integer.valueOf(c.get(Calendar.YEAR));
 		Integer month = Integer.valueOf(c.get(Calendar.MONTH));
 		Integer day = Integer.valueOf(c.get(Calendar.DAY_OF_MONTH));
+		
 		StatisticService statisticService = new StatisticService(GreenHouseApplication.getContext());
-		statisticService.insertRecord(Launcher.selectMac , year, month, day, hour, soiltemp, soilhum, soilph, airtemp, airhum, co2, illu);
-		Log.e(TAG, "insert statistic --------------------> current value" + year+"/"+month+"/"+day+" "+hour+"H" );
+		if (!statisticService.isCurrentDataSaved(year, month, day, hour)) {
+			statisticService.insertRecord(Launcher.selectMac , year, month, day, hour, soiltemp, soilhum, soilph, airtemp, airhum, co2, illu);
+			Log.i(TAG, "insert statistic ------------> Data: " + year+"/"+month+"/"+day+"; Time: " + hour + ":" + minute + ":" + seconed);
+		} 
+		
 	}
 	
 	/**

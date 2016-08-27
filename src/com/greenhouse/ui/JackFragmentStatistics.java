@@ -104,6 +104,7 @@ public class JackFragmentStatistics extends Fragment {
 					Integer day = Integer.parseInt(JackStatisticCustomDatePicker.sDay);
 					Integer sensoryType = 1+Integer.parseInt(QUERY_TYPE.substring(1, 2));   //向数据库传递的查询传感器类型1-7
 					JackFragmentMaster.listHistory = statisticService.getHistoryValue(month, day, sensoryType);
+					
 					//向Master发送UI刷新的msg
 					if (QUERY_TYPE.equals("30")) {
 						handler.sendEmptyMessage(Const.UI_REFRESH_FRAG_30); 
@@ -164,7 +165,7 @@ public class JackFragmentStatistics extends Fragment {
 		mRenderer.setApplyBackgroundColor(true);
 		mRenderer.setZoomEnabled(false, false);
 //		mRenderer.setXLabels(1000);
-		mRenderer.setXAxisMin(0);
+//		mRenderer.setXAxisMin(0);
 		mRenderer.setXAxisMax(1000);
 //		mRenderer.setYLabels(25);
 		mRenderer.setPanLimits(new double[] { 0, 300, 0, 100 }); //设置拖动时X轴Y轴允许的�?大�?�最小�??.  

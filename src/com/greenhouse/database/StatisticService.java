@@ -2,6 +2,8 @@ package com.greenhouse.database;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingDeque;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -32,6 +34,32 @@ public class StatisticService {
 				soiltemp, soilhum, soilph, airtemp, airhum, co2, illum};
 		db.execSQL(s, object);
 		db.close();
+	}
+	
+	/**
+	 * @Title:       isCurrentDataSaved
+	 * @description: TODO 检查当前year/month/day/hour字段是否已经保存了一组sensor值
+	 * @param        @param year
+	 * @param        @param month
+	 * @param        @param day
+	 * @param        @param hour
+	 * @param        @return 需要保存，返回true；否则返回false
+	 * @return       boolean 
+	 * @throws
+	 * @author       Elsa elsarong715@gmail.com
+	 * @data         Aug 27, 2016, 9:58:49 PM
+	 */
+	public boolean isCurrentDataSaved(Integer year, Integer month, Integer day, Integer hour) {
+		boolean b = true;
+		SQLiteDatabase db = databaseHelper.getWritableDatabase();
+		String s = "select * from statistic where year=? and month=? and day=? and hour=?";
+		String[] ss = new String[]{year+"", month+"", day+"", hour+""};
+		Cursor cursor = db.rawQuery(s, ss);
+		while(cursor.moveToNext()) {
+			b = false;
+		}
+		cursor.close();
+		return b;
 	}
 	
 	public List<Integer> getSoiltempHistory(Integer month, Integer day) {
