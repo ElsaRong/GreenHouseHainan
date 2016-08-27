@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 
+import com.greenhouse.networkservice.SocketOutputTask;
+
 /** 
 * @author       Elsa 
 * @Email		elsarong715@gmail.com
-* @date			2016Äê2ÔÂ20ÈÕÏÂÎç3:38:48 
+* @date			2016ï¿½ï¿½2ï¿½ï¿½20ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½3:38:48 
 * @version		1.0  
-* @description	socketÒÔºóÔÙÖØ¹¹		 
+* @description	socketï¿½Ôºï¿½ï¿½ï¿½ï¿½Ø¹ï¿½		 
 */
 public class SocketClient {
 
@@ -47,6 +49,15 @@ public class SocketClient {
 		return client;
 	}
 	
+	/**
+	 * @Title:       destroy
+	 * @description: TODO é”€æ¯æœ¬æ¬¡è¿æ¥å»ºç«‹çš„client,åŒ…æ‹¬SocketOutputTask/SocketInputTaskæ ‡è¯†ä½å¤ä½
+	 * @param        
+	 * @return       void
+	 * @throws
+	 * @author       Elsa elsarong715@gmail.com
+	 * @data         Aug 27, 2016, 2:40:06 PM
+	 */
 	public void destroy() {
 		if (client != null) {
 			

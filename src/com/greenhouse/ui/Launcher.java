@@ -217,7 +217,7 @@ public class Launcher extends Activity {
 				txt_controllerwaiting.setVisibility(View.GONE);	
 				threadPoolManager.startSocketServerAccept();
 				IsStartActivity = Const.TIME_SERVICE_FINISHED;
-				// 20160417bug修复－每次跳转前都会清空数据库中�?有sensor：设置为offline状�??
+				// 20160417bug修复－每次跳转前都会清空数据库中�?有sensor：设置为offline
 				sensorService.modifyAllSensorOffline();
 				startActivity(new Intent(Launcher.this, JackFragmentMaster.class));//跳转前等待是否收到stop报文（服务器－APP�?
 				break;	
@@ -226,6 +226,9 @@ public class Launcher extends Activity {
 					isClickable = true;
 					Launcher.client.destroy();
 					Launcher.server.destroy();
+					/* add by Elsa, 2016/8/27 多次连接失败后再也无法连接的原因:socket已连接，InputTask不能GET到TIME回执
+					threadPoolManager.stopSocketClient(); 
+					*/
 					controller_waiting.setVisibility(View.GONE);
 					txt_controllerwaiting.setVisibility(View.GONE);	
 					ToastUtil.TextToastShort(Launcher.this, "授时失败，请重新连接");

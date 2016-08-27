@@ -8,7 +8,6 @@ import com.greenhouse.util.Const;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.provider.SyncStateContract.Constants;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,12 +26,12 @@ public class SensorSettingFragment extends Fragment implements OnSensorSettingCl
 	private TextView tvSensorType, tvNightThre, tvDayThre,tvCurrent, tvNightRecord, tvDayRecord, tvCurrentRecord;
 	public static EditText edNightThre,edDayThre; //在SensorSetting中获取用户输入的早晚门限
 	private Sensor sensor;
-	private int averageSensorId, valuerecord;
+//	private int averageSensorId, valuerecord;
+	private View vw;
 	
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View vw = inflater.inflate(R.layout.sensor_setting_fragment, container, false);
-		
+		vw = inflater.inflate(R.layout.sensor_setting_fragment, container, false);
 		tvSensorType = (TextView)vw.findViewById(R.id.show_current_value);
 		tvCurrent = (TextView)vw.findViewById(R.id.current_value);
 		tvCurrentRecord = (TextView)vw.findViewById(R.id.value_record);		
@@ -42,9 +41,12 @@ public class SensorSettingFragment extends Fragment implements OnSensorSettingCl
 		tvDayRecord = (TextView)vw.findViewById(R.id.day_threshold_record);
 		edNightThre = (EditText)vw.findViewById(R.id.night_threshold);
 		edDayThre = (EditText)vw.findViewById(R.id.day_threshold);
+		edNightThre.setText(SensorSetting.sSetNightThre[0] + "");
+		edDayThre.setText(SensorSetting.sSetDayThre[0] + "");
 		
 		sensor = SensorRecyclerView.sSelectSensorInfo.get(SensorRecyclerView.sSelectSensorInfo.size()-1); //选定传感器的实时值平均
-		tvSensorType.setText(Const.SOIL_TEMP);              //显示传感器类型
+		SensorSetting.sSensorType = 1;                      //初始化传感器类型
+		tvSensorType.setText(Const.SOIL_TEMP);              //显示初始化传感器类型
 		tvNightThre.setText(Const.DAY_THRE_VALUE);          //显示“白天门限”
 		tvDayThre.setText(Const.NIGHT_THRE_VALUE);          //显示“夜间门限”
 		tvNightRecord.setText("建议值：25-29" + Const.SOIL_TEMP_UNIT); //显示夜间门限建议值
@@ -54,11 +56,13 @@ public class SensorSettingFragment extends Fragment implements OnSensorSettingCl
 //		tvCurrentRecord.setText(Const.RECORD_VALUE + valuerecord + Const.SOIL_TEMP_UNIT);      //显示选定传感器的平均历史值
 		return vw;			
 	}
-
+	
 
 	@Override
 	public void onSensorSettingClickedListener(String msg) {
 		// TODO Auto-generated method stub
+		edNightThre.setText(SensorSetting.sSetNightThre[SensorSetting.sSensorType-1] + "");
+		edDayThre.setText(SensorSetting.sSetDayThre[SensorSetting.sSensorType-1] + "");
 		switch (msg) {
 		case "soil_temp":
 			SensorSetting.sSensorType = 1;         						  //保存传感器类型                                     
@@ -79,13 +83,13 @@ public class SensorSettingFragment extends Fragment implements OnSensorSettingCl
 			tvSensorType.setText(Const.PH); 					   //显示传感器类型
 			tvNightRecord.setText("建议值：5-7" + Const.PH_UNIT);   //显示夜间门限建议值
 			tvDayRecord.setText("建议值：5-7" + Const.PH_UNIT);     //显示白天门限建议值
-			tvCurrent.setText(sensor.getSoilph() + Const.PH_UNIT); //显示选定传感器的实时平均值
+			tvCurrent.setText(sensor.getSoilph()/10 + "." + sensor.getSoilph()%10 + Const.PH_UNIT); //显示选定传感器的实时平均值
 			break;
 		case "air_temp":
 			SensorSetting.sSensorType = 4;
 			tvSensorType.setText(Const.AIR_TEMP); 					   //显示传感器类型
-			tvNightRecord.setText("建议值：5-7" + Const.AIR_TEMP_UNIT);   //显示夜间门限建议值
-			tvDayRecord.setText("建议值：5-7" + Const.AIR_TEMP_UNIT);     //显示白天门限建议值
+			tvNightRecord.setText("建议值：26-28" + Const.AIR_TEMP_UNIT);   //显示夜间门限建议值
+			tvDayRecord.setText("建议值：26-28" + Const.AIR_TEMP_UNIT);     //显示白天门限建议值
 			tvCurrent.setText(sensor.getAirtemp() + Const.AIR_TEMP_UNIT); //显示选定传感器的实时平均值
 			break;
 		case "air_hum":
@@ -107,7 +111,7 @@ public class SensorSettingFragment extends Fragment implements OnSensorSettingCl
 			tvSensorType.setText(Const.ILLUMINATION); 					   //显示传感器类型
 			tvNightRecord.setText("建议值：5000-20000" + Const.ILLUMINATION_UNIT);   //显示夜间门限建议值
 			tvDayRecord.setText("建议值：5000-20000" + Const.ILLUMINATION_UNIT);     //显示白天门限建议值
-			tvCurrent.setText(sensor.getIllumination() + Const.ILLUMINATION_UNIT); //显示选定传感器的实时平均值
+			tvCurrent.setText(10*sensor.getIllumination() + Const.ILLUMINATION_UNIT); //显示选定传感器的实时平均值
 			break;
 			default:
 				break;

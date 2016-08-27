@@ -15,15 +15,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RadioGroup;
-import java.util.LinkedList;
-import java.util.Queue;
 import com.greenhouse.R;
 import com.greenhouse.networkservice.NetBroadcastReceiver;
-import com.greenhouse.networkservice.SocketInputTask;
 import com.greenhouse.networkservice.SocketOutputTask;
-import com.greenhouse.networkservice.ThreadPoolManager;
 import com.greenhouse.util.Const;
 import com.greenhouse.util.ToastUtil;
 
@@ -36,10 +31,14 @@ public class SensorSetting extends Activity implements View.OnClickListener{
 	public static Handler handler;
 	private RadioGroup rg;
 	
-	public static String sSetDayThre   = ""; //用户设置的白天门限值
-	public static String sSetNightThre = ""; //用户设置的夜间门限值
+	public static int[] sSetDayThre   = {0,0,0,0,0,0,0}; //用户设置的白天门限值
+	public static int[] sSetNightThre = {0,0,0,0,0,0,0}; //用户设置的夜间门限值
+	public static int[] sChosedSensor = {0,0,0,0,0,0,0}; //用户选择设置的传感器类型
 	public static int sDeviceType      =  0; //用户选中的插座上绑定的设备类型
 	public static int sSensorType      =  1; //用户选中的传感器类型
+	
+	private Button sensor_setting;
+	private Button save_setting;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -85,68 +84,97 @@ public class SensorSetting extends Activity implements View.OnClickListener{
 			}
 		});
 		
-		Button sensor_setting = (Button)findViewById(R.id.sensor_setting);
+		
+		sensor_setting = (Button)findViewById(R.id.sensor_setting);
+		save_setting =  (Button)findViewById(R.id.save_setting);
+		
+		save_setting.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				//校验1
+				if (SensorSettingFragment.edNightThre.getText().toString().equals(0) &&
+						SensorSettingFragment.edDayThre.getText().toString().equals(0) &&
+						SensorSettingFragment.edNightThre.getText().toString().equals("") &&
+						SensorSettingFragment.edDayThre.getText().toString().equals("")) 
+				{
+					ToastUtil.TextToastShort(SensorSetting.this, "请正确设置早晚门限！");
+				} 
+				//校验2
+				else if ((SensorSettingFragment.edNightThre.getText().toString().length() > 4 ||
+							SensorSettingFragment.edDayThre.getText().toString().length() >4) &&
+							SensorSetting.sSensorType != 7) 
+				{
+					ToastUtil.TextToastShort(SensorSetting.this, "早晚门限不能超过四位");
+				} 
+				//校验3
+				else if ((SensorSettingFragment.edNightThre.getText().toString().length() > 5 ||
+						SensorSettingFragment.edDayThre.getText().toString().length() >5) &&
+						SensorSetting.sSensorType == 7) 
+				{
+					ToastUtil.TextToastShort(SensorSetting.this, "早晚门限不能超过五位");
+				}
+				//保存到门限值数组
+				else 
+				{
+					sChosedSensor[SensorSetting.sSensorType-1] = 1;
+					sSetDayThre[SensorSetting.sSensorType-1] = Integer.parseInt(SensorSettingFragment.edNightThre.getText().toString());
+					sSetNightThre[SensorSetting.sSensorType-1] = Integer.parseInt(SensorSettingFragment.edDayThre.getText().toString()); 
+				}
+			}
+			
+		});
+		
 		sensor_setting.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				
-				sSetDayThre = SensorSettingFragment.edNightThre.getText().toString();
-				sSetNightThre = SensorSettingFragment.edDayThre.getText().toString(); 
-				
-				if (sSetNightThre.equals("") && sSetDayThre.equals("")) {
-					ToastUtil.TextToastShort(SensorSetting.this, "请正确设置早晚门限！");
-				} else if ( (sSetNightThre.length() > 4 || sSetDayThre.length() > 4) && SensorSetting.sSensorType != 7 ) {
-					ToastUtil.TextToastShort(SensorSetting.this, "早晚门限不能超过四位");
-				} else if  ( (sSetNightThre.length() > 5 || sSetDayThre.length() > 5) && SensorSetting.sSensorType == 7 ) {
-					ToastUtil.TextToastShort(SensorSetting.this, "早晚门限不能超过五位");
-				} else {
-					
-					SocketOutputTask.sendMsgQueue.add("BUND");
-					SocketOutputTask.getHandler().sendEmptyMessage(Const.BUND);	
-					try {
-						Thread.sleep(300);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					if (SocketOutputTask.sendMsgQueue.contains("BUND")) {
-						SocketOutputTask.getHandler().sendEmptyMessage(Const.BUND);	
-					}
-					try {
-						Thread.sleep(300);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					if (SocketOutputTask.sendMsgQueue.contains("BUND")) {
-						SocketOutputTask.getHandler().sendEmptyMessage(Const.BUND);	
-					}
-					try {
-						Thread.sleep(300);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					if (SocketOutputTask.sendMsgQueue.contains("BUND")) {
-						SocketOutputTask.getHandler().sendEmptyMessage(Const.BUND);	
-					}
-					try {
-						Thread.sleep(300);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					if (SocketOutputTask.sendMsgQueue.contains("BUND")) {
-						SocketOutputTask.getHandler().sendEmptyMessage(Const.BUND);	
-					}
-					
-					Intent intent = new Intent(SensorSetting.this, JackFragmentMaster.class);
-					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-					startActivity(intent);				
+				SocketOutputTask.sendMsgQueue.add("BUND");
+				SocketOutputTask.getHandler().sendEmptyMessage(Const.BUND);	
+				try {
+					Thread.sleep(300);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-				
+				if (SocketOutputTask.sendMsgQueue.contains("BUND")) {
+					SocketOutputTask.getHandler().sendEmptyMessage(Const.BUND);	
+				}
+				try {
+					Thread.sleep(300);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if (SocketOutputTask.sendMsgQueue.contains("BUND")) {
+					SocketOutputTask.getHandler().sendEmptyMessage(Const.BUND);	
+				}
+				try {
+					Thread.sleep(300);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if (SocketOutputTask.sendMsgQueue.contains("BUND")) {
+					SocketOutputTask.getHandler().sendEmptyMessage(Const.BUND);	
+				}
+				try {
+					Thread.sleep(300);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if (SocketOutputTask.sendMsgQueue.contains("BUND")) {
+					SocketOutputTask.getHandler().sendEmptyMessage(Const.BUND);	
+				}
+				Intent intent = new Intent(SensorSetting.this, JackFragmentMaster.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(intent);				
+					
 			}
+				
 		});
 
 		rg = (RadioGroup)findViewById(R.id.sensor_radio_group);

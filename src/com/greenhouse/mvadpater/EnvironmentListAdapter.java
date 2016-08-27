@@ -79,8 +79,8 @@ public class EnvironmentListAdapter extends BaseAdapter {
 		holder.co2.setText(sensors.get(position).getCo2() + " ppm");
 		holder.soiltemp.setText(sensors.get(position).getSoiltemp() + " ℃");
 		holder.soilhum.setText(sensors.get(position).getSoilhum() + "%");
-		holder.ph.setText(sensors.get(position).getSoilph() + "");
-		holder.illum.setText(sensors.get(position).getIllumination() + "lux");
+		holder.ph.setText(sensors.get(position).getSoilph()/10 + "." + sensors.get(position).getSoilph()%10  + "");
+		holder.illum.setText(10*sensors.get(position).getIllumination() + "lux");
 		return convertView;
 	}
 

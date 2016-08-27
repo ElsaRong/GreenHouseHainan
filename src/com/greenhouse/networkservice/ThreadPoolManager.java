@@ -115,6 +115,23 @@ public class ThreadPoolManager {
 		}
 	}
 	
+	/**
+	 * @Title:       stopSocketClient
+	 * @description: TODO 清空各Socket线程标识位
+	 * @param        
+	 * @return       void
+	 * @throws
+	 * @author       Elsa elsarong715@gmail.com
+	 * @data         Aug 27, 2016, 2:44:46 PM
+	 */
+	public void stopSocketClient() {
+		ACCEPT_IsRUNNING = false;
+		SERVER_IsRUNNING = false;
+		OUTPUT_IsRUNNING = false;
+		INPUT_IsRUNNING = false;
+		HEARTBEAT_IsRUNNING = false;
+	}
+	
 	public void startSocketServerTask(SocketServer socket) {
 		executor.execute(new SocketServerTask(socket));
 	}

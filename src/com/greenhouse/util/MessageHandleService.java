@@ -28,7 +28,7 @@ public class MessageHandleService {
 	private static final String TASK = "5441534b";
 	private static final String REMO = "52454d4f";
 	private static final String HAVE = "48415645";
-//	private static final String BUUU = "42555555";
+	private static final String TACK = "5441434b";
 	private static final String BUDD = "42554444";
 	private static final String BUND = "42554e44";
 	private static final String PROB = "50524f42";
@@ -116,15 +116,8 @@ public class MessageHandleService {
 					MessageHandle.setControllerThredshold(data);
 					break;
 				//-----------------------------------------Hex String----------------------------------------------
-				case BUDD://插座传感器门限值
+				case BUDD://插座传感器门限值，收到BUDD后将传感器任务同步到APP
 					Log.d(TAG, "[Rece:BUDD]" + SocketInputTask.MESSAGE);
-					MessageHandle.setJackBundSensorTask(SocketInputTask.MESSAGE.substring(40, 80));
-					break;
-				case BUND://传感器绑定回执
-					if (SocketOutputTask.sendMsgQueue.contains("BUND")) {
-						SocketOutputTask.sendMsgQueue.remove("BUND");
-					}
-					Log.d(TAG, "[Rece:BUND]" + SocketInputTask.MESSAGE);
 					MessageHandle.setJackBundSensorTask(SocketInputTask.MESSAGE.substring(40, 80));
 					break;
 				case STAT://TIME后收到该报文，1-数据库；2-本地缓存；3-通知刷新界面
@@ -135,13 +128,26 @@ public class MessageHandleService {
 					Log.d(TAG, "[Rece:HAVE]" + SocketInputTask.MESSAGE + "[状态 1-更新缓存 2-更新数据库]");
 					MessageHandle.setAllJackTaskMark(SocketInputTask.MESSAGE.substring(40, 80));
 					break;
-				case TASK:
-					Log.d(TAG, "[Rece:TASK]" + SocketInputTask.MESSAGE);
+				case TACK://设置定时任务回执，收到回执后清除消息队列中的BUND
+					Log.d(TAG, "[Rece:TACK]" + SocketInputTask.MESSAGE);
 					MessageHandle.setAllJackTask(SocketInputTask.MESSAGE.substring(40, 80));
 					break;
 				case DELE:
 					Log.d(TAG, "[Rece:DELE]" + SocketInputTask.MESSAGE);
 					MessageHandle.deletelJackTask(SocketInputTask.MESSAGE.substring(40, 80));
+					break;
+					//--------------------------只更新消息队列不做数据同步的回执报文-------------------------------------
+				case BUND://传感器绑定回执，收到回执后清除消息队列中的BUND
+					if (SocketOutputTask.sendMsgQueue.contains("BUND")) {
+						SocketOutputTask.sendMsgQueue.remove("BUND");
+					}
+					Log.d(TAG, "[Rece:BUND]" + SocketInputTask.MESSAGE);
+					break;
+				case TASK://设置定时任务回执，收到回执后清除消息队列中的BUND
+					if (SocketOutputTask.sendMsgQueue.contains("TASK")) {
+						SocketOutputTask.sendMsgQueue.remove("TASK");
+					}
+					Log.d(TAG, "[Rece:TASK]" + SocketInputTask.MESSAGE);
 					break;
 			}
 	}

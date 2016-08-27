@@ -50,8 +50,11 @@
     <string name="illum">光照度</string>
     
     <string name="timemode">定时模式</string>
-     <string name="sensormode">联动模式</string>
-      <string name="remomode">无模式</string>
+    <string name="sensormode">联动模式</string>
+    <string name="remomode">解除联动</string>
+      
+    <string name="save_setting">保存</string>
+    <string name="sensor_setting">设置</string>
     
     <string name="timeset">说明：白天黑夜设置可由用户自定义，采用24小时制，只能设置为整点时间。例如：白天设置为6:00，黑夜设置为18:00，
         表示白天从北京时间6点整开始，到北京时间18点整结束；夜间从北京时间18点整开始，到次日凌晨6点整结束；依次循环。</string>

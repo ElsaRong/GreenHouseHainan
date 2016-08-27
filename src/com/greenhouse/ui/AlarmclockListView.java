@@ -232,17 +232,17 @@ public class AlarmclockListView extends Activity {
 					new AlertDialog.Builder(AlarmclockListView.this)
 							.setTitle("提示")
 							.setMessage(
-									"您已经�?�择�?"
+									"您已经选择了"
 											+ mMultiCheck.size()
-											+ " 个插�?,"
-											+ " 确定取消这些插座的定时任务？")
-							.setNegativeButton("�?",
+											+ " 个插座，"
+											+ " 确定删除这些插座的定时任务？")
+							.setNegativeButton("否",
 									new DialogInterface.OnClickListener() {
 										public void onClick(DialogInterface dialog,	int which) {
 											// TODO Auto-generated method stub
 										}
 									})
-							.setPositiveButton("�?",
+							.setPositiveButton("是",
 									new DialogInterface.OnClickListener() {
 										public void onClick( DialogInterface dialog, int whichButton) {
 											Count2ndFormatChosedJacks();
@@ -254,7 +254,7 @@ public class AlarmclockListView extends Activity {
 										
 									}).show();
 				} else {
-					ToastUtil.TextToastShort(AlarmclockListView.this, "设置定时任务，请至少选择�?个插�?");
+					ToastUtil.TextToastShort(AlarmclockListView.this, "删除定时任务，请至少选择一个插座");
 				}
 				
 			}
@@ -283,10 +283,10 @@ public class AlarmclockListView extends Activity {
 		}		
 			
 		Log.i(TAG,DataFormatConversion.Int2String(Timer.chosedJackGroup));
-		Log.i(TAG,DataFormatConversion.BinaryStringToHexString3(DataFormatConversion.Int2String(Timer.chosedJackGroup)));	
+		Log.i(TAG,DataFormatConversion.BinStr48ToHexStr12(DataFormatConversion.Int2String(Timer.chosedJackGroup)));	
 		
 		//f000000000000000000-111100000000...
-		Timer.chosedJackGroupHex = DataFormatConversion.BinaryStringToHexString3(DataFormatConversion.Int2String(Timer.chosedJackGroup));
+		Timer.chosedJackGroupHex = DataFormatConversion.BinStr48ToHexStr12(DataFormatConversion.Int2String(Timer.chosedJackGroup));
 	}
 	
 	/**

@@ -197,7 +197,7 @@ public class MessageHandle {
 		String hexNightThre7 = data.substring(34,38);        //晚门限7
 		String hexBundSensor = data.substring(38,40);        //绑定传感器
 		
-		Integer jackId = DataFormatConversion.HexStringToInt(hexJackId);                                        //十六转十,调用了自定义方法,和Java API一样
+		Integer jackId = DataFormatConversion.HexStr2ToJackId(hexJackId);                                        //十六转十,调用了自定义方法,和Java API一样
 		String binSensorAndDeviceType = DataFormatConversion.HexStringToBinaryString(hexSensorAndDeviceType);   //十六进制转二进制后,七位是传感器类型,一位是设备类型
 //		Integer sensorType = DataFormatConversion.SensorTypeConversion(binSensorAndDeviceType.substring(0, 7)); //传感器类型八位二进制转1-7
 		Integer deviceType = Integer.parseInt(binSensorAndDeviceType.substring(7));                             //设备类型/绑定类型
@@ -251,14 +251,14 @@ public class MessageHandle {
 			JackFragmentShowinfo.jacks.get(jackId-1).setNight_threshold7(nightThre7);
 		}
 		
-		//好像没用？？？？
-		JackFragmentShowinfo.handler.post(new Runnable() {
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				JackFragmentShowinfo.handler.sendEmptyMessage(Const.UI_REFRESH);
-			}
-		});
+//		//好像没用？？？？
+//		JackFragmentShowinfo.handler.post(new Runnable() {
+//			@Override
+//			public void run() {
+//				// TODO Auto-generated method stub
+//				JackFragmentShowinfo.handler.sendEmptyMessage(Const.UI_REFRESH);
+//			}
+//		});
 		
 		JackService jackService = new JackService(GreenHouseApplication.getContext());
 		jackService.modifyAllTypeSensorTask(jackId, binBundSensor, deviceType,
@@ -478,7 +478,7 @@ public class MessageHandle {
 		String off_hour = DataFormatConversion.JackTaskDataFormatConversion(jacktasks.substring(16, 18));
 		String off_minute = DataFormatConversion.JackTaskDataFormatConversion(jacktasks.substring(18, 20));
 		Integer cycle = Integer.valueOf(jacktasks.substring(22, 24), 16);
-		Integer jackId = DataFormatConversion.HexStringToInt(jacktasks.substring(24, 36));
+		Integer jackId = DataFormatConversion.HexStrBit12ToJackId(jacktasks.substring(24, 36));
 		
 		Log.i(TAG, year + "-" + month + "-" + day + " " + hour + ":" + minute + "----" + on_hour + ":" + on_minute + "-"
 				+ off_hour + ":" + off_minute + "-" + cycle + "次-插座" + jackId);

@@ -172,12 +172,13 @@ public class JackFragmentMaster extends Activity implements OnJackFragmentListIt
 
 		LauncherViewConfig.init(JackFragmentMaster.this);
 	
+		//修改一号柜命名
+		ModifySpecificColumn.modifyControllerJackNameTest1(Launcher.selectMac);
 		
 		/*各种定制版
 		// Special Version 修改2号棚
 		//ModifySpecificColumn.modifyControllerJackNameTest2("ACCF2357F44E");
 //		Special Version 修改1号棚
-//		ModifySpecificColumn.modifyControllerJackNameTest1("ACCF236FA948");
 		// Special Version 修改测试控制�?
 //		modifyjackname.modifyControllerJackDrawableTest1(Launcher.selectMac);
 		//ModifySpecificColumn.modifyControllerJackNameTest1(Launcher.selectMac);

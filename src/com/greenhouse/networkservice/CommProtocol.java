@@ -279,7 +279,7 @@ public class CommProtocol{
 	
 	/**
 	 * @Title:       sendMessageBUND
-	 * @description: TODO 发送绑定传感器任务报文
+	 * @description: TODO 发送绑定传感器任务报文,只能绑定单个传感器
 	 * @param        @param outputStream
 	 * @return       void
 	 * @throws
@@ -298,8 +298,8 @@ public class CommProtocol{
 		hexJackId = Integer.toHexString(JackFragmentModeSet.sJackId);
 		hexSensorAndDeviceType = DataFormatConversion.IntSensorAndDeviceTypeToHexstring(SensorSetting.sSensorType, SensorSetting.sDeviceType);
 		hexBundSensorId = Integer.toHexString(Integer.valueOf(SensorRecyclerView.sBinSelectSensor,2));
-		hexDayThre = Integer.toHexString(Integer.parseInt(SensorSetting.sSetDayThre));
-		hexNightThre =  Integer.toHexString(Integer.parseInt(SensorSetting.sSetNightThre));
+//		hexDayThre = Integer.toHexString(Integer.parseInt(SensorSetting.sSetDayThre));
+//		hexNightThre =  Integer.toHexString(Integer.parseInt(SensorSetting.sSetNightThre));
 		
 		//补位：十六进制字符“0”
 		hexJackId = DataFormatConversion.FormatStringByAddZero(hexJackId, 2);                           //插座编号：2位十六进制字符
@@ -331,6 +331,70 @@ public class CommProtocol{
 		Log.d(TAG, "[BUND]" + msg);
 		SocketOutputTask.sendMessageByte(b);
 
+	}
+	
+	/**
+	 * @Title:       sendMessageMultiBund
+	 * @description: TODO 发送绑定传感器任务报文,可以绑定多个传感器
+	 * @param        
+	 * @return       void
+	 * @throws
+	 * @author       Elsa elsarong715@gmail.com
+	 * @data         Aug 27, 2016, 5:09:33 PM
+	 */
+	public static void sendMessageMultiBund() {
+		String msg = "";                    //拼接报文
+		String hexJackId = "";              //插座编号转十六进制字符
+		String hexSensorAndDeviceType = ""; //选定的传感器类型和设备类型编号转十六进制字符
+		String hexBundSensorId = "";        //选择绑定的传感器编号转十六进制字符
+		StringBuffer hexAllThreBuffer = new StringBuffer("0000000000000000000000000000000000");//拼接7种传感器早晚门限
+		String hexAllThre = "";
+		
+		hexJackId = Integer.toHexString(JackFragmentModeSet.sJackId);
+		hexBundSensorId = Integer.toHexString(Integer.valueOf(SensorRecyclerView.sBinSelectSensor,2));
+		
+		hexSensorAndDeviceType = DataFormatConversion.MultiSensAndDevTypeToHexStr(SensorSetting.sChosedSensor, SensorSetting.sDeviceType);
+
+		
+		//补位: 插座&传感器&设备类型
+		hexJackId = DataFormatConversion.FormatStringByAddZero(hexJackId, 2);                           //插座编号：2位十六进制字符
+		hexSensorAndDeviceType = DataFormatConversion.FormatStringByAddZero(hexSensorAndDeviceType, 2); //传感器和设备类型：2位十六进制字符
+		//补位: 早晚门限
+		for (int i=0; i<6; i++) {
+			String hexDayThre = Integer.toHexString(SensorSetting.sSetDayThre[i]);
+			String hexNightThre = Integer.toHexString(SensorSetting.sSetNightThre[i]);
+			//第六种传感器要求长度6
+			if (i==5) {
+				hexDayThre = DataFormatConversion.FormatStringByAddZero(hexDayThre, 3);
+				hexNightThre = DataFormatConversion.FormatStringByAddZero(hexNightThre, 3);
+			} 
+			//第七种传感器要求长度6
+			else if (i==6) {
+				hexDayThre = DataFormatConversion.FormatStringByAddZero(hexDayThre, 4);
+				hexNightThre = DataFormatConversion.FormatStringByAddZero(hexNightThre, 4);
+			} 
+			//其它类型传感器要求长度2
+			else {
+				hexDayThre = DataFormatConversion.FormatStringByAddZero(hexDayThre, 2);
+				hexNightThre = DataFormatConversion.FormatStringByAddZero(hexNightThre, 2);
+			}
+			//拼接7种传感器早晚门限，累计34位十六进制字符
+			hexAllThreBuffer = DataFormatConversion.FormatMultiThreByReplace(hexAllThreBuffer, hexDayThre+hexNightThre, i+1);
+		}
+		hexAllThre = hexAllThreBuffer.toString();
+		
+		
+		msg = DataFormatConversion.IrreguStringToHexValue("HFUT" + Launcher.selectMac + "BUND")
+			    + hexJackId + hexSensorAndDeviceType  //插座［2］－传感器设备类型［2］
+				+ hexAllThre + hexBundSensorId        //早晚1［4］－早晚2［4］－早晚3［4］－早晚5［4］－早晚5［4］－早晚6［6］-早晚7［8］－选择定传感器［2］
+				+ DataFormatConversion.IrreguStringToHexValue("WANG");
+		
+		byte[] b = DataFormatConversion.HexStringToByte(msg);	
+		
+		Log.d(TAG, "[BUND]" + msg);
+		SocketOutputTask.sendMessageByte(b);
+
+		
 	}
 	
 

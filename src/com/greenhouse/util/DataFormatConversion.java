@@ -23,6 +23,22 @@ public class DataFormatConversion {
 		Log.d(TAG, "jackId = " + jackId + "；Hex = " + hex);
 	}
 	
+	/**
+	 * @Title:       HexStr2ToJackId
+	 * @description: TODO
+	 * @param        @param hexStr
+	 * @param        @return
+	 * @return       Integer
+	 * @throws
+	 * @author       Elsa elsarong715@gmail.com
+	 * @data         Aug 27, 2016, 2:23:51 PM
+	 */
+	public static Integer HexStr2ToJackId(String hexStr) {
+		Integer jackId;
+		jackId = Integer.valueOf(hexStr,16);
+		return jackId;
+	}
+	
 	
 	public static String JackTaskDataFormatConversion(String s) {
 		if (s.equals("30")) {
@@ -32,16 +48,6 @@ public class DataFormatConversion {
 			return ss;
 		}
 	}
-	
-//	 public static String stringToHexString(String strPart) {
-//	    String hexString = "";
-//	    for (int i = 0; i < strPart.length(); i++) {
-//	        int ch = (int) strPart.charAt(i);
-//	        String strHex = Integer.toHexString(ch);
-//	        hexString = hexString + strHex;
-//	    }
-//	    return hexString;
-//	 }
 	 
 	 public static String asciiToString(String value) {
 		 StringBuffer sbu = new StringBuffer();
@@ -52,11 +58,6 @@ public class DataFormatConversion {
 		 return sbu.toString();
 	 }
 	 
-//	 public static int HexStringToIntValue(String hexStr) {
-//		 int intValue = 0;
-//		 intValue = Integer.parseInt(hexStr, 16);
-//		 return intValue;
-//	 }
 	 
 	 /**
 	  * @Title:       hexString2binaryString
@@ -85,7 +86,7 @@ public class DataFormatConversion {
      } 
      
      /**
-      * @Title:       HexStringToInt
+      * @Title:       HexStrBit12ToJackId
       * @description: TODO 将TASK关键字携带的插座信息从12位十六进制码转换成Integer型插座ID
       * @param        @param hexString
       * @param        @return
@@ -94,7 +95,7 @@ public class DataFormatConversion {
       * @author       Elsa elsarong715@gmail.com
       * @data         Aug 24, 2016, 10:38:06 PM
       */
-     public static Integer HexStringToInt(String hexString) {
+     public static Integer HexStrBit12ToJackId(String hexString) {
     	 StringBuffer buffer = new StringBuffer();
     	 int JackId = 0;
     	 for (int i=0; i<hexString.length(); i++) {
@@ -125,6 +126,7 @@ public class DataFormatConversion {
      }
      
      
+     
    //二进制字符串转Int,eg.00100011=35
      public static Integer BinStringToInt(String binString) {
     	 if (binString == null || binString.length() % 2 != 0) {
@@ -134,6 +136,16 @@ public class DataFormatConversion {
     	 return integer;
      }
      
+     /**
+      * @Title:       SensorTypeConversion
+      * @description: TODO 传感器类型格式转换,eg.1000000->1;0100000->2
+      * @param        @param binString
+      * @param        @return
+      * @return       Integer
+      * @throws
+      * @author       Elsa elsarong715@gmail.com
+      * @data         Aug 27, 2016, 2:18:14 PM
+      */
      public static Integer SensorTypeConversion(String binString) {
     	 if (binString == null || binString.length() < 7) {
         	 return (Integer)0;  
@@ -188,13 +200,22 @@ public class DataFormatConversion {
 		 return hexString;
 	 }
 	 
-	 public static String BinaryStringToHexString3(String binString) {
+	 /**
+	  * @Title:       BinStr48ToHexStr12
+	  * @description: TODO 设置定时任务,选定的插座从48位0-1转换成12位十六进制字符
+	  * @param        @param binString
+	  * @param        @return
+	  * @return       String
+	  * @throws
+	  * @author       Elsa elsarong715@gmail.com
+	  * @data         Aug 27, 2016, 2:19:14 PM
+	  */
+	 public static String BinStr48ToHexStr12(String binString) {
 		 StringBuffer buffer = new StringBuffer();
 		 String hexString = "";
 		 for (int i=0; i<48; i+=4) {
 			 int intTmp = Integer.valueOf(binString.substring(i, i+4), 2);
 			 buffer.append(Integer.toHexString(intTmp));
-//			 Log.i(TAG, "buffer  = " + buffer.toString()); 
 		 }
 		 hexString = buffer.toString();
 		 hexString = FormatStringByAddZero2(hexString, 12);
@@ -246,6 +267,33 @@ public class DataFormatConversion {
 		 hexSensorAndDeviceType = Integer.toHexString(Integer.valueOf(buffer.toString(),2)); //8位二进制－>十六进制字符
 		 Log.i(TAG, "buffer=" + buffer + "; hexSensorAndDeviceType=" + hexSensorAndDeviceType);
 		 return hexSensorAndDeviceType;
+	 }
+	 
+	 /**
+	  * @Title:       MultiSensAndDevTypeToHexStr
+	  * @description: TODO 将int[]型绑定传感器类型和int型设备类型(0or1)转换成8位二进制－>十六进制字符串
+	  * @param        @param sensor_type int[]型,数组值为0or1
+	  * @param        @param device_type 0or1,默认0
+	  * @param        @return
+	  * @return       String
+	  * @throws
+	  * @author       Elsa elsarong715@gmail.com
+	  * @data         Aug 27, 2016, 5:32:21 PM
+	  */
+	 public static String MultiSensAndDevTypeToHexStr(int[] multi_sensor, int device_type) {
+		 StringBuffer buffer = new StringBuffer("00000000");
+		 String hexMultiSensAndDevType = "";
+		 
+		 for (int i=0; i<7; i++) {
+			 if (multi_sensor[i]==1) {
+				 buffer.replace(i, i+1, 1+"");
+			 }
+		 }
+		 buffer.replace(7, 8, device_type+"");
+		 Log.i(TAG, "-----> (bin)hexMultiSensorAndDeviceType = " + buffer.toString());
+		 hexMultiSensAndDevType = Integer.toHexString(Integer.valueOf(buffer.toString(),2));
+		 Log.i(TAG, "-----> (hex)hexMultiSensorAndDeviceType = " + hexMultiSensAndDevType);
+		 return hexMultiSensAndDevType;
 	 }
 	 
 	 /**
@@ -392,7 +440,7 @@ public class DataFormatConversion {
 	 
 	 /**
 	  * @Title:       FormatAllThreByAddZero
-	  * @description: TODO 将7种传感器的早晚门限拼接成标准34位十六进制字符
+	  * @description: TODO 将7种传感器的早晚门限拼接成标准34位十六进制字符,只适用于绑定一种床传感器,其它全0的情况
 	  * @param        @param s
 	  * @param        @param sensor_type
 	  * @param        @return
@@ -428,6 +476,48 @@ public class DataFormatConversion {
 		 }
 		 Log.i(TAG, "formatAllThre.length=" + formatAllThre.length());
 		 return formatAllThre;
+	 }
+	 
+	 /**
+	  * @Title:       FormatMultiThreByReplace
+	  * @description: TODO 将7种传感器的早晚门限拼接成标准34位十六进制字符,适用于绑定多种传感器
+	  * @param        @param buffer_all_thre
+	  * @param        @param s
+	  * @param        @param sensor_type
+	  * @param        @return
+	  * @return       StringBuffer
+	  * @throws
+	  * @author       Elsa elsarong715@gmail.com
+	  * @data         Aug 27, 2016, 6:41:16 PM
+	  */
+	 public static StringBuffer FormatMultiThreByReplace(StringBuffer buffer_all_thre, String s, int sensor_type) {
+		 switch(sensor_type) {
+		 case 1:
+			 buffer_all_thre.replace(0, 4, s);
+			 break;
+		 case 2:
+			 buffer_all_thre.replace(4, 8, s);
+			 break;
+		 case 3:
+			 buffer_all_thre.replace(8, 12, s);
+			 break;
+		 case 4:
+			 buffer_all_thre.replace(12, 16, s);
+			 break;
+		 case 5:
+			 buffer_all_thre.replace(16, 20, s);
+			 break;
+		 case 6:
+			 buffer_all_thre.replace(20, 26, s);
+			 break;
+		 case 7:
+			 buffer_all_thre.replace(26, 34, s);
+			 break;
+		 default:
+			 break;
+		 }
+		 Log.i(TAG, buffer_all_thre.toString());
+		 return buffer_all_thre;
 	 }
 	 
 		

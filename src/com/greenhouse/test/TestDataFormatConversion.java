@@ -45,11 +45,11 @@ public class TestDataFormatConversion extends AndroidTestCase{
 	}
 	
 	public void testBinaryStringToHexString() throws Throwable {
-		DataFormatConversion.BinaryStringToHexString3("000100010001000100010001000100010001000100010001");  //普通用例|PASS
-		DataFormatConversion.BinaryStringToHexString3("111100001111000011110000111100001111000011110000");  //长度错误用例|PASS
-		DataFormatConversion.BinaryStringToHexString3("111111110000000000000000000000000000000000000000");  //普通用例|PASS
-		DataFormatConversion.BinaryStringToHexString3("111011100000000000000000000000000000000000000000");  //普通用例|PASS
-		DataFormatConversion.BinaryStringToHexString3("000010000000000000000000000000000000000000000000"); //极值用例|PASS
+		DataFormatConversion.BinStr48ToHexStr12("000100010001000100010001000100010001000100010001");  //普通用例|PASS
+		DataFormatConversion.BinStr48ToHexStr12("111100001111000011110000111100001111000011110000");  //长度错误用例|PASS
+		DataFormatConversion.BinStr48ToHexStr12("111111110000000000000000000000000000000000000000");  //普通用例|PASS
+		DataFormatConversion.BinStr48ToHexStr12("111011100000000000000000000000000000000000000000");  //普通用例|PASS
+		DataFormatConversion.BinStr48ToHexStr12("000010000000000000000000000000000000000000000000"); //极值用例|PASS
 	}
 	
 	public void testJavaFormatConversionAPI() throws Throwable {
@@ -89,6 +89,17 @@ public class TestDataFormatConversion extends AndroidTestCase{
 		DataFormatConversion.IntSensorAndDeviceTypeToHexstring(10,1);//错误用例|PASS
 	}
 	
+	public void testMultiSensAndDevTypeToHexStr() throws Throwable {
+		int[] chosedSensor1 = {1,1,1,1,1,1,1};
+		int[] chosedSensor2 = {1,0,0,0,0,0,0};
+		int[] chosedSensor3 = {1,1,0,0,0,0,0};
+		int[] chosedSensor4 = {0,0,0,1,0,0,0};
+		DataFormatConversion.MultiSensAndDevTypeToHexStr(chosedSensor1, 1);
+		DataFormatConversion.MultiSensAndDevTypeToHexStr(chosedSensor2, 1);
+		DataFormatConversion.MultiSensAndDevTypeToHexStr(chosedSensor3, 1);
+		DataFormatConversion.MultiSensAndDevTypeToHexStr(chosedSensor4, 1);
+	}
+	
 	public void testListSelectSensorToHexString() throws Throwable {
 		List<String> testList1= new ArrayList<String>(); //普通用例|PASS
 		testList1.add("1");
@@ -123,31 +134,31 @@ public class TestDataFormatConversion extends AndroidTestCase{
 		testJavaFormatConversionAPI();
 	}
 	
-	public void testSuite2() throws Throwable {
-		JackFragmentModeSet.sJackId = 1;                  //1
-		SensorSetting.sSensorType = 1;
-		SensorSetting.sDeviceType = 0;					  //80
-		SensorRecyclerView.sBinSelectSensor = "10100000"; //a0
-		SensorSetting.sSetDayThre = "28";                 //1c
-		SensorSetting.sSetNightThre = "26";				  //1a
-		CommProtocol.sendMessageBUND();                   //普通用例|PASS
-		
-		JackFragmentModeSet.sJackId = 15;                 //23
-		SensorSetting.sSensorType = 7;
-		SensorSetting.sDeviceType = 1;					  //3
-		SensorRecyclerView.sBinSelectSensor = "11111111"; //e0
-		SensorSetting.sSetDayThre = "12000";              //2ee0
-		SensorSetting.sSetNightThre = "8000";			  //1f40
-		CommProtocol.sendMessageBUND();                   //极值用例|PASS
-		
-		JackFragmentModeSet.sJackId = 35;                 //23
-		SensorSetting.sSensorType = 6;
-		SensorSetting.sDeviceType = 1;					  //3
-		SensorRecyclerView.sBinSelectSensor = "11100000"; //e0
-		SensorSetting.sSetDayThre = "3000";              //2ee0
-		SensorSetting.sSetNightThre = "500";			  //1f40
-		CommProtocol.sendMessageBUND();                   //极值用例|PASS
-	}
+//	public void testSuite2() throws Throwable {
+//		JackFragmentModeSet.sJackId = 1;                  //1
+//		SensorSetting.sSensorType = 1;
+//		SensorSetting.sDeviceType = 0;					  //80
+//		SensorRecyclerView.sBinSelectSensor = "10100000"; //a0
+//		SensorSetting.sSetDayThre = "28";                 //1c
+//		SensorSetting.sSetNightThre = "26";				  //1a
+//		CommProtocol.sendMessageBUND();                   //普通用例|PASS
+//		
+//		JackFragmentModeSet.sJackId = 15;                 //23
+//		SensorSetting.sSensorType = 7;
+//		SensorSetting.sDeviceType = 1;					  //3
+//		SensorRecyclerView.sBinSelectSensor = "11111111"; //e0
+//		SensorSetting.sSetDayThre = "12000";              //2ee0
+//		SensorSetting.sSetNightThre = "8000";			  //1f40
+//		CommProtocol.sendMessageBUND();                   //极值用例|PASS
+//		
+//		JackFragmentModeSet.sJackId = 35;                 //23
+//		SensorSetting.sSensorType = 6;
+//		SensorSetting.sDeviceType = 1;					  //3
+//		SensorRecyclerView.sBinSelectSensor = "11100000"; //e0
+//		SensorSetting.sSetDayThre = "3000";              //2ee0
+//		SensorSetting.sSetNightThre = "500";			  //1f40
+//		CommProtocol.sendMessageBUND();                   //极值用例|PASS
+//	}
 	
 	public void testHexStringToBinaryString() throws Throwable {
 		DataFormatConversion.HexStringToBinaryString("01"); //普通用例|PASS
@@ -157,14 +168,14 @@ public class TestDataFormatConversion extends AndroidTestCase{
 	}
 	
 	public void testHexStringToInt() throws Throwable {
-		DataFormatConversion.HexStringToInt("800000000000");
-		DataFormatConversion.HexStringToInt("400000000000");
-		DataFormatConversion.HexStringToInt("200000000000");
-		DataFormatConversion.HexStringToInt("100000000000");
-		DataFormatConversion.HexStringToInt("080000000000");
-		DataFormatConversion.HexStringToInt("040000000000");
-		DataFormatConversion.HexStringToInt("020000000000");
-		DataFormatConversion.HexStringToInt("010000000000");
+		DataFormatConversion.HexStrBit12ToJackId("800000000000");
+		DataFormatConversion.HexStrBit12ToJackId("400000000000");
+		DataFormatConversion.HexStrBit12ToJackId("200000000000");
+		DataFormatConversion.HexStrBit12ToJackId("100000000000");
+		DataFormatConversion.HexStrBit12ToJackId("080000000000");
+		DataFormatConversion.HexStrBit12ToJackId("040000000000");
+		DataFormatConversion.HexStrBit12ToJackId("020000000000");
+		DataFormatConversion.HexStrBit12ToJackId("010000000000");
 //		DataFormatConversion.HexStringToInt("000080000000");
 //		DataFormatConversion.HexStringToInt("000040000000");
 //		DataFormatConversion.HexStringToInt("000020000000");
@@ -179,8 +190,8 @@ public class TestDataFormatConversion extends AndroidTestCase{
 	}
 	
 	public void testHexAndBinStringToInt() throws Throwable {
-		Log.i(TAG, "0x23=" + DataFormatConversion.HexStringToInt("23"));
-		Log.i(TAG, "0x0f=" + DataFormatConversion.HexStringToInt("0f"));
+		Log.i(TAG, "0x23=" + DataFormatConversion.HexStr2ToJackId("23"));
+		Log.i(TAG, "0x0f=" + DataFormatConversion.HexStr2ToJackId("0f"));
 		Log.i(TAG, "00100011=" + DataFormatConversion.BinStringToInt("00100011"));
 		Log.i(TAG, "00100011=" + DataFormatConversion.BinStringToInt("00100011"));
 	}

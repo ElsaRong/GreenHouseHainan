@@ -88,17 +88,33 @@
         	android:baselineAligned="false"
         	android:orientation="horizontal" />
 
+        <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="center|center_horizontal|center_vertical"
+        android:orientation="horizontal">
+
         <Button
-		    android:id="@+id/sensor_setting"
-		    android:layout_width="wrap_content"
-		    android:layout_height="0dp"
-		    android:layout_weight="1"
-		    android:layout_gravity="center"
-		    android:background="@drawable/button_bg"
-		    android:clickable="true"
-		    android:gravity="center"
-		    android:text="设置"
-		    android:textColor="@color/workspace_icon_text_color"
-		    android:textSize="20.0sp" />
+            android:id="@+id/save_setting"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/left_round_btn_bg"
+            android:text="@string/save_setting"
+            android:textColor="@color/title_bar_background"
+            android:layout_marginLeft="200dp"
+            android:textSize="15.0sp" />
+
+        <Button
+            android:id="@+id/sensor_setting"
+            style="?android:attr/buttonBarButtonStyle"
+             android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/right_round_btn_bg"
+            android:text="@string/sensor_setting"
+            android:textColor="@color/title_bar_background"
+            android:textSize="15.0sp" />
+    </LinearLayout>
 
 </LinearLayout>

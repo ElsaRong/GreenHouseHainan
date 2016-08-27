@@ -67,7 +67,7 @@ public class SocketOutputTask implements Runnable{
 			CommProtocol.sendMessagePROB();
 			break;
 		case Const.BUND:
-			CommProtocol.sendMessageBUND();
+			CommProtocol.sendMessageMultiBund();
 			break;
 		case Const.CONTOPEN:
 			CommProtocol.sendMessageCONTOPEN(msg.obj);
@@ -75,9 +75,6 @@ public class SocketOutputTask implements Runnable{
 		case Const.CONTCLOS:
 			CommProtocol.sendMessageCONTCLOS(msg.obj);
 			break;
-//		case Const.QUER:
-//			CommProtocol.sendMessageQUER();
-//			break;
 		case Const.REMO:
 			CommProtocol.sendMessageREMO(msg.obj);
 			break;
