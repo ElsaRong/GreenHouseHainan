@@ -118,12 +118,24 @@ public class SensorSetting extends Activity implements View.OnClickListener{
 				{
 					ToastUtil.TextToastShort(SensorSetting.this, "早晚门限不能超过五位");
 				}
-				//保存到门限值数组
+				//保存到门限值数组,
 				else 
 				{
 					sChosedSensor[SensorSetting.sSensorType-1] = 1;
-					sSetDayThre[SensorSetting.sSensorType-1] = Integer.parseInt(SensorSettingFragment.edNightThre.getText().toString());
-					sSetNightThre[SensorSetting.sSensorType-1] = Integer.parseInt(SensorSettingFragment.edDayThre.getText().toString()); 
+					
+					//ph值*10再处理
+					if (SensorSetting.sSensorType == 3) {
+						Double doubleDayThre = 10*Double.valueOf(SensorSettingFragment.edDayThre.getText().toString());
+						Double doubleNightThre = 10*Double.valueOf(SensorSettingFragment.edNightThre.getText().toString());
+						Integer intDayThre = doubleDayThre.intValue();
+						Integer intNightthre = doubleNightThre.intValue();
+						sSetDayThre[SensorSetting.sSensorType-1] = intDayThre;
+						sSetNightThre[SensorSetting.sSensorType-1] = intNightthre;
+						
+					} else {
+						sSetDayThre[SensorSetting.sSensorType-1] = Integer.parseInt(SensorSettingFragment.edDayThre.getText().toString());
+						sSetNightThre[SensorSetting.sSensorType-1] = Integer.parseInt(SensorSettingFragment.edNightThre.getText().toString()); 
+					}
 				}
 			}
 			

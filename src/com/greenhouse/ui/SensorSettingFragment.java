@@ -8,6 +8,7 @@ import com.greenhouse.util.Const;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,8 +53,6 @@ public class SensorSettingFragment extends Fragment implements OnSensorSettingCl
 		tvNightRecord.setText("建议值：25-29" + Const.SOIL_TEMP_UNIT); //显示夜间门限建议值
 		tvDayRecord.setText("建议值：25-29" + Const.SOIL_TEMP_UNIT);   //显示白天门限建议值
 		tvCurrent.setText(sensor.getSoiltemp() + Const.SOIL_TEMP_UNIT); 					   //显示选定传感器的实时平均值
-//		valuerecord = SensorRecyclerView.sSelectSensorInfo.get(averageSensorId).getSoiltemp(); //获取选定传感器的平均历史值
-//		tvCurrentRecord.setText(Const.RECORD_VALUE + valuerecord + Const.SOIL_TEMP_UNIT);      //显示选定传感器的平均历史值
 		return vw;			
 	}
 	
@@ -61,15 +60,18 @@ public class SensorSettingFragment extends Fragment implements OnSensorSettingCl
 	@Override
 	public void onSensorSettingClickedListener(String msg) {
 		// TODO Auto-generated method stub
-		edNightThre.setText(SensorSetting.sSetNightThre[SensorSetting.sSensorType-1] + "");
-		edDayThre.setText(SensorSetting.sSetDayThre[SensorSetting.sSensorType-1] + "");
+		
 		switch (msg) {
 		case "soil_temp":
-			SensorSetting.sSensorType = 1;         						  //保存传感器类型                                     
-			tvSensorType.setText(Const.SOIL_TEMP); 						  //显示传感器类型
-			tvNightRecord.setText("建议值：25-29" + Const.SOIL_TEMP_UNIT); //显示夜间门限建议值
-			tvDayRecord.setText("建议值：25-29" + Const.SOIL_TEMP_UNIT);   //显示白天门限建议值
-			tvCurrent.setText(sensor.getSoiltemp() + Const.SOIL_TEMP_UNIT);                        //显示选定传感器的实时平均值
+			SensorSetting.sSensorType = 1;         						 	//保存传感器类型                                     
+			tvSensorType.setText(Const.SOIL_TEMP); 						 	//显示传感器类型
+			tvNightRecord.setText("建议值：25-29" + Const.SOIL_TEMP_UNIT);	//显示夜间门限建议值
+			tvDayRecord.setText("建议值：25-29" + Const.SOIL_TEMP_UNIT);   	//显示白天门限建议值
+			tvCurrent.setText(sensor.getSoiltemp() + Const.SOIL_TEMP_UNIT); //显示选定传感器的实时平均值
+			edNightThre.setText(SensorSetting.sSetNightThre[SensorSetting.sSensorType-1] + "");
+			edDayThre.setText(SensorSetting.sSetDayThre[SensorSetting.sSensorType-1] + "");
+			edNightThre.setInputType(InputType.TYPE_CLASS_NUMBER); 
+			edDayThre.setInputType(InputType.TYPE_CLASS_NUMBER);
 			break;
 		case "soil_hum":
 			SensorSetting.sSensorType = 2;
@@ -77,41 +79,67 @@ public class SensorSettingFragment extends Fragment implements OnSensorSettingCl
 			tvNightRecord.setText("建议值：60-80" + Const.SOIL_HUM_UNIT);  //显示夜间门限建议值
 			tvDayRecord.setText("建议值：60-80" + Const.SOIL_HUM_UNIT);    //显示白天门限建议值
 			tvCurrent.setText(sensor.getSoilhum() + Const.SOIL_HUM_UNIT); //显示选定传感器的实时平均值
+			edNightThre.setText(SensorSetting.sSetNightThre[SensorSetting.sSensorType-1] + "");
+			edDayThre.setText(SensorSetting.sSetDayThre[SensorSetting.sSensorType-1] + "");
+			edNightThre.setInputType(InputType.TYPE_CLASS_NUMBER);
+			edDayThre.setInputType(InputType.TYPE_CLASS_NUMBER);
 			break;
 		case "soil_ph":
 			SensorSetting.sSensorType = 3; 
-			tvSensorType.setText(Const.PH); 					   //显示传感器类型
-			tvNightRecord.setText("建议值：5-7" + Const.PH_UNIT);   //显示夜间门限建议值
-			tvDayRecord.setText("建议值：5-7" + Const.PH_UNIT);     //显示白天门限建议值
-			tvCurrent.setText(sensor.getSoilph()/10 + "." + sensor.getSoilph()%10 + Const.PH_UNIT); //显示选定传感器的实时平均值
+			tvSensorType.setText(Const.PH); 					   									//显示传感器类型
+			tvNightRecord.setText("建议值：5-7" + Const.PH_UNIT);   									//显示夜间门限建议值
+			tvDayRecord.setText("建议值：5-7" + Const.PH_UNIT);    									//显示白天门限建议值
+			tvCurrent.setText(sensor.getSoilph()/10 + "." + sensor.getSoilph()%10 + Const.PH_UNIT); //ph值保存－>显示处理
+			edNightThre.setText(SensorSetting.sSetNightThre[SensorSetting.sSensorType-1]/10 + "." 
+					+ SensorSetting.sSetNightThre[SensorSetting.sSensorType-1]%10);
+			edDayThre.setText(SensorSetting.sSetDayThre[SensorSetting.sSensorType-1]/10 + "."
+					+ SensorSetting.sSetDayThre[SensorSetting.sSensorType-1]%10);
+			edNightThre.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL); //使能小数点＋数字输入
+			edDayThre.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);   //使能小数点＋数字输入
 			break;
 		case "air_temp":
 			SensorSetting.sSensorType = 4;
-			tvSensorType.setText(Const.AIR_TEMP); 					   //显示传感器类型
-			tvNightRecord.setText("建议值：26-28" + Const.AIR_TEMP_UNIT);   //显示夜间门限建议值
-			tvDayRecord.setText("建议值：26-28" + Const.AIR_TEMP_UNIT);     //显示白天门限建议值
+			tvSensorType.setText(Const.AIR_TEMP); 					      //显示传感器类型
+			tvNightRecord.setText("建议值：26-28" + Const.AIR_TEMP_UNIT);  //显示夜间门限建议值
+			tvDayRecord.setText("建议值：26-28" + Const.AIR_TEMP_UNIT);    //显示白天门限建议值
 			tvCurrent.setText(sensor.getAirtemp() + Const.AIR_TEMP_UNIT); //显示选定传感器的实时平均值
+			edNightThre.setText(SensorSetting.sSetNightThre[SensorSetting.sSensorType-1] + "");
+			edDayThre.setText(SensorSetting.sSetDayThre[SensorSetting.sSensorType-1] + "");
+			edNightThre.setInputType(InputType.TYPE_CLASS_NUMBER);
+			edDayThre.setInputType(InputType.TYPE_CLASS_NUMBER);
 			break;
 		case "air_hum":
 			SensorSetting.sSensorType = 5;
-			tvSensorType.setText(Const.AIR_HUM); 					   //显示传感器类型
-			tvNightRecord.setText("建议值：60-80" + Const.AIR_HUM_UNIT);   //显示夜间门限建议值
-			tvDayRecord.setText("建议值：60-80" + Const.AIR_HUM_UNIT);     //显示白天门限建议值
+			tvSensorType.setText(Const.AIR_HUM); 					    //显示传感器类型
+			tvNightRecord.setText("建议值：60-80" + Const.AIR_HUM_UNIT); //显示夜间门限建议值
+			tvDayRecord.setText("建议值：60-80" + Const.AIR_HUM_UNIT);   //显示白天门限建议值
 			tvCurrent.setText(sensor.getAirhum() + Const.AIR_HUM_UNIT); //显示选定传感器的实时平均值
+			edNightThre.setText(SensorSetting.sSetNightThre[SensorSetting.sSensorType-1] + "");
+			edDayThre.setText(SensorSetting.sSetDayThre[SensorSetting.sSensorType-1] + "");
+			edNightThre.setInputType(InputType.TYPE_CLASS_NUMBER);
+			edDayThre.setInputType(InputType.TYPE_CLASS_NUMBER);
 			break;
 		case "co2":
 			SensorSetting.sSensorType = 6;
-			tvSensorType.setText(Const.CO2); 					   //显示传感器类型
-			tvNightRecord.setText("建议值：300-800" + Const.CO2_UNIT);   //显示夜间门限建议值
-			tvDayRecord.setText("建议值：300-800" + Const.CO2_UNIT);     //显示白天门限建议值
-			tvCurrent.setText(sensor.getCo2() + Const.CO2_UNIT); //显示选定传感器的实时平均值
+			tvSensorType.setText(Const.CO2); 					      //显示传感器类型
+			tvNightRecord.setText("建议值：300-800" + Const.CO2_UNIT); //显示夜间门限建议值
+			tvDayRecord.setText("建议值：300-800" + Const.CO2_UNIT);   //显示白天门限建议值
+			tvCurrent.setText(sensor.getCo2() + Const.CO2_UNIT);      //显示选定传感器的实时平均值
+			edNightThre.setText(SensorSetting.sSetNightThre[SensorSetting.sSensorType-1] + "");
+			edDayThre.setText(SensorSetting.sSetDayThre[SensorSetting.sSensorType-1] + "");
+			edNightThre.setInputType(InputType.TYPE_CLASS_NUMBER);
+			edDayThre.setInputType(InputType.TYPE_CLASS_NUMBER);
 			break;
 		case "illum":
 			SensorSetting.sSensorType = 7;
-			tvSensorType.setText(Const.ILLUMINATION); 					   //显示传感器类型
-			tvNightRecord.setText("建议值：5000-20000" + Const.ILLUMINATION_UNIT);   //显示夜间门限建议值
-			tvDayRecord.setText("建议值：5000-20000" + Const.ILLUMINATION_UNIT);     //显示白天门限建议值
+			tvSensorType.setText(Const.ILLUMINATION); 					              //显示传感器类型
+			tvNightRecord.setText("建议值：5000-20000" + Const.ILLUMINATION_UNIT);     //显示夜间门限建议值
+			tvDayRecord.setText("建议值：5000-20000" + Const.ILLUMINATION_UNIT);       //显示白天门限建议值
 			tvCurrent.setText(10*sensor.getIllumination() + Const.ILLUMINATION_UNIT); //显示选定传感器的实时平均值
+			edNightThre.setText(SensorSetting.sSetNightThre[SensorSetting.sSensorType-1] + "");
+			edDayThre.setText(SensorSetting.sSetDayThre[SensorSetting.sSensorType-1] + "");
+			edNightThre.setInputType(InputType.TYPE_CLASS_NUMBER);
+			edDayThre.setInputType(InputType.TYPE_CLASS_NUMBER);
 			break;
 			default:
 				break;

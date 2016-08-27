@@ -83,9 +83,12 @@ public class ShowSensorInfoAdapter extends BaseAdapter{
 			case 3:
 				sensortype = Const.PH;
 				holder.sensortype.setText("类型：" + sensortype);
-				holder.average_value.setText("平均值：" + JackFragmentShowinfo.liteBundTask[position][1]+ " " +Const.PH_UNIT);
-				holder.day_thre.setText("白天门限：" + JackFragmentShowinfo.liteBundTask[position][2]+ " " +Const.PH_UNIT);
-				holder.night_thre.setText("夜间门限：" + JackFragmentShowinfo.liteBundTask[position][3]+ " " +Const.PH_UNIT);
+				holder.average_value.setText("平均值：" + JackFragmentShowinfo.liteBundTask[position][1]/10 + "." 
+						+ JackFragmentShowinfo.liteBundTask[position][1]%10 + " " + Const.PH_UNIT);
+				holder.day_thre.setText("白天门限：" + JackFragmentShowinfo.liteBundTask[position][2]/10 + "."
+						+ JackFragmentShowinfo.liteBundTask[position][2]%10 + " " +Const.PH_UNIT);
+				holder.night_thre.setText("夜间门限：" + JackFragmentShowinfo.liteBundTask[position][3]/10 + "."
+						+ JackFragmentShowinfo.liteBundTask[position][3]%10 + " " +Const.PH_UNIT);
 				break;
 			case 4:
 				sensortype = Const.AIR_TEMP;
