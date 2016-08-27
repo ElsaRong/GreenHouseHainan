@@ -100,7 +100,7 @@ public class JackRecyclerViewShowinfoAdapter extends RecyclerView.Adapter<JackRe
 	
 	/**
 	 * @Title:       DynamicAddSensorMode
-	 * @description: TODO 动态加载联动模式显示
+	 * @description: TODO 动态加载联动模式显示,初始化用于<传感器任务Adapter>的数据
 	 * @param        @param position
 	 * @param        @return
 	 * @return       View
@@ -118,8 +118,13 @@ public class JackRecyclerViewShowinfoAdapter extends RecyclerView.Adapter<JackRe
 		String sensorsid = UIDisplay.ShowBundSensor(JackFragmentShowinfo.jacks.get(position).getSensors()); //显示绑定的传感器id
 		taskmode.setText("联动模式");        //显示模式
 		sensors.setText(sensorsid);         //显示绑定传感器
-		JackFragmentShowinfo.bundTask = initBundTasksInfo(position);										//position:当前正在绘制的jack id
-		sensoradapter = new ShowSensorInfoAdapter(inflater, JackFragmentShowinfo.bundTask);
+		
+		// add by Elsa, 2016/8/27 初始化数据在这里是否合适
+		JackFragmentShowinfo.bundTask = initBundTasksInfo(position);
+		JackFragmentShowinfo.liteBundTask = UIDisplay.ShowLiteBundTask(JackFragmentShowinfo.bundTask);//position:当前正在绘制的jack id
+		// add end
+		
+		sensoradapter = new ShowSensorInfoAdapter(inflater);
 		ListView listview = (ListView)vw2.findViewById(R.id.showinfo);
 		listview.setAdapter(sensoradapter); //绑定适配器
 		return vw2;

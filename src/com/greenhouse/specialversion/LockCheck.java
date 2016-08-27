@@ -1,36 +1,64 @@
 package com.greenhouse.specialversion;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import com.greenhouse.ui.JackFragmentMaster;
+import com.greenhouse.ui.JackFragmentShowinfo;
 import com.greenhouse.ui.JackFragmentSwitchTest;
+import com.greenhouse.ui.Launcher;
+import com.greenhouse.ui.Timer;
+import com.greenhouse.util.DataFormatConversion;
+import com.greenhouse.util.GreenHouseApplication;
+import com.greenhouse.util.ToastUtil;
+
+import android.content.Context;
+import android.util.Log;
 
 /** 
 * @author       Elsa 
 * @Email		elsarong715@gmail.com
-* @date			2016Äê4ÔÂ15ÈÕÉÏÎç10:25:41 
+* @date			2016ï¿½ï¿½4ï¿½ï¿½15ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½10:25:41 
 * @version		1.0  
 * @description			 
 */
 public class LockCheck {
 	
+	private static final String TAG = "LockCheck.java";
+	
+//	public static boolean CheckLockStateAccordingMac(int id, int state, String mac) {
+//		boolean b = true;
+//		if (mac.equals("ACCF236FA948")) {
+//			b = CheckLockState1(id,state);
+//		} else if (mac.equals("ACCF2357F44E")) {
+//			b = CheckLockState2(id,state);
+//		}
+//		return b;
+//	}
+	
+	private static Context context = GreenHouseApplication.getContext();
+	
 	public static boolean CheckLockStateAccordingMac(int id, int state, String mac) {
 		boolean b = true;
-		if (mac.equals("ACCF236FA948")) {
+		if (mac.equals(Launcher.selectMac+"")) {
 			b = CheckLockState1(id,state);
-		} else if (mac.equals("ACCF2357F44E")) {
-			b = CheckLockState2(id,state);
-		}
+		} 
 		return b;
 	}
+	
+	
 	
 	public static boolean CheckLockState2(int id, int state) {
 		int lockstate;
 		boolean b = true;
-		String name;
+		String name = "";
 		switch (id) {
 		case 1:
 			name = JackFragmentSwitchTest.jacks.get(id-1).getName();
-			lockstate = JackFragmentSwitchTest.jacks.get(id-1).getSwitchstate();//»¥ËøµÄ²å×ùµÄ×´Ì¬
-			if (lockstate == state) {//Èç¹û»¥ËøµÄ²å×ùµ±Ç°×´Ì¬lockstate£¨1£©£½ÒªÖ´ĞĞµÄ×´Ì¬£¨1£©
-//				ToastUtil.TextToastShort(context, "ÇëÈ·ÈÏ " + name + " ÊÇ·ñ¹Ø±Õ");
+			lockstate = JackFragmentSwitchTest.jacks.get(id-1).getSwitchstate();//ï¿½ï¿½ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬
+			if (lockstate == state) {//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½Ç°×´Ì¬lockstateï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ÒªÖ´ï¿½Ğµï¿½×´Ì¬ï¿½ï¿½1ï¿½ï¿½
+//				ToastUtil.TextToastLong(context, "ï¿½ï¿½È·ï¿½ï¿½ " + name + " ï¿½Ç·ï¿½Ø±ï¿½");
 				b = false;
 			}
 			break;
@@ -38,7 +66,7 @@ public class LockCheck {
 			name = JackFragmentSwitchTest.jacks.get(id-1).getName();
 			lockstate = JackFragmentSwitchTest.jacks.get(id-1).getSwitchstate();
 			if (lockstate == state) {
-//				ToastUtil.TextToastShort(context, "ÇëÈ·ÈÏ " + name + " ÊÇ·ñ¹Ø±Õ");
+//				ToastUtil.TextToastLong(context, "ï¿½ï¿½È·ï¿½ï¿½ " + name + " ï¿½Ç·ï¿½Ø±ï¿½");
 				b = false;
 			}
 			break;
@@ -46,7 +74,7 @@ public class LockCheck {
 			name = JackFragmentSwitchTest.jacks.get(id-1).getName();
 			lockstate = JackFragmentSwitchTest.jacks.get(id-1).getSwitchstate();
 			if (lockstate == state) {
-//				ToastUtil.TextToastShort(context, "ÇëÈ·ÈÏ " + name + " ÊÇ·ñ¹Ø±Õ");
+//				ToastUtil.TextToastLong(context, "ï¿½ï¿½È·ï¿½ï¿½ " + name + " ï¿½Ç·ï¿½Ø±ï¿½");
 				b = false;
 			}
 			break;
@@ -54,7 +82,7 @@ public class LockCheck {
 			name = JackFragmentSwitchTest.jacks.get(id-1).getName();
 			lockstate = JackFragmentSwitchTest.jacks.get(id-1).getSwitchstate();
 			if (lockstate == state) {
-//				ToastUtil.TextToastShort(context, "ÇëÈ·ÈÏ " + name + " ÊÇ·ñ¹Ø±Õ");
+//				ToastUtil.TextToastLong(context, "ï¿½ï¿½È·ï¿½ï¿½ " + name + " ï¿½Ç·ï¿½Ø±ï¿½");
 				b = false;
 			}
 			break;
@@ -62,7 +90,7 @@ public class LockCheck {
 			name = JackFragmentSwitchTest.jacks.get(id-1).getName();
 			lockstate = JackFragmentSwitchTest.jacks.get(id-1).getSwitchstate();
 			if (lockstate == state) {
-//				ToastUtil.TextToastShort(context, "ÇëÈ·ÈÏ " + name + " ÊÇ·ñ¹Ø±Õ");
+//				ToastUtil.TextToastLong(context, "ï¿½ï¿½È·ï¿½ï¿½ " + name + " ï¿½Ç·ï¿½Ø±ï¿½");
 				b = false;
 			}
 			break;
@@ -70,15 +98,15 @@ public class LockCheck {
 			name = JackFragmentSwitchTest.jacks.get(id-1).getName();
 			lockstate = JackFragmentSwitchTest.jacks.get(id-1).getSwitchstate();
 			if (lockstate == state) {
-//				ToastUtil.TextToastShort(context, "ÇëÈ·ÈÏ " + name + " ÊÇ·ñ¹Ø±Õ");
+//				ToastUtil.TextToastLong(context, "ï¿½ï¿½È·ï¿½ï¿½ " + name + " ï¿½Ç·ï¿½Ø±ï¿½");
 				b = false;
 			}
 			break;
 		case 0:
 			name = JackFragmentSwitchTest.jacks.get(id+1).getName();
-			lockstate = JackFragmentSwitchTest.jacks.get(id+1).getSwitchstate();//»¥ËøµÄ²å×ùµÄ×´Ì¬
-			if (lockstate == state) {//Èç¹û»¥ËøµÄ²å×ùµ±Ç°×´Ì¬lockstate£¨1£©£½ÒªÖ´ĞĞµÄ×´Ì¬£¨1£©
-//				ToastUtil.TextToastShort(context, "ÇëÈ·ÈÏ " + name + " ÊÇ·ñ¹Ø±Õ");
+			lockstate = JackFragmentSwitchTest.jacks.get(id+1).getSwitchstate();//ï¿½ï¿½ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬
+			if (lockstate == state) {//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½Ç°×´Ì¬lockstateï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ÒªÖ´ï¿½Ğµï¿½×´Ì¬ï¿½ï¿½1ï¿½ï¿½
+//				ToastUtil.TextToastLong(context, "ï¿½ï¿½È·ï¿½ï¿½ " + name + " ï¿½Ç·ï¿½Ø±ï¿½");
 				b = false;
 			}
 			break;
@@ -86,7 +114,7 @@ public class LockCheck {
 			name = JackFragmentSwitchTest.jacks.get(id+1).getName();
 			lockstate = JackFragmentSwitchTest.jacks.get(id+1).getSwitchstate();
 			if (lockstate == state) {
-//				ToastUtil.TextToastShort(context, "ÇëÈ·ÈÏ " + name + " ÊÇ·ñ¹Ø±Õ");
+//				ToastUtil.TextToastLong(context, "ï¿½ï¿½È·ï¿½ï¿½ " + name + " ï¿½Ç·ï¿½Ø±ï¿½");
 				b = false;
 			}
 			break;
@@ -94,7 +122,7 @@ public class LockCheck {
 			name = JackFragmentSwitchTest.jacks.get(id+1).getName();
 			lockstate = JackFragmentSwitchTest.jacks.get(id+1).getSwitchstate();
 			if (lockstate == state) {
-//				ToastUtil.TextToastShort(context, "ÇëÈ·ÈÏ " + name + " ÊÇ·ñ¹Ø±Õ");
+//				ToastUtil.TextToastLong(context, "ï¿½ï¿½È·ï¿½ï¿½ " + name + " ï¿½Ç·ï¿½Ø±ï¿½");
 				b = false;
 			}
 			break;
@@ -102,7 +130,7 @@ public class LockCheck {
 			name = JackFragmentSwitchTest.jacks.get(id+1).getName();
 			lockstate = JackFragmentSwitchTest.jacks.get(id+1).getSwitchstate();
 			if (lockstate == state) {
-//				ToastUtil.TextToastShort(context, "ÇëÈ·ÈÏ " + name + " ÊÇ·ñ¹Ø±Õ");
+//				ToastUtil.TextToastLong(context, "ï¿½ï¿½È·ï¿½ï¿½ " + name + " ï¿½Ç·ï¿½Ø±ï¿½");
 				b = false;
 			}
 			break;
@@ -110,7 +138,7 @@ public class LockCheck {
 			name = JackFragmentSwitchTest.jacks.get(id+1).getName();
 			lockstate = JackFragmentSwitchTest.jacks.get(id+1).getSwitchstate();
 			if (lockstate == state) {
-//				ToastUtil.TextToastShort(context, "ÇëÈ·ÈÏ " + name + " ÊÇ·ñ¹Ø±Õ");
+//				ToastUtil.TextToastLong(context, "ï¿½ï¿½È·ï¿½ï¿½ " + name + " ï¿½Ç·ï¿½Ø±ï¿½");
 				b = false;
 			}
 			break;
@@ -118,7 +146,7 @@ public class LockCheck {
 			name = JackFragmentSwitchTest.jacks.get(id+1).getName();
 			lockstate = JackFragmentSwitchTest.jacks.get(id+1).getSwitchstate();
 			if (lockstate == state) {
-//				ToastUtil.TextToastShort(context, "ÇëÈ·ÈÏ " + name + " ÊÇ·ñ¹Ø±Õ");
+//				ToastUtil.TextToastLong(context, "ï¿½ï¿½È·ï¿½ï¿½ " + name + " ï¿½Ç·ï¿½Ø±ï¿½");
 				b = false;
 			}
 			break;
@@ -127,6 +155,17 @@ public class LockCheck {
 	}
 	
 	
+	/**
+	 * @Title:       CheckLockState1
+	 * @description: TODO ä¸€å·æŸœå¼€å…³äº’é”
+	 * @param        @param id
+	 * @param        @param state
+	 * @param        @return
+	 * @return       boolean
+	 * @throws
+	 * @author       Elsa elsarong715@gmail.com
+	 * @data         Aug 27, 2016, 7:12:19 PM
+	 */
 	public static boolean CheckLockState1(int id, int state) {
 		int lockstate;
 		boolean b = true;
@@ -134,9 +173,9 @@ public class LockCheck {
 		switch (id) {
 		case 1:
 			name = JackFragmentSwitchTest.jacks.get(id-1).getName();
-			lockstate = JackFragmentSwitchTest.jacks.get(id-1).getSwitchstate();//»¥ËøµÄ²å×ùµÄ×´Ì¬
-			if (lockstate == state) {//Èç¹û»¥ËøµÄ²å×ùµ±Ç°×´Ì¬lockstate£¨1£©£½ÒªÖ´ĞĞµÄ×´Ì¬£¨1£©
-//				ToastUtil.TextToastShort(context, "ÇëÈ·ÈÏ " + name + " ÊÇ·ñ¹Ø±Õ");
+			lockstate = JackFragmentSwitchTest.jacks.get(id-1).getSwitchstate();
+			if (lockstate == state) {
+				ToastUtil.TextToastLong(context, "è¯·ç¡®è®¤ \"" + name + "\" æ˜¯å¦å…³é—­");
 				b = false;
 			}
 			break;
@@ -144,7 +183,7 @@ public class LockCheck {
 			name = JackFragmentSwitchTest.jacks.get(id-1).getName();
 			lockstate = JackFragmentSwitchTest.jacks.get(id-1).getSwitchstate();
 			if (lockstate == state) {
-//				ToastUtil.TextToastShort(context, "ÇëÈ·ÈÏ " + name + " ÊÇ·ñ¹Ø±Õ");
+				ToastUtil.TextToastLong(context, "è¯·ç¡®è®¤ \"" + name + "\" æ˜¯å¦å…³é—­");
 				b = false;
 			}
 			break;
@@ -152,7 +191,7 @@ public class LockCheck {
 			name = JackFragmentSwitchTest.jacks.get(id-1).getName();
 			lockstate = JackFragmentSwitchTest.jacks.get(id-1).getSwitchstate();
 			if (lockstate == state) {
-//				ToastUtil.TextToastShort(context, "ÇëÈ·ÈÏ " + name + " ÊÇ·ñ¹Ø±Õ");
+				ToastUtil.TextToastLong(context, "è¯·ç¡®è®¤ \"" + name + "\" æ˜¯å¦å…³é—­");
 				b = false;
 			}
 			break;
@@ -160,7 +199,7 @@ public class LockCheck {
 			name = JackFragmentSwitchTest.jacks.get(id-1).getName();
 			lockstate = JackFragmentSwitchTest.jacks.get(id-1).getSwitchstate();
 			if (lockstate == state) {
-//				ToastUtil.TextToastShort(context, "ÇëÈ·ÈÏ " + name + " ÊÇ·ñ¹Ø±Õ");
+				ToastUtil.TextToastLong(context, "è¯·ç¡®è®¤ \"" + name + "\" æ˜¯å¦å…³é—­");
 				b = false;
 			}
 			break;
@@ -168,7 +207,7 @@ public class LockCheck {
 			name = JackFragmentSwitchTest.jacks.get(id-1).getName();
 			lockstate = JackFragmentSwitchTest.jacks.get(id-1).getSwitchstate();
 			if (lockstate == state) {
-//				ToastUtil.TextToastShort(context, "ÇëÈ·ÈÏ " + name + " ÊÇ·ñ¹Ø±Õ");
+				ToastUtil.TextToastLong(context, "è¯·ç¡®è®¤ \"" + name + "\" æ˜¯å¦å…³é—­");
 				b = false;
 			}
 			break;
@@ -176,16 +215,16 @@ public class LockCheck {
 			name = JackFragmentSwitchTest.jacks.get(id-1).getName();
 			lockstate = JackFragmentSwitchTest.jacks.get(id-1).getSwitchstate();
 			if (lockstate == state) {
-//				ToastUtil.TextToastShort(context, "ÇëÈ·ÈÏ " + name + " ÊÇ·ñ¹Ø±Õ");
+				ToastUtil.TextToastLong(context, "è¯·ç¡®è®¤ \"" + name + "\" æ˜¯å¦å…³é—­");
 				b = false;
 			}
 			break;
 	
 		case 0:
 			name = JackFragmentSwitchTest.jacks.get(id+1).getName();
-			lockstate = JackFragmentSwitchTest.jacks.get(id+1).getSwitchstate();//»¥ËøµÄ²å×ùµÄ×´Ì¬
-			if (lockstate == state) {//Èç¹û»¥ËøµÄ²å×ùµ±Ç°×´Ì¬lockstate£¨1£©£½ÒªÖ´ĞĞµÄ×´Ì¬£¨1£©
-//				ToastUtil.TextToastShort(context, "ÇëÈ·ÈÏ " + name + " ÊÇ·ñ¹Ø±Õ");
+			lockstate = JackFragmentSwitchTest.jacks.get(id+1).getSwitchstate();//ï¿½ï¿½ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬
+			if (lockstate == state) {//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½Ç°×´Ì¬lockstateï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ÒªÖ´ï¿½Ğµï¿½×´Ì¬ï¿½ï¿½1ï¿½ï¿½
+				ToastUtil.TextToastLong(context, "è¯·ç¡®è®¤ \"" + name + "\" æ˜¯å¦å…³é—­");
 				b = false;
 			}
 			break;
@@ -193,7 +232,7 @@ public class LockCheck {
 			name = JackFragmentSwitchTest.jacks.get(id+1).getName();
 			lockstate = JackFragmentSwitchTest.jacks.get(id+1).getSwitchstate();
 			if (lockstate == state) {
-//				ToastUtil.TextToastShort(context, "ÇëÈ·ÈÏ " + name + " ÊÇ·ñ¹Ø±Õ");
+				ToastUtil.TextToastLong(context, "è¯·ç¡®è®¤ \"" + name + "\" æ˜¯å¦å…³é—­");
 				b = false;
 			}
 			break;
@@ -201,7 +240,7 @@ public class LockCheck {
 			name = JackFragmentSwitchTest.jacks.get(id+1).getName();
 			lockstate = JackFragmentSwitchTest.jacks.get(id+1).getSwitchstate();
 			if (lockstate == state) {
-//				ToastUtil.TextToastShort(context, "ÇëÈ·ÈÏ " + name + " ÊÇ·ñ¹Ø±Õ");
+				ToastUtil.TextToastLong(context, "è¯·ç¡®è®¤ \"" + name + "\" æ˜¯å¦å…³é—­");
 				b = false;
 			}
 			break;
@@ -209,7 +248,7 @@ public class LockCheck {
 			name = JackFragmentSwitchTest.jacks.get(id+1).getName();
 			lockstate = JackFragmentSwitchTest.jacks.get(id+1).getSwitchstate();
 			if (lockstate == state) {
-//				ToastUtil.TextToastShort(context, "ÇëÈ·ÈÏ " + name + " ÊÇ·ñ¹Ø±Õ");
+				ToastUtil.TextToastLong(context, "è¯·ç¡®è®¤ \"" + name + "\" æ˜¯å¦å…³é—­");
 				b = false;
 			}
 			break;
@@ -217,7 +256,7 @@ public class LockCheck {
 			name = JackFragmentSwitchTest.jacks.get(id+1).getName();
 			lockstate = JackFragmentSwitchTest.jacks.get(id+1).getSwitchstate();
 			if (lockstate == state) {
-//				ToastUtil.TextToastShort(context, "ÇëÈ·ÈÏ " + name + " ÊÇ·ñ¹Ø±Õ");
+				ToastUtil.TextToastLong(context, "è¯·ç¡®è®¤ \"" + name + "\" æ˜¯å¦å…³é—­");
 				b = false;
 			}
 			break;
@@ -225,11 +264,61 @@ public class LockCheck {
 			name = JackFragmentSwitchTest.jacks.get(id+1).getName();
 			lockstate = JackFragmentSwitchTest.jacks.get(id+1).getSwitchstate();
 			if (lockstate == state) {
-//				ToastUtil.TextToastShort(context, "ÇëÈ·ÈÏ " + name + " ÊÇ·ñ¹Ø±Õ");
+				ToastUtil.TextToastLong(context, "è¯·ç¡®è®¤ \"" + name + "\" æ˜¯å¦å…³é—­");
 				b = false;
 			}
 			break;
 		}
+		return b;
+	}
+	
+	public static boolean checkTimerChosedJack(List<Map<String, String>> multiChosedJack) {
+		boolean b = true;
+		
+		int[] binChosedJack48 = new int[48];
+		
+		Iterator<Map<String, String>> iterator = multiChosedJack.iterator();
+		String extractJackId = "";
+		
+		for(int i=0; i<48; i++){
+			binChosedJack48[i] = 0;
+		}
+		
+		while(iterator.hasNext()) {
+			Object object = iterator.next();
+			extractJackId = object.toString();			
+			int startIndex = extractJackId.indexOf("=") + 1;
+			int endIndex = extractJackId.indexOf("}");
+			int chosedJackId = Integer.parseInt(extractJackId.substring(startIndex, endIndex));
+			binChosedJack48[chosedJackId - 1] = 1;	
+		}		
+		
+		if (binChosedJack48[0] == 1 && binChosedJack48[1] == 1) {
+			ToastUtil.TextToastLong(context, JackFragmentShowinfo.jacks.get(0).getName() + "å’Œ"
+					+ JackFragmentShowinfo.jacks.get(1).getName() + " ä¸èƒ½åŒæ—¶åŠ¨ä½œ");
+			b=false;
+		} else if (binChosedJack48[2] == 1 && binChosedJack48[3] == 1) {
+			ToastUtil.TextToastLong(context, JackFragmentShowinfo.jacks.get(2).getName() + "å’Œ"
+					+ JackFragmentShowinfo.jacks.get(3).getName() + " ä¸èƒ½åŒæ—¶åŠ¨ä½œ");
+			b=false;
+		} else if (binChosedJack48[4] == 1 && binChosedJack48[5] == 1) {
+			ToastUtil.TextToastLong(context, JackFragmentShowinfo.jacks.get(4).getName() + "å’Œ"
+					+ JackFragmentShowinfo.jacks.get(5).getName() + " ä¸èƒ½åŒæ—¶åŠ¨ä½œ");
+			b=false;
+		} else if (binChosedJack48[6] == 1 && binChosedJack48[7] == 1) {
+			ToastUtil.TextToastLong(context, JackFragmentShowinfo.jacks.get(6).getName() + "å’Œ"
+					+ JackFragmentShowinfo.jacks.get(7).getName() + " ä¸èƒ½åŒæ—¶åŠ¨ä½œ");
+			b=false;
+		} else if (binChosedJack48[8] == 1 && binChosedJack48[9] == 1) {
+			ToastUtil.TextToastLong(context, JackFragmentShowinfo.jacks.get(8).getName() + "å’Œ"
+					+ JackFragmentShowinfo.jacks.get(9).getName() + " ä¸èƒ½åŒæ—¶åŠ¨ä½œ");
+			b=false;
+		} else if (binChosedJack48[10] == 1 && binChosedJack48[11] == 1) {
+			ToastUtil.TextToastLong(context, JackFragmentShowinfo.jacks.get(10).getName() + "å’Œ"
+					+ JackFragmentShowinfo.jacks.get(11).getName() + " ä¸èƒ½åŒæ—¶åŠ¨ä½œ");
+			b=false;
+		} 
+		
 		return b;
 	}
 

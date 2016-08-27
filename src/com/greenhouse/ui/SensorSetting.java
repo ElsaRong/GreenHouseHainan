@@ -94,11 +94,14 @@ public class SensorSetting extends Activity implements View.OnClickListener{
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				//校验1
-				if (SensorSettingFragment.edNightThre.getText().toString().equals(0) &&
-						SensorSettingFragment.edDayThre.getText().toString().equals(0) &&
-						SensorSettingFragment.edNightThre.getText().toString().equals("") &&
+				if (SensorSettingFragment.edNightThre.getText().toString().equals(0) ||
+						SensorSettingFragment.edDayThre.getText().toString().equals(0) ||
+						SensorSettingFragment.edNightThre.getText().toString().equals("") ||
 						SensorSettingFragment.edDayThre.getText().toString().equals("")) 
 				{
+					sChosedSensor[SensorSetting.sSensorType-1] = 0;
+					sSetDayThre[SensorSetting.sSensorType-1] = 0;
+					sSetNightThre[SensorSetting.sSensorType-1] = 0;
 					ToastUtil.TextToastShort(SensorSetting.this, "请正确设置早晚门限！");
 				} 
 				//校验2

@@ -12,6 +12,7 @@ import com.greenhouse.networkservice.NetBroadcastReceiver;
 import com.greenhouse.networkservice.SocketInputTask;
 import com.greenhouse.networkservice.SocketOutputTask;
 import com.greenhouse.networkservice.ThreadPoolManager;
+import com.greenhouse.specialversion.LockCheck;
 import com.greenhouse.ui.AlarmclockListView.AlarmClockListAdapter.ViewHolder;
 import com.greenhouse.util.Const;
 import com.greenhouse.util.DataFormatConversion;
@@ -55,7 +56,7 @@ public class AlarmclockListView extends Activity {
 	private JackService jackService;
 	private ArrayList<Jack> jackTasks;
 	
-	public static List<Map<String, String>> mMultiCheck;
+	public static List<Map<String, String>> mMultiCheck; //选中的插座id,保存格式eg.{{0=1},{1=2},{2=3},{3=4}}
 	
 	private Boolean MapIsExist = false;
 
@@ -194,29 +195,32 @@ public class AlarmclockListView extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Iterator<Map<String, String>> iterator = mMultiCheck.iterator();
-				if (iterator.hasNext()) {
-					new AlertDialog.Builder(AlarmclockListView.this).setTitle("")
-							.setMessage(
-									"您已经选择了"
-											+ mMultiCheck.size()
-											+ " 个插座,"
-											+ " 确定设置这些插座的定时任务？")
-							.setNegativeButton("否",
-									new DialogInterface.OnClickListener() {
-										public void onClick(DialogInterface dialog,	int which) {
-											// TODO Auto-generated method stub
-										}
-									})
-							.setPositiveButton("是",
-									new DialogInterface.OnClickListener() {
-										public void onClick(DialogInterface dialog,	int whichButton) {
-											Count2ndFormatChosedJacks();
-											startActivity(new Intent(AlarmclockListView.this,Timer.class));
-										}
-									}).show();
-
-				} else {
-					ToastUtil.TextToastShort(AlarmclockListView.this, "请至少�?�择�?个插座进行设�?");
+				//设置定时任务互锁
+				if (LockCheck.checkTimerChosedJack(mMultiCheck)) {
+					if (iterator.hasNext()) {
+						new AlertDialog.Builder(AlarmclockListView.this).setTitle("")
+						.setMessage(
+								"您已经选择了"
+										+ mMultiCheck.size()
+										+ " 个插座,"
+										+ " 确定设置这些插座的定时任务？")
+						.setNegativeButton("否",
+								new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,	int which) {
+								// TODO Auto-generated method stub
+							}
+						})
+						.setPositiveButton("是",
+								new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,	int whichButton) {
+								Count2ndFormatChosedJacks();
+								startActivity(new Intent(AlarmclockListView.this,Timer.class));
+							}
+						}).show();
+						
+					} else {
+						ToastUtil.TextToastShort(AlarmclockListView.this, "请至少�?�择�?个插座进行设�?");
+					}
 				}
 
 			}

@@ -25,10 +25,9 @@ public class ShowSensorInfoAdapter extends BaseAdapter{
 	private LayoutInflater mInflater;
 	
 	
-	public ShowSensorInfoAdapter(LayoutInflater inflater, final int[][] bundTasks) {
+	public ShowSensorInfoAdapter(LayoutInflater inflater) {
 		// TODO Auto-generated constructor stub
 		this.mInflater = inflater;
-		JackFragmentShowinfo.liteBundTask = UIDisplay.ShowLiteBundTask(bundTasks);
 	}
 	
 	@Override
@@ -62,6 +61,9 @@ public class ShowSensorInfoAdapter extends BaseAdapter{
 		
 		
 		String sensortype = "";
+//		//add by Elsa, 2016/8/27, 校验position和liteBundTask的长度,由于item复用,导致绑定传感器个数>复用的item count
+//		if ((position+1) < JackFragmentShowinfo.liteBundTask.length)
+			
 		if (JackFragmentShowinfo.liteBundTask[position][0] != 0) {
 			switch (JackFragmentShowinfo.liteBundTask[position][0]) {
 			case 1:
@@ -109,7 +111,7 @@ public class ShowSensorInfoAdapter extends BaseAdapter{
 			case 7:
 				sensortype = Const.ILLUMINATION;
 				holder.sensortype.setText("类型：" + sensortype);
-				holder.average_value.setText("平均值：" + JackFragmentShowinfo.liteBundTask[position][1]+ " " +Const.ILLUMINATION_UNIT);
+				holder.average_value.setText("平均值：" + 10*JackFragmentShowinfo.liteBundTask[position][1]+ " " +Const.ILLUMINATION_UNIT);
 				holder.day_thre.setText("白天门限：" + JackFragmentShowinfo.liteBundTask[position][2]+ " " +Const.ILLUMINATION_UNIT);
 				holder.night_thre.setText("夜间门限：" + JackFragmentShowinfo.liteBundTask[position][3]+ " " +Const.ILLUMINATION_UNIT);
 		     	break;

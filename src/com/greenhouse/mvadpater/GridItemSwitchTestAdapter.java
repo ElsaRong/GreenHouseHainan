@@ -150,7 +150,6 @@ public class GridItemSwitchTestAdapter extends BaseAdapter {
 							SocketOutputTask.getHandler().sendMessage(msg4);
 						}
 					} else {
-						ToastUtil.TextToastShort(context, "请关闭" + JackFragmentSwitchTest.jacks.get(position-1).getName() + "开关");
 						//如果需要互锁，插座状态取反并刷新界面
 						JackFragmentSwitchTest.jacks.get(position).setSwitchstate(0);
 						Message msg = JackFragmentSwitchTest.handler.obtainMessage();
