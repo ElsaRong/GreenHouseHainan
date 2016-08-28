@@ -37,8 +37,6 @@ public class JackFragmentShowinfo extends Fragment {
 	public static JackRecyclerViewShowinfoAdapter adapter;
 	private JackService jackService; 
 	public static List<Jack> jacks;
-	public static int[][] bundTask;
-	public static int[][] liteBundTask;
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		
 		context = getActivity();
@@ -58,7 +56,6 @@ public class JackFragmentShowinfo extends Fragment {
 			super.handleMessage(msg);  
 			switch (msg.what) {
 			case Const.UI_REFRESH:
-//				ToastUtil.TextToastShort(context, "ShowInfo Refresh");
 				adapter.notifyDataSetChanged();
 			}
 		}

@@ -1,15 +1,11 @@
 package com.greenhouse.networkservice;
 
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-
 import com.greenhouse.ui.Launcher;
 import com.greenhouse.util.Const;
 import com.greenhouse.util.GreenHouseApplication;
-import com.greenhouse.util.ToastUtil;
-
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
@@ -17,7 +13,7 @@ import android.util.Log;
 /** 
 * @author       Elsa 
 * @Email		elsarong715@gmail.com
-* @date			2016年2月27日下午3:20:11 
+* @date			2016/2/27 PM 3:20:11 
 * @version		1.0  
 * @description			 
 */
@@ -39,13 +35,13 @@ public class AsyncSocketReq extends AsyncTask<String, Void, String>{
 		mainHandler.sendEmptyMessage(Const.SOCKET_CONNECTING);
 		
 		if(NetworkManager.getNetworkState(GreenHouseApplication.getContext()) == NetworkManager.NETWORK_MOBILE) {
-			Log.d(TAG, "NETWORK_MOBILE");
+			Log.i(TAG, "NETWORK_MOBILE");
 			Launcher.client.setSocket(RequestServer("112.74.115.147", 5000));
 			initSocketConfig2(1, mainHandler);
 		} else if(NetworkManager.getNetworkState(GreenHouseApplication.getContext()) == NetworkManager.NETWORK_WIFI) {
-			Log.d(TAG, "NETWORK_WIFI");
+			Log.i(TAG, "NETWORK_WIFI");
 			
-			Log.d(TAG, "1.1 - RUQEST CONTROLLER");
+			Log.i(TAG, "[Connect 1] request controller by local ip address");
 			Launcher.client.setSocket(RequestServer(Launcher.selectIp, Const.client_PORT));
 			initSocketConfig1(1, mainHandler);
 			
@@ -63,12 +59,12 @@ public class AsyncSocketReq extends AsyncTask<String, Void, String>{
 				}
 				
 				if (Launcher.selectIp != null) {
-					Log.d(TAG, "1.2 - RUQEST CONTROLLER");
-					Launcher.client.setSocket(RequestServer(Launcher.selectIp, Const.client_PORT));//连接一次
+					Log.i(TAG, "[Connect 2] request controller by UDP");
+					Launcher.client.setSocket(RequestServer(Launcher.selectIp, Const.client_PORT));//锟斤拷锟斤拷一锟斤拷
 					initSocketConfig2(1, mainHandler);
 				} else {
-					Log.d(TAG, "2 - REQUEST SERVER");
-//				    Launcher.client.setSocket(RequestServer("198.11.169.151", 4000));老服务器
+					Log.i(TAG, "[Connect 3] request server");
+//				    Launcher.client.setSocket(RequestServer("198.11.169.151", 4000));锟较凤拷锟斤拷锟斤拷
 					Launcher.client.setSocket(RequestServer("112.74.115.147", 5000));
 					initSocketConfig2(0, mainHandler);
 				}
