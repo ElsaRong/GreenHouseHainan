@@ -7,7 +7,7 @@ import java.util.Map;
 import com.greenhouse.R;
 import com.greenhouse.database.SensorService;
 import com.greenhouse.model.Sensor;
-import com.greenhouse.mvadpater.SensorRecyclerViewAdapter;
+import com.greenhouse.mvadpater.AddSensorAdapter;
 import com.greenhouse.util.Const;
 import com.greenhouse.util.DataFormatConversion;
 
@@ -30,7 +30,7 @@ public class SensorRecyclerView extends Activity {
 	
 	private Button btnEnter;
 	
-	public static SensorRecyclerViewAdapter sensorsRecyclerViewAdapter;
+	public static AddSensorAdapter sensorsRecyclerViewAdapter;
 	public static List<Sensor> sOnlineSensorInfo; //在线传感器基本信息List，用于界面显示
 	public SensorService sensorService;           //数据库Sensor表对象
 	public static Handler handler;      
@@ -62,7 +62,7 @@ public class SensorRecyclerView extends Activity {
 		sensorsLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
 		
 		sensorRecyclerView.setLayoutManager(sensorsLayoutManager);		
-		sensorsRecyclerViewAdapter = new SensorRecyclerViewAdapter(this, sOnlineSensorInfo, selectSensorsMap);
+		sensorsRecyclerViewAdapter = new AddSensorAdapter(this, sOnlineSensorInfo, selectSensorsMap);
 		sensorRecyclerView.setAdapter(sensorsRecyclerViewAdapter);
 		
 		btnEnter = (Button)findViewById(R.id.sensor_enter);

@@ -29,7 +29,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class GridSwitchModeSetAdapter extends BaseAdapter {
+public class JackModeSetAdapter extends BaseAdapter {
 	private static final String TAG = "GridSwitchModelTestAdapter.java";
 	private List<Jack> jacks;
 	private LayoutInflater mInflater;
@@ -37,7 +37,7 @@ public class GridSwitchModeSetAdapter extends BaseAdapter {
 	public static Queue<String> sendMsgQueue = new LinkedList<>();
 	private ViewHolder holder;
 	
-	public GridSwitchModeSetAdapter(Context context, List<Jack> jacks) {
+	public JackModeSetAdapter(Context context, List<Jack> jacks) {
 		this.context = context;
 		mInflater = LayoutInflater.from(context);
 		this.jacks = jacks;

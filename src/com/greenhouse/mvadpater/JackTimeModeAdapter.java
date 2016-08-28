@@ -1,6 +1,10 @@
 package com.greenhouse.mvadpater;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.greenhouse.R;
+import com.greenhouse.model.Jack;
 import com.greenhouse.ui.JackFragmentShowinfo;
 
 import android.view.LayoutInflater;
@@ -16,14 +20,16 @@ import android.widget.TextView;
 * @version		1.0  
 * @description			 
 */
-public class ShowTimeInfoAdapter extends BaseAdapter{
+public class JackTimeModeAdapter extends BaseAdapter{
 	
 	
 	private LayoutInflater mInflater;
+	private List<Jack> jackTimeInfoList = new ArrayList<Jack>();
 	
-	public ShowTimeInfoAdapter(LayoutInflater inflater) {
+	public JackTimeModeAdapter(LayoutInflater inflater, List<Jack> jackTimeInfoList) {
 		// TODO Auto-generated constructor stub
-		mInflater = inflater;
+		this.mInflater = inflater;
+		this.jackTimeInfoList = jackTimeInfoList;
 	}
 	
 	@Override
@@ -54,10 +60,10 @@ public class ShowTimeInfoAdapter extends BaseAdapter{
 			holder = (ViewHolder) convertView.getTag();
 		}
 		
-		holder.starttime.setText("开始时间：" + JackFragmentShowinfo.jacks.get(position).getStart());
-		holder.ontime.setText("打开时间：" + JackFragmentShowinfo.jacks.get(position).getPoweron());
-		holder.offtime.setText("关闭时间：" + JackFragmentShowinfo.jacks.get(position).getPoweroff());
-		holder.cycleindex.setText("循环次数：" + JackFragmentShowinfo.jacks.get(position).getCycle() + "次");
+		holder.starttime.setText("开始时间：" + jackTimeInfoList.get(position).getStart());
+		holder.ontime.setText("打开时间：" + jackTimeInfoList.get(position).getPoweron());
+		holder.offtime.setText("关闭时间：" + jackTimeInfoList.get(position).getPoweroff());
+		holder.cycleindex.setText("循环次数：" + jackTimeInfoList.get(position).getCycle() + "次");
 		return convertView;
 	}
 

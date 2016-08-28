@@ -2,7 +2,6 @@ package com.greenhouse.ui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
@@ -13,22 +12,19 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-
+import java.util.ArrayList;
 import java.util.List;
-
 import com.greenhouse.R;
-import com.greenhouse.database.JackService;
 import com.greenhouse.database.SensorService;
+import com.greenhouse.database.SourceDataManager;
+import com.greenhouse.model.Jack;
 import com.greenhouse.networkservice.NetBroadcastReceiver;
-import com.greenhouse.networkservice.SocketInputTask;
 import com.greenhouse.networkservice.SocketOutputTask;
 import com.greenhouse.networkservice.ThreadPoolManager;
 import com.greenhouse.specialversion.ModifySpecificColumn;
@@ -48,12 +44,9 @@ public class JackFragmentMaster extends Activity implements OnJackFragmentListIt
 	
 	private static final String TAG = "JackFragmentMaster.java";
 	
-	private JackService jackService;
 	private SensorService sensorService;
 
 	public BroadcastReceiver myReceiver;
-	
-	private static ProgressBar title_waiting;
 	
 	private TextView localTextView;
 	
@@ -63,23 +56,10 @@ public class JackFragmentMaster extends Activity implements OnJackFragmentListIt
 	/**
 	 * 负责插座界面和统计查询界面的handler处理
 	 */
-	public Handler handler = new Handler() {
+	public Handler mainHandler = new Handler() {
 		public void handleMessage(Message msg) {
 			
 			switch (msg.what) {
-			//重新
-			case Const.SOCKET_RECONNECTED:
-				title_waiting.setVisibility(View.GONE);
-				SocketInputTask.getHandler().sendEmptyMessage(Const.SOCKET_CONNECTED);
-				try {
-					Thread.sleep(300);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				SocketOutputTask.getHandler().sendEmptyMessage(Const.TIME);
-				handler.sendEmptyMessageDelayed(Const.BACK_TO_LAUNCHER, 2000);
-				break;
 			//开启Socket服务端监听线程
 			case Const.TIME_SERVICE_FINISHED:
 				ThreadPoolManager.getInstance().startSocketServerAccept();
@@ -99,62 +79,62 @@ public class JackFragmentMaster extends Activity implements OnJackFragmentListIt
 			case Const.UI_REFRESH_FRAG_30: //用来刷新统计查询界面
 				FragmentManager fragmentManager = getFragmentManager();
 				FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-				JackFragmentStatistics jackFragmentStatistics = new JackFragmentStatistics("30",handler);
+				JackFragmentStatistics jackFragmentStatistics = new JackFragmentStatistics("30",mainHandler);
 				fragmentTransaction.replace(R.id.jack_fragment_container, jackFragmentStatistics);			
 				fragmentTransaction.commit();
 				break;
 			case Const.UI_REFRESH_FRAG_31: //用来刷新统计查询界面
 				FragmentManager fragmentManager1 = getFragmentManager();
 				FragmentTransaction fragmentTransaction1 = fragmentManager1.beginTransaction();
-				JackFragmentStatistics jackFragmentStatistics1 = new JackFragmentStatistics("31",handler);
+				JackFragmentStatistics jackFragmentStatistics1 = new JackFragmentStatistics("31",mainHandler);
 				fragmentTransaction1.replace(R.id.jack_fragment_container, jackFragmentStatistics1);			
 				fragmentTransaction1.commit();
 				break;
 			case Const.UI_REFRESH_FRAG_32: //用来刷新统计查询界面
 				FragmentManager fragmentManager2 = getFragmentManager();
 				FragmentTransaction fragmentTransaction2 = fragmentManager2.beginTransaction();
-				JackFragmentStatistics jackFragmentStatistics2 = new JackFragmentStatistics("32",handler);
+				JackFragmentStatistics jackFragmentStatistics2 = new JackFragmentStatistics("32",mainHandler);
 				fragmentTransaction2.replace(R.id.jack_fragment_container, jackFragmentStatistics2);			
 				fragmentTransaction2.commit();
 				break;
 			case Const.UI_REFRESH_FRAG_33: //用来刷新统计查询界面
 				FragmentManager fragmentManager3 = getFragmentManager();
 				FragmentTransaction fragmentTransaction3 = fragmentManager3.beginTransaction();
-				JackFragmentStatistics jackFragmentStatistics3 = new JackFragmentStatistics("33",handler);
+				JackFragmentStatistics jackFragmentStatistics3 = new JackFragmentStatistics("33",mainHandler);
 				fragmentTransaction3.replace(R.id.jack_fragment_container, jackFragmentStatistics3);			
 				fragmentTransaction3.commit();
 				break;
 			case Const.UI_REFRESH_FRAG_34: //用来刷新统计查询界面
 				FragmentManager fragmentManager4 = getFragmentManager();
 				FragmentTransaction fragmentTransaction4 = fragmentManager4.beginTransaction();
-				JackFragmentStatistics jackFragmentStatistics4 = new JackFragmentStatistics("34",handler);
+				JackFragmentStatistics jackFragmentStatistics4 = new JackFragmentStatistics("34",mainHandler);
 				fragmentTransaction4.replace(R.id.jack_fragment_container, jackFragmentStatistics4);			
 				fragmentTransaction4.commit();
 				break;
 			case Const.UI_REFRESH_FRAG_35: //用来刷新统计查询界面
 				FragmentManager fragmentManager5 = getFragmentManager();
 				FragmentTransaction fragmentTransaction5 = fragmentManager5.beginTransaction();
-				JackFragmentStatistics jackFragmentStatistics5 = new JackFragmentStatistics("35",handler);
+				JackFragmentStatistics jackFragmentStatistics5 = new JackFragmentStatistics("35",mainHandler);
 				fragmentTransaction5.replace(R.id.jack_fragment_container, jackFragmentStatistics5);			
 				fragmentTransaction5.commit();
 				break;
 			case Const.UI_REFRESH_FRAG_36: //用来刷新统计查询界面
 				FragmentManager fragmentManager6 = getFragmentManager();
 				FragmentTransaction fragmentTransaction6 = fragmentManager6.beginTransaction();
-				JackFragmentStatistics jackFragmentStatistics6 = new JackFragmentStatistics("36",handler);
+				JackFragmentStatistics jackFragmentStatistics6 = new JackFragmentStatistics("36",mainHandler);
 				fragmentTransaction6.replace(R.id.jack_fragment_container, jackFragmentStatistics6);			
 				fragmentTransaction6.commit();
 			case Const.UI_REFRESH_FRAG_TIMESET: //用来刷新统计查询界面
 				FragmentManager fragmentManager7 = getFragmentManager();
 				FragmentTransaction fragmentTransaction7 = fragmentManager7.beginTransaction();
-				JackFragmentTimeSet jackFragmentTimeSet = new JackFragmentTimeSet(handler);
+				JackFragmentTimeSet jackFragmentTimeSet = new JackFragmentTimeSet(mainHandler);
 				fragmentTransaction7.replace(R.id.jack_fragment_container, jackFragmentTimeSet);			
 				fragmentTransaction7.commit();
 				break;
 			case Const.UI_REFRESH_FRAG_THRESET: //用来刷新统计查询界面
 				FragmentManager fragmentManager8 = getFragmentManager();
 				FragmentTransaction fragmentTransaction8 = fragmentManager8.beginTransaction();
-				JackFragmentThresholdSet jackFragmentThresholdSet = new JackFragmentThresholdSet(handler);
+				JackFragmentThresholdSet jackFragmentThresholdSet = new JackFragmentThresholdSet(mainHandler);
 				fragmentTransaction8.replace(R.id.jack_fragment_container, jackFragmentThresholdSet);			
 				fragmentTransaction8.commit();
 				break;
@@ -195,13 +175,10 @@ public class JackFragmentMaster extends Activity implements OnJackFragmentListIt
 			localTextView.setText("控制柜(测试)" );
 		}
 		
-		title_waiting = (ProgressBar) findViewById(R.id.title_waiting); 
-		Log.d(TAG, "[onCreate]");
-		
 		IntentFilter filter=new IntentFilter();
 		filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
 		filter.addAction("com.greenhosue.backtolauncheraction");
-        myReceiver = new NetBroadcastReceiver(handler);
+        myReceiver = new NetBroadcastReceiver(mainHandler);
         this.registerReceiver(myReceiver, filter);
 		
 		ImageView localImageView = (ImageView) findViewById(R.id.title_btn);
@@ -253,9 +230,14 @@ public class JackFragmentMaster extends Activity implements OnJackFragmentListIt
 		JackFragmentList jackFragmentList = new JackFragmentList();
 		//后面activity崩溃跳回该界面，会出现index＝null错误，因此在这里防呆
 		if(Launcher.selectMac != null && Launcher.selectMac != "") {
-			jackService = new JackService(JackFragmentMaster.this);
-			JackFragmentShowinfo.jacks = jackService.getAllJack(Launcher.selectMac);   //插座基本信息的首次初始化
-			JackFragmentShowinfo jackFragmentRecyclerView = new JackFragmentShowinfo();
+			
+//			jackService = new JackService(JackFragmentMaster.this);
+//			JackFragmentShowinfo.jacks = jackService.getAllJack(Launcher.selectMac);   //插座基本信息的首次初始化
+			
+			List<Jack> jackList = new ArrayList<Jack>();
+			jackList = SourceDataManager.initJackInfoList(JackFragmentMaster.this);
+			JackFragmentShowinfo jackFragmentRecyclerView = new JackFragmentShowinfo(JackFragmentMaster.this, jackList);
+			
 			fragmentTransaction.replace(R.id.jack_fragment_container, jackFragmentRecyclerView);		
 		}
 		fragmentTransaction.add(R.id.jack_fragment_list_container, jackFragmentList);
@@ -305,9 +287,16 @@ public class JackFragmentMaster extends Activity implements OnJackFragmentListIt
 			IsSwitchTest();
 			FragmentFlag="00";
 			localTextView.setText("全部设备" );
-			jackService = new JackService(JackFragmentMaster.this);
-			JackFragmentShowinfo.jacks = jackService.getAllJack(Launcher.selectMac); // 初始化JackFragmentShowinfo.jacks，插座当前信息
-			JackFragmentShowinfo jackFragmentShowinfo = new JackFragmentShowinfo();
+			
+			//add by Elsa, 8/28
+//			jackService = new JackService(JackFragmentMaster.this);
+//			JackFragmentShowinfo.jacks = jackService.getAllJack(Launcher.selectMac); // 初始化JackFragmentShowinfo.jacks，插座当前信息
+//			JackFragmentShowinfo jackFragmentShowinfo = new JackFragmentShowinfo();
+			
+			List<Jack> jackList = new ArrayList<Jack>();
+			jackList = SourceDataManager.initJackInfoList(JackFragmentMaster.this);
+			JackFragmentShowinfo jackFragmentShowinfo = new JackFragmentShowinfo(JackFragmentMaster.this, jackList);
+			
 			fragmentTransaction.replace(R.id.jack_fragment_container, jackFragmentShowinfo);
 			fragmentTransaction.commit();
 		}
@@ -322,12 +311,6 @@ public class JackFragmentMaster extends Activity implements OnJackFragmentListIt
 			.setNegativeButton("否",
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog,	int which) {
-							// TODO Auto-generated method stub
-							jackService = new JackService(JackFragmentMaster.this);
-							JackFragmentShowinfo.jacks = jackService.getAllJack(Launcher.selectMac); // 初始化JackFragmentShowinfo.jacks，插座当前信息
-							JackFragmentShowinfo jackFragmentShowinfo = new JackFragmentShowinfo();
-							fragmentTransaction.replace(R.id.jack_fragment_container, jackFragmentShowinfo);
-							fragmentTransaction.commit();
 						}
 					})
 			.setPositiveButton("是",
@@ -349,9 +332,8 @@ public class JackFragmentMaster extends Activity implements OnJackFragmentListIt
 							}
 							SocketOutputTask.getHandler().sendEmptyMessage(Const.INTE);
 							
-							jackService = new JackService(JackFragmentMaster.this);
-							JackFragmentSwitchTest.jacks = jackService.getAllJackNameAndState(Launcher.selectMac);
 							JackFragmentSwitchTest jackFragmentSwitchTest = new JackFragmentSwitchTest();
+							
 							fragmentTransaction.replace(R.id.jack_fragment_container, jackFragmentSwitchTest);			
 							fragmentTransaction.commit();
 						}
@@ -365,7 +347,7 @@ public class JackFragmentMaster extends Activity implements OnJackFragmentListIt
 			IsSwitchTest();
 			FragmentFlag="20";
 			localTextView.setText("时间设置" );
-			JackFragmentTimeSet jackFragmentTimeSet = new JackFragmentTimeSet(handler);
+			JackFragmentTimeSet jackFragmentTimeSet = new JackFragmentTimeSet(mainHandler);
 			fragmentTransaction.replace(R.id.jack_fragment_container, jackFragmentTimeSet);			
 			fragmentTransaction.commit();
 		}
@@ -374,7 +356,7 @@ public class JackFragmentMaster extends Activity implements OnJackFragmentListIt
 			IsSwitchTest();
 			FragmentFlag="21";
 			localTextView.setText("阈值设置" );
-			JackFragmentThresholdSet jackFragmentThresholdSet = new JackFragmentThresholdSet(handler);
+			JackFragmentThresholdSet jackFragmentThresholdSet = new JackFragmentThresholdSet(mainHandler);
 			fragmentTransaction.replace(R.id.jack_fragment_container, jackFragmentThresholdSet);			
 			fragmentTransaction.commit();
 		}
@@ -383,9 +365,10 @@ public class JackFragmentMaster extends Activity implements OnJackFragmentListIt
 			IsSwitchTest();
 			FragmentFlag="22";
 			localTextView.setText("模式设置" );
-			jackService = new JackService(JackFragmentMaster.this);
-			JackFragmentModeSet.jacks = jackService.getAllJackNameAndState(Launcher.selectMac);
-			JackFragmentModeSet jackFragmentModeSet = new JackFragmentModeSet();
+			
+			List<Jack> jackModeSetList = SourceDataManager.initJackSwitchInfoList(JackFragmentMaster.this);
+			JackFragmentModeSet jackFragmentModeSet = new JackFragmentModeSet(JackFragmentMaster.this, jackModeSetList);
+			
 			fragmentTransaction.replace(R.id.jack_fragment_container, jackFragmentModeSet);			
 			fragmentTransaction.commit();
 		}
@@ -394,7 +377,7 @@ public class JackFragmentMaster extends Activity implements OnJackFragmentListIt
 			IsSwitchTest();
 			FragmentFlag="30";
 			JackFragmentMaster.listHistory = null;
-			JackFragmentStatistics jackFragmentStatistics = new JackFragmentStatistics(msg,handler);
+			JackFragmentStatistics jackFragmentStatistics = new JackFragmentStatistics(msg,mainHandler);
 			fragmentTransaction.replace(R.id.jack_fragment_container, jackFragmentStatistics);			
 			fragmentTransaction.commit();
 		}
@@ -426,7 +409,7 @@ public class JackFragmentMaster extends Activity implements OnJackFragmentListIt
 							startActivity(intent);
 							
 							unregisterReceiver(myReceiver);
-							handler.removeCallbacksAndMessages(null);
+							mainHandler.removeCallbacksAndMessages(null);
 							finish();//窗体泄漏
 						}
 					}).show();
@@ -441,9 +424,11 @@ public class JackFragmentMaster extends Activity implements OnJackFragmentListIt
 	protected void onDestroy() {
 		// TODO Auto-generated method stub		
 		unregisterReceiver(myReceiver);
-		handler.removeCallbacksAndMessages(null);
+		mainHandler.removeCallbacksAndMessages(null);
 		super.onDestroy();	
 	}
+	
+
 	
 
 	

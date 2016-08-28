@@ -20,7 +20,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.greenhouse.R;
-import com.greenhouse.mvadpater.GridItemSwitchTestAdapter;
+import com.greenhouse.mvadpater.JackSwitchItemAdapter;
 import com.greenhouse.ui.Launcher;
 
 public class DragGrid extends GridView {
@@ -41,7 +41,7 @@ public class DragGrid extends GridView {
 	boolean isCountXY=false;
 	private int mLastY,ytoy;
 	
-	// ÓÃÀ´×öitemµÄÐü¸¡´°¿ÚºÍÉ¾³ýÖ®Àà
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½itemï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úºï¿½É¾ï¿½ï¿½Ö®ï¿½ï¿½
 	private WindowManager windowManager;
 	private WindowManager.LayoutParams windowParams;
 
@@ -84,9 +84,9 @@ public class DragGrid extends GridView {
 					//	itemWidth = fromView.getWidth();
 					fromView.destroyDrawingCache();
 					fromView.setDrawingCacheEnabled(true);
-					// ³¤°´itemºóÑ¡¶¨ÇøÓòµÄÑÕÉ«ÉèÖÃ£¨±³¾°äÖÈ¾£©
+					// ï¿½ï¿½ï¿½ï¿½itemï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¾ï¿½ï¿½
 //					fromView.setDrawingCacheBackgroundColor(R.color.title_bar_background);
-					// androidÎ»Í¼£ºÈÃitem¿ÉÒÔÒÆ¶¯µÄ¹¦ÄÜ
+					// androidÎ»Í¼ï¿½ï¿½ï¿½ï¿½itemï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½ï¿½Ä¹ï¿½ï¿½ï¿½
 					Bitmap bm = Bitmap.createBitmap(fromView.getDrawingCache());//				
 					Bitmap bitmap = Bitmap.createBitmap(bm, 8, 8, bm.getWidth()-16, bm.getHeight()-8);
 					startDrag(bitmap, x, y);
@@ -122,10 +122,10 @@ public class DragGrid extends GridView {
 				stopDrag();
 				windowParams = new WindowManager.LayoutParams();
 				windowParams.gravity = Gravity.TOP | Gravity.LEFT;
-				// ³¤°´itemºóµÄÐü¸¡¾àÀë28
+				// ï¿½ï¿½ï¿½ï¿½itemï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½28
 				windowParams.x = fromView.getLeft()+28;
 //				windowParams.y = fromView.getTop()+(int)(40*Configure.screenDensity)+8;
-				//³¤°´ºóÏòÏÂÒÆ¶¯
+				//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½
 				windowParams.y = fromView.getTop()+(int)(40*LauncherViewConfig.screenDensity)+25;
 				windowParams.alpha = 0.8f;
 				windowParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
@@ -167,7 +167,7 @@ public class DragGrid extends GridView {
 
 	private void onDrag(int x, int y) {
 		if (iv_drag != null) {
-			// ³¤°´itemºóÑ¡¶¨ÇøÓòµ½´¥ÃþµãµÄ¾àÀë
+			// ï¿½ï¿½ï¿½ï¿½itemï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½òµ½´ï¿½ï¿½ï¿½ï¿½ï¿½Ä¾ï¿½ï¿½ï¿½
 			windowParams.alpha = 0.8f;
 			windowParams.x = (x-mLastX-xtox)+fromView.getLeft()+28- moveNum*LauncherViewConfig.screenWidth;
 			windowParams.y = (y-mLastY-ytoy)+fromView.getTop()+(int)(40*LauncherViewConfig.screenDensity)+25;
@@ -233,7 +233,7 @@ public class DragGrid extends GridView {
 		void change(int from,int to,int count);
 	}
 
-	// item¼ä½»»»Î»ÖÃµÄ¶¯»­Ð§¹û
+	// itemï¿½ä½»ï¿½ï¿½Î»ï¿½ÃµÄ¶ï¿½ï¿½ï¿½Ð§ï¿½ï¿½
 	private void onDrop(int x, int y) {
 		fromView.setDrawingCacheBackgroundColor(0);
 		LauncherViewConfig.isMove = false;
@@ -267,7 +267,7 @@ public class DragGrid extends GridView {
 		}
 		moveNum=0;
 		ViewGroup toView = (ViewGroup) getChildAt(dropPosition	- getFirstVisiblePosition());
-		final GridItemSwitchTestAdapter adapter = (GridItemSwitchTestAdapter) this.getAdapter();
+		final JackSwitchItemAdapter adapter = (JackSwitchItemAdapter) this.getAdapter();
 		if(dragPosition%2 == 0){
 			AtoB = getDownAnimation((dropPosition%2==dragPosition%2)?0:1,(dropPosition/2-dragPosition/2));
 			if (dropPosition != dragPosition) toView.startAnimation(getMyAnimation((dragPosition%2==dropPosition%2)?0:-1,(dragPosition/2-dropPosition/2)));
@@ -297,7 +297,7 @@ public class DragGrid extends GridView {
 		}
 	}
 	
-	// ÉèÖÃitemäÖÈ¾µÄ£¿
+	// ï¿½ï¿½ï¿½ï¿½itemï¿½ï¿½È¾ï¿½Ä£ï¿½
 	public Animation getMyAnimation(float x,float y){
 		TranslateAnimation go = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, x, 
 				Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, y);
@@ -306,7 +306,7 @@ public class DragGrid extends GridView {
 		return go;
 	}
 	
-	// ÉèÖÃitemäÖÈ¾µÄ£¿	
+	// ï¿½ï¿½ï¿½ï¿½itemï¿½ï¿½È¾ï¿½Ä£ï¿½	
 	public Animation getDownAnimation(float x,float y){
 		AnimationSet set = new AnimationSet(true);
 		TranslateAnimation go = new TranslateAnimation(Animation.RELATIVE_TO_SELF, x, Animation.RELATIVE_TO_SELF, x, 
@@ -322,7 +322,7 @@ public class DragGrid extends GridView {
 		return set;
 	}
 	
-	// ÉèÖÃitemäÖÈ¾µÄ£¿
+	// ï¿½ï¿½ï¿½ï¿½itemï¿½ï¿½È¾ï¿½Ä£ï¿½
 	public Animation getDelAnimation(int x,int y){
 		AnimationSet set = new AnimationSet(true);
 		//TranslateAnimation go = new TranslateAnimation(Animation.ABSOLUTE, x-itemWidth/2, Animation.ABSOLUTE, x-itemWidth/2, 

@@ -1,6 +1,8 @@
 package com.greenhouse.util;
 import com.greenhouse.networkservice.SocketInputTask;
 import com.greenhouse.networkservice.SocketOutputTask;
+import com.greenhouse.ui.JackFragmentMaster;
+import com.greenhouse.ui.JackFragmentSwitchTest;
 import com.greenhouse.ui.Launcher;
 
 import android.os.Handler;

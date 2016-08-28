@@ -3,9 +3,10 @@ package com.greenhouse.mvadpater;
 import java.util.ArrayList;
 import java.util.List;
 import com.greenhouse.R;
+import com.greenhouse.database.SourceDataManager;
+import com.greenhouse.model.Jack;
 import com.greenhouse.model.SensorItemInfo;
 import com.greenhouse.specialversion.UIDisplay;
-import com.greenhouse.ui.JackFragmentShowinfo;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
@@ -28,24 +29,26 @@ import android.widget.TextView;
 * @version      1.0  
 */
 
-public class JackRecyclerViewShowinfoAdapter extends RecyclerView.Adapter<JackRecyclerViewShowinfoAdapter.ViewHolder>  {
+public class JackInfoAdapter extends RecyclerView.Adapter<JackInfoAdapter.ViewHolder>  {
 	
 	private LayoutInflater mInflater;
 	private Context context;	
 	private ViewHolder viewHolder;
 	
-	private static ShowSensorInfoAdapter sensoradapter; //联动模式显示适配器
-	private static ShowTimeInfoAdapter timeadapter;     //定时模式显示适配器
+	private static JackSensModeAdapter sensoradapter; //联动模式显示适配器
+	private static JackTimeModeAdapter timeadapter;     //定时模式显示适配器
 	
-	public JackRecyclerViewShowinfoAdapter(Context context) {
+	private List<Jack> jackInfoList = new ArrayList<Jack>();
+	
+	public JackInfoAdapter(Context context, List<Jack> jackInfoList) {
 		this.context = context;
-		mInflater = LayoutInflater.from(context);
+		this.mInflater = LayoutInflater.from(context);
+		this.jackInfoList = jackInfoList;
 	}
 
 	public static class ViewHolder extends RecyclerView.ViewHolder {
 		public ViewHolder(View v) {
 			super(v);
-			// TODO Auto-generated constructor stub
 		}		
 		LinearLayout showinfo;
 		ImageView jack;
@@ -83,7 +86,13 @@ public class JackRecyclerViewShowinfoAdapter extends RecyclerView.Adapter<JackRe
 		TextView sensors = (TextView)vw2.findViewById(R.id.sensors);	
 		taskmode.setText("定时模式");      //显示模式
 		sensors.setText("");              //显示绑定传感器[null]
-		timeadapter = new ShowTimeInfoAdapter(inflater);
+		
+		
+		List<Jack> jackTimeInfoList = new ArrayList<Jack>();
+		jackTimeInfoList = SourceDataManager.initJackInfoList(context);
+		timeadapter = new JackTimeModeAdapter(inflater, jackTimeInfoList);
+		
+		
 		ListView listview = (ListView)vw2.findViewById(R.id.showinfo);
 		listview.setAdapter(timeadapter); //绑定适配器
 		return vw2;
@@ -106,13 +115,13 @@ public class JackRecyclerViewShowinfoAdapter extends RecyclerView.Adapter<JackRe
 		vw2.setLayoutParams(lp);	
 		TextView taskmode = (TextView)vw2.findViewById(R.id.task_mode);	
 		TextView sensors = (TextView)vw2.findViewById(R.id.sensors);
-		String sensorsid = UIDisplay.ShowBundSensor(JackFragmentShowinfo.jacks.get(position).getSensors()); //显示绑定的传感器id
+		String sensorsid = UIDisplay.ShowBundSensor(jackInfoList.get(position).getSensors()); //显示绑定的传感器id
 		taskmode.setText("联动模式");        //显示模式
 		sensors.setText(sensorsid);         //显示绑定传感器
 		
 		//每次动态加载一个插座的ShowInfo时，new一个新的适配器对象
 		List<SensorItemInfo> sensorInfoList = initSensorInfoList(position);
-		sensoradapter = new ShowSensorInfoAdapter(inflater, sensorInfoList);
+		sensoradapter = new JackSensModeAdapter(inflater, sensorInfoList);
 		
 		ListView listview = (ListView)vw2.findViewById(R.id.showinfo);
 		listview.setAdapter(sensoradapter); //绑定适配器
@@ -142,77 +151,72 @@ public class JackRecyclerViewShowinfoAdapter extends RecyclerView.Adapter<JackRe
 	
 	private List<SensorItemInfo> initSensorInfoList(final int position) {
 		List<SensorItemInfo> list = new ArrayList<SensorItemInfo>();
-		if (JackFragmentShowinfo.jacks.get(position).getbundtype1() == 1) {
+		if (jackInfoList.get(position).getbundtype1() == 1) {
 			SensorItemInfo sensInfo = new SensorItemInfo();
 			sensInfo.setSensorType(1);
-			sensInfo.setAverageValue(JackFragmentShowinfo.jacks.get(position).getCurrentValue1());
-			sensInfo.setDayThre(JackFragmentShowinfo.jacks.get(position).getDay_threshold1());
-			sensInfo.setNightthre(JackFragmentShowinfo.jacks.get(position).getNight_threshold1());
+			sensInfo.setAverageValue(jackInfoList.get(position).getCurrentValue1());
+			sensInfo.setDayThre(jackInfoList.get(position).getDay_threshold1());
+			sensInfo.setNightthre(jackInfoList.get(position).getNight_threshold1());
 			list.add(sensInfo);
 		}
-		if (JackFragmentShowinfo.jacks.get(position).getbundtype2() == 1) {
+		if (jackInfoList.get(position).getbundtype2() == 1) {
 			SensorItemInfo sensInfo = new SensorItemInfo();
 			sensInfo.setSensorType(2);
-			sensInfo.setAverageValue(JackFragmentShowinfo.jacks.get(position).getCurrentValue2());
-			sensInfo.setDayThre(JackFragmentShowinfo.jacks.get(position).getDay_threshold2());
-			sensInfo.setNightthre(JackFragmentShowinfo.jacks.get(position).getNight_threshold2());
+			sensInfo.setAverageValue(jackInfoList.get(position).getCurrentValue2());
+			sensInfo.setDayThre(jackInfoList.get(position).getDay_threshold2());
+			sensInfo.setNightthre(jackInfoList.get(position).getNight_threshold2());
 			list.add(sensInfo);
 		}
-		if (JackFragmentShowinfo.jacks.get(position).getbundtype3() == 1) {
+		if (jackInfoList.get(position).getbundtype3() == 1) {
 			SensorItemInfo sensInfo = new SensorItemInfo();
 			sensInfo.setSensorType(3);
-			sensInfo.setAverageValue(JackFragmentShowinfo.jacks.get(position).getCurrentValue3());
-			sensInfo.setDayThre(JackFragmentShowinfo.jacks.get(position).getDay_threshold3());
-			sensInfo.setNightthre(JackFragmentShowinfo.jacks.get(position).getNight_threshold3());
+			sensInfo.setAverageValue(jackInfoList.get(position).getCurrentValue3());
+			sensInfo.setDayThre(jackInfoList.get(position).getDay_threshold3());
+			sensInfo.setNightthre(jackInfoList.get(position).getNight_threshold3());
 			list.add(sensInfo);
 		}
-		if (JackFragmentShowinfo.jacks.get(position).getbundtype4() == 1) {
+		if (jackInfoList.get(position).getbundtype4() == 1) {
 			SensorItemInfo sensInfo = new SensorItemInfo();
 			sensInfo.setSensorType(4);
-			sensInfo.setAverageValue(JackFragmentShowinfo.jacks.get(position).getCurrentValue4());
-			sensInfo.setDayThre(JackFragmentShowinfo.jacks.get(position).getDay_threshold4());
-			sensInfo.setNightthre(JackFragmentShowinfo.jacks.get(position).getNight_threshold4());
+			sensInfo.setAverageValue(jackInfoList.get(position).getCurrentValue4());
+			sensInfo.setDayThre(jackInfoList.get(position).getDay_threshold4());
+			sensInfo.setNightthre(jackInfoList.get(position).getNight_threshold4());
 			list.add(sensInfo);
 		}
-		if (JackFragmentShowinfo.jacks.get(position).getbundtype5() == 1) {
+		if (jackInfoList.get(position).getbundtype5() == 1) {
 			SensorItemInfo sensInfo = new SensorItemInfo();
 			sensInfo.setSensorType(5);
-			sensInfo.setAverageValue(JackFragmentShowinfo.jacks.get(position).getCurrentValue5());
-			sensInfo.setDayThre(JackFragmentShowinfo.jacks.get(position).getDay_threshold5());
-			sensInfo.setNightthre(JackFragmentShowinfo.jacks.get(position).getNight_threshold5());
+			sensInfo.setAverageValue(jackInfoList.get(position).getCurrentValue5());
+			sensInfo.setDayThre(jackInfoList.get(position).getDay_threshold5());
+			sensInfo.setNightthre(jackInfoList.get(position).getNight_threshold5());
 			list.add(sensInfo);
 		}
-		if (JackFragmentShowinfo.jacks.get(position).getbundtype6() == 1) {
+		if (jackInfoList.get(position).getbundtype6() == 1) {
 			SensorItemInfo sensInfo = new SensorItemInfo();
 			sensInfo.setSensorType(6);
-			sensInfo.setAverageValue(JackFragmentShowinfo.jacks.get(position).getCurrentValue6());
-			sensInfo.setDayThre(JackFragmentShowinfo.jacks.get(position).getDay_threshold6());
-			sensInfo.setNightthre(JackFragmentShowinfo.jacks.get(position).getNight_threshold6());
+			sensInfo.setAverageValue(jackInfoList.get(position).getCurrentValue6());
+			sensInfo.setDayThre(jackInfoList.get(position).getDay_threshold6());
+			sensInfo.setNightthre(jackInfoList.get(position).getNight_threshold6());
 			list.add(sensInfo);
 		}
-		if (JackFragmentShowinfo.jacks.get(position).getbundtype7() == 1) {
+		if (jackInfoList.get(position).getbundtype7() == 1) {
 			SensorItemInfo sensInfo = new SensorItemInfo();
 			sensInfo.setSensorType(7);
-			sensInfo.setAverageValue(JackFragmentShowinfo.jacks.get(position).getCurrentValue7());
-			sensInfo.setDayThre(JackFragmentShowinfo.jacks.get(position).getDay_threshold7());
-			sensInfo.setNightthre(JackFragmentShowinfo.jacks.get(position).getNight_threshold7());
+			sensInfo.setAverageValue(jackInfoList.get(position).getCurrentValue7());
+			sensInfo.setDayThre(jackInfoList.get(position).getDay_threshold7());
+			sensInfo.setNightthre(jackInfoList.get(position).getNight_threshold7());
 			list.add(sensInfo);
 		}
 		return list;
 	}
 
 	
-
-	/**
-	 * 每次滑动引发界面重绘时调用，传入触发的item id，重绘
-	 */
 	public void onBindViewHolder(final ViewHolder viewHolder, final int i) {
-		
 		//add 8/23 强制关闭复用
 		viewHolder.setIsRecyclable(false);
 
 		//case 0: 无任务；case 1: 传感器任务；case 2:定时任务
-		switch (JackFragmentShowinfo.jacks.get(i).getBund()) {
+		switch (jackInfoList.get(i).getBund()) {
 		case 0:	
 			viewHolder.showinfo.removeAllViews();
 			viewHolder.showinfo.addView(DynamicAddNoMode());
@@ -229,9 +233,9 @@ public class JackRecyclerViewShowinfoAdapter extends RecyclerView.Adapter<JackRe
 		}
 		
 		viewHolder.jack.setImageResource(R.drawable.default_jack);
-		viewHolder.jackname.setText(JackFragmentShowinfo.jacks.get(i).getName());				
+		viewHolder.jackname.setText(jackInfoList.get(i).getName());				
 		
-		if (JackFragmentShowinfo.jacks.get(i).getSwitchstate() == 1) {
+		if (jackInfoList.get(i).getSwitchstate() == 1) {
 			viewHolder.jackstate.setText("运行");
 			viewHolder.jackstate.setBackgroundColor(Color.rgb(255, 153, 18));
 		} else {			
@@ -243,7 +247,7 @@ public class JackRecyclerViewShowinfoAdapter extends RecyclerView.Adapter<JackRe
 	
 	@Override
 	public int getItemCount() {
-		return JackFragmentShowinfo.jacks.size();		
+		return jackInfoList.size();		
 	}
 
 	

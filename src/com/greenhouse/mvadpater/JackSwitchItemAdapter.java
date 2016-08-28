@@ -1,10 +1,6 @@
 package com.greenhouse.mvadpater;
 
-import java.net.Socket;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
-
 import com.greenhouse.R;
 import com.greenhouse.model.Jack;
 import com.greenhouse.networkservice.SocketOutputTask;
@@ -12,11 +8,9 @@ import com.greenhouse.specialversion.LockCheck;
 import com.greenhouse.ui.JackFragmentSwitchTest;
 import com.greenhouse.ui.Launcher;
 import com.greenhouse.util.Const;
-import com.greenhouse.util.ToastUtil;
 import com.greenhouse.widget.OptionButton;
 import android.content.Context;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,65 +18,42 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 
-public class GridItemSwitchTestAdapter extends BaseAdapter {
+public class JackSwitchItemAdapter extends BaseAdapter{
 	
-	private static final String TAG = "GridItemSwitchTestAdapter.java";
-
-	private List<Jack> jacks;
 	private LayoutInflater mInflater;
 	
-	private Context context;
-	
-	
-	public static Queue<String> sendMsgQueue = new LinkedList<>();
-
-	private ViewHolder holder;
-
-	public OptionButton jackswitch;
-	private TextView jackname;
-	
-	public GridItemSwitchTestAdapter(Context context, List<Jack> jacks) {
-		this.context = context;
+	public JackSwitchItemAdapter(Context context, List<Jack> jackSwitchInfoList) {
 		mInflater = LayoutInflater.from(context);
-		this.jacks = jacks;
 	}
 
 	@Override
 	public int getCount() {
-		// TODO Auto-generated method stub
-		return jacks.size();
+		return JackFragmentSwitchTest.jackSwitchInfoList.size();
 		
 	}
 
 	@Override
 	public Object getItem(int position) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public long getItemId(int position) {
-		// TODO Auto-generated method stub
 		return 0;
 		
 	}
 
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
-		// TODO Auto-generated method stub
-		holder = new ViewHolder();
-		if (convertView == null) {
-			convertView = mInflater.inflate(R.layout.jackswitch_icon_item, null);
-			holder.jackname = (TextView) convertView.findViewById(R.id.jackname);
-			holder.jackswitch = (OptionButton) convertView.findViewById(R.id.jackswitch);
-			convertView.setTag(holder);
-		} else {
-			holder = (ViewHolder) convertView.getTag();
-		}
+		ViewHolder holder = new ViewHolder();
+		convertView = mInflater.inflate(R.layout.jackswitch_icon_item, null);
+		holder.jackname = (TextView) convertView.findViewById(R.id.jackname);
+		holder.jackswitch = (OptionButton) convertView.findViewById(R.id.jackswitch);
+		convertView.setTag(holder);
 		
-		holder.jackname.setText(jacks.get(position).getName().toString());
+		holder.jackname.setText(JackFragmentSwitchTest.jackSwitchInfoList.get(position).getName().toString());
 		
-		if (JackFragmentSwitchTest.jacks.get(position).getSwitchstate() == 1) {
+		if (JackFragmentSwitchTest.jackSwitchInfoList.get(position).getSwitchstate() == 1) {
 			holder.jackswitch.setChecked(true);	
 		} else {			
 			holder.jackswitch.setChecked(false);	
@@ -103,10 +74,10 @@ public class GridItemSwitchTestAdapter extends BaseAdapter {
 				final String id = JackFragmentSwitchTest.selectSwitch;
 					
 				//打开（打开前需要检查互锁）
-				if (JackFragmentSwitchTest.jacks.get(position).getSwitchstate() == 0) {
+				if (JackFragmentSwitchTest.jackSwitchInfoList.get(position).getSwitchstate() == 0) {
 					//开关互锁，打开前检查互锁插座是否关闭
 					if (LockCheck.CheckLockStateAccordingMac(position, 1, Launcher.selectMac)) {
-						sendMsgQueue.add("CONT00" + id + "OPEN" + "000000000000"); //加入消息队列
+						SocketOutputTask.sendMsgQueue.add("CONT00" + id + "OPEN" + "000000000000"); //加入消息队列
 						Message msg = SocketOutputTask.getHandler().obtainMessage(Const.CONTOPEN, id);
 						SocketOutputTask.getHandler().sendMessage(msg);
 						try {
@@ -151,16 +122,16 @@ public class GridItemSwitchTestAdapter extends BaseAdapter {
 						}
 					} else {
 						//如果需要互锁，插座状态取反并刷新界面
-						JackFragmentSwitchTest.jacks.get(position).setSwitchstate(0);
-						Message msg = JackFragmentSwitchTest.handler.obtainMessage();
+						JackFragmentSwitchTest.jackSwitchInfoList.get(position).setSwitchstate(0);
+						Message msg = JackFragmentSwitchTest.switchHandler.obtainMessage();
 						msg.arg1 = position;
-						JackFragmentSwitchTest.handler.sendMessage(msg);
+						JackFragmentSwitchTest.switchHandler.sendMessage(msg);
 					}
 					
 				} 
 				//关闭（关闭时不用检查互锁）
 				else {
-					sendMsgQueue.add("CONT00" + id + "CLOS" + "000000000000");
+					SocketOutputTask.sendMsgQueue.add("CONT00" + id + "CLOS" + "000000000000");
 					final Message msg = SocketOutputTask.getHandler().obtainMessage(Const.CONTCLOS, id);
 					SocketOutputTask.getHandler().sendMessage(msg);
 					
@@ -220,8 +191,6 @@ public class GridItemSwitchTestAdapter extends BaseAdapter {
 		public OptionButton jackswitch;
 		public TextView jackname;
 	}
-
-
 
 
 }

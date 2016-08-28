@@ -44,6 +44,9 @@ public class Const {
 	public static final int UI_REFRESH_FRAG_TIMESET = 0xE2;
 	public static final int UI_REFRESH_FRAG_THRESET = 0xE3;
 	
+	public static final int UI_SWITCH_TEST = 0xE4;
+	
+	
 	
 	public static final int SOCKET_CONNECTING = 0x0e;
 	public static final int SOCKET_CONNECTED = 0x0f;

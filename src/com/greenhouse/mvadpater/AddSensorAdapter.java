@@ -23,7 +23,7 @@ import android.widget.TextView;
 * @version 1.0  
 * @description 
 */
-public class SensorRecyclerViewAdapter extends RecyclerView.Adapter<SensorRecyclerViewAdapter.ViewHolder> {
+public class AddSensorAdapter extends RecyclerView.Adapter<AddSensorAdapter.ViewHolder> {
 
 	private long sensorNum;
 	
@@ -31,7 +31,7 @@ public class SensorRecyclerViewAdapter extends RecyclerView.Adapter<SensorRecycl
 	
 	private static final String TAG = "SensorRecyclerViewAdapter";
 	
-	public SensorRecyclerViewAdapter(Context context, List<Sensor> onlineSensors, Map<String, String> map) {
+	public AddSensorAdapter(Context context, List<Sensor> onlineSensors, Map<String, String> map) {
 		this.onlineSensors = onlineSensors;
 		this.sensorNum = onlineSensors.size();
 		for (int i = 0; i < sensorNum; i++) {

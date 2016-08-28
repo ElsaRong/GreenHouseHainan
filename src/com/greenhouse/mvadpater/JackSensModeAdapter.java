@@ -18,14 +18,14 @@ import android.widget.TextView;
 * @version		1.0  
 * @description  联动模式下显示多传感器绑定任务的Adapter of ListView 	 
 */
-public class ShowSensorInfoAdapter extends BaseAdapter{
+public class JackSensModeAdapter extends BaseAdapter{
 	
 	private static final String TAG = "ShowSensorInfoAdapter.java";
 	
 	private LayoutInflater mInflater;
 	private List<SensorItemInfo> sensInfoList;
 	
-	public ShowSensorInfoAdapter(LayoutInflater inflater, List<SensorItemInfo> sensInfoList) {
+	public JackSensModeAdapter(LayoutInflater inflater, List<SensorItemInfo> sensInfoList) {
 		this.mInflater = inflater;
 		this.sensInfoList = sensInfoList;
 	}
