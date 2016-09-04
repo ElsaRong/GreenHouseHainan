@@ -32,16 +32,11 @@ import android.widget.Toast;
 */
 public class JackFragmentShowinfo extends Fragment {
 	
+	private Context context;
 	public static RecyclerView recyclerView;
-//	private static Context context;
-
 	public static JackInfoAdapter adapter;
-//	private JackService jackService; 
 	
 	private List<Jack> jackInfoList = new ArrayList<Jack>();
-	private Context context;
-	
-//	public static List<Jack> jacks;
 	
 	public JackFragmentShowinfo(Context context, List<Jack> jackInfoList) {
 		this.context = context;
