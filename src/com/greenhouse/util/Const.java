@@ -69,7 +69,7 @@ public class Const {
 	public static final int BACK_TO_LAUNCHER = 0x17;
 	
 	
-	public static final int server_PORT = 8521; //作为服务端，等待TV客户端连接的监听端口号
+	public static final int server_PORT = 8000; //作为服务端，等待TV客户端连接的监听端口号
 	public static final int client_PORT = 8899; //作为客户端，请求连接的阿里云服务器端口号
 	
 	public static final String HFUT = "48465554";

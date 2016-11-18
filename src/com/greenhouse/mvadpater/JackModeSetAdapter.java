@@ -30,7 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class JackModeSetAdapter extends BaseAdapter {
-	private static final String TAG = "GridSwitchModelTestAdapter.java";
+	private static final String TAG = "GridSwitchModelTestAdapter";
 	private List<Jack> jacks;
 	private LayoutInflater mInflater;
 	private Context context;
@@ -120,42 +120,24 @@ public class JackModeSetAdapter extends BaseAdapter {
 								} else {
 									strJackId = intJackId + "";
 								}
-								//发送一次
-								Message msg = SocketOutputTask.getHandler().obtainMessage(Const.REMO, strJackId);
-								SocketOutputTask.getHandler().sendMessage(msg);
-								try {
-									Thread.sleep(200);
-								} catch (InterruptedException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-								//发送两次
-								Message msg1 = SocketOutputTask.getHandler().obtainMessage(Const.REMO, strJackId);
-								SocketOutputTask.getHandler().sendMessage(msg1);
-								try {
-									Thread.sleep(200);
-								} catch (InterruptedException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-								//发送两次
-								Message msg2 = SocketOutputTask.getHandler().obtainMessage(Const.REMO, strJackId);
-								SocketOutputTask.getHandler().sendMessage(msg2);
-								try {
-									Thread.sleep(200);
-								} catch (InterruptedException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-								//发送两次
-								Message msg3 = SocketOutputTask.getHandler().obtainMessage(Const.REMO, strJackId);
-								SocketOutputTask.getHandler().sendMessage(msg3);
+								
+								SocketOutputTask.sendMsgQueue.addLast(createREMOmsg(strJackId));
+								SocketOutputTask.sendMsgQueue.addLast(createREMOmsg(strJackId));
+								SocketOutputTask.sendMsgQueue.addLast(createREMOmsg(strJackId));
+								SocketOutputTask.sendMsgQueue.addLast(createREMOmsg(strJackId));
+								SocketOutputTask.sendMsgQueue.addLast(createREMOmsg(strJackId));
+							
 							}
 						}).show();
 			}
 		});
 		
 		return convertView;
+	}
+	
+	private String createREMOmsg(final String id) {
+		final String msg = "HFUT" + Launcher.selectMac + "REMO00" + id + "0000000000000000WANG";
+		return msg;
 	}
 	public final class ViewHolder {
 		public Button btnTimeModel;

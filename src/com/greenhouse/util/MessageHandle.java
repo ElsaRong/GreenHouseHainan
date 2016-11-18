@@ -6,9 +6,11 @@ import com.greenhouse.database.ControllerService;
 import com.greenhouse.database.JackService;
 import com.greenhouse.database.SensorService;
 import com.greenhouse.database.StatisticService;
+import com.greenhouse.model.Jack;
 import com.greenhouse.model.Sensor;
 import com.greenhouse.mvadpater.JackSwitchItemAdapter;
 import com.greenhouse.mvadpater.JackInfoAdapter;
+import com.greenhouse.networkservice.SocketInputTask;
 import com.greenhouse.networkservice.SocketOutputTask;
 import com.greenhouse.ui.AlarmclockListView;
 import com.greenhouse.ui.JackFragmentEnvironment;
@@ -21,9 +23,11 @@ import com.greenhouse.ui.SensorRecyclerView;
 import com.greenhouse.ui.SensorSetting;
 import com.greenhouse.ui.Timer;
 
+import android.app.Activity;
 import android.os.Message;
 import android.provider.ContactsContract.Contacts.Data;
 import android.util.Log;
+import net.tsz.afinal.FinalActivity;
 
 /** 
 * @author       Elsa 
@@ -33,15 +37,135 @@ import android.util.Log;
 * @description	
 */
 public class MessageHandle {
+	private static final String TAG = "MessageHandle";
 	
-	private static final String TAG = "MessageHandle.java";
+	private static final String TIME = "54494d45";
+	private static final String CONT = "434f4e54";
+	private static final String STAT = "53544154";
+	private static final String SENS = "53454e53";
+	private static final String TASK = "5441534b";
+	private static final String REMO = "52454d4f";
+	private static final String HAVE = "48415645";
+	private static final String TACK = "5441434b";
+	private static final String BUDD = "42554444";
+	private static final String BUND = "42554e44";
+	private static final String PROB = "50524f42";
+	private static final String DELE = "44454c45";
+	private static final String STOP = "53544f50";
+	private static final String LOST = "4e4f5354";
+	private static final String DANI = "44414e49";
+	private static final String THRE = "54485245";
+	
+	public static void MessageHandleFromController(final String MESSAGE) {
+		// TODO Auto-generated method stub
+		
+		final String strRegexMsg = MESSAGE.substring(0, 40) + "WANG";
+		final String byteRegexMsg = DataFormatConversion.convertHexToString(MESSAGE).substring(0,40) + "WANG";
+		
+		if (SocketOutputTask.sendMsgQueue.remove(strRegexMsg)) {
+//			Log.d(TAG, "strRegexMsg: " + strRegexMsg);
+		} else if (SocketOutputTask.sendMsgQueue.remove(byteRegexMsg)) {
+//			Log.d(TAG, "byteRegexMsg: " + byteRegexMsg);
+		} else {
+//			Log.d(TAG, "sendMsgQueue remove null");
+		}
+		
+		final String func_key = MESSAGE.substring(32, 40);		
+		final String data;		
+		switch (func_key) {			
+		case TIME:
+			SocketInputTask.MESSAGE = DataFormatConversion.convertHexToString(MESSAGE);
+			Log.d(TAG, "[Recv:TIME]" + SocketInputTask.MESSAGE);
+			Launcher.recvTIME = true;
+			break;
+		case STOP:
+			SocketInputTask.MESSAGE = DataFormatConversion.convertHexToString(MESSAGE);
+			Log.d(TAG, "[Recv:STOP]" + SocketInputTask.MESSAGE);
+//			mainHandler.sendEmptyMessage(Const.SOCKET_DISCONNECTED);//弹出“连接失败提示框”
+//			mainHandler.removeMessages(Const.TIMEOUT);//取消弹出“连接超时提示框”
+			break;
+		case CONT:
+			//1.解析并截取报文数据段
+			SocketInputTask.MESSAGE = DataFormatConversion.convertHexToString(MESSAGE);
+			Log.d(TAG, "[Recv:CONT]" + SocketInputTask.MESSAGE);
+			data = SocketInputTask.MESSAGE.substring(20, 40);
+			//3.本地保存并更新界面
+			setSwitchState(data);
+			break;
+		case SENS:	
+			SocketInputTask.MESSAGE = DataFormatConversion.convertHexToString(MESSAGE);
+			Log.d(TAG, "[Recv:SENS]" + SocketInputTask.MESSAGE);
+			data = SocketInputTask.MESSAGE.substring(20, 40);
+			MessageHandle.setSensorCurrentValue(data);
+			break;
+		case REMO://传感器解除绑定，bund＝0，传感器值仍然随着报文实时刷新
+			SocketInputTask.MESSAGE = DataFormatConversion.convertHexToString(MESSAGE);
+			Log.d(TAG, "[Recv:REMO]" + SocketInputTask.MESSAGE);
+			data = SocketInputTask.MESSAGE.substring(20, 40);
+			setRemoSensor(data);
+			break;
+		case PROB:
+			SocketInputTask.MESSAGE = DataFormatConversion.convertHexToString(MESSAGE);
+			Log.d(TAG, "[Recv:PROB]" + SocketInputTask.MESSAGE);
+			break;
+		case LOST://lost报文未测试
+			SocketInputTask.MESSAGE = DataFormatConversion.convertHexToString(MESSAGE);
+			data = SocketInputTask.MESSAGE.substring(20, 40);
+			setSensorLost(data);
+			Log.d(TAG, "[Recv:LOST]" + SocketInputTask.MESSAGE);
+			break;
+		case DANI:
+			SocketInputTask.MESSAGE = DataFormatConversion.convertHexToString(MESSAGE);
+			Log.d(TAG, "[Recv:DANI]" + SocketInputTask.MESSAGE);
+			data = SocketInputTask.MESSAGE.substring(20, 28);
+			setControllerDayNight(data);
+			break;
+		case THRE:
+			SocketInputTask.MESSAGE = DataFormatConversion.convertHexToString(MESSAGE);
+			Log.d(TAG, "[Recv:THRE]" + SocketInputTask.MESSAGE);
+			data = SocketInputTask.MESSAGE.substring(20, 28);
+			 setControllerThredshold(data);
+			break;
+			//-----------------------------------------Hex String----------------------------------------------
+		case BUDD://插座传感器门限值，收到BUDD后将传感器任务同步到APP
+			Log.d(TAG, "[Recv:BUDD]" + MESSAGE);
+			 setJackBundSensorTask(SocketInputTask.MESSAGE.substring(40, 80));
+			break;
+		case STAT://TIME后收到该报文，1-数据库；2-本地缓存；3-通知刷新界面
+			Log.d(TAG, "[Recv:STAT]" + MESSAGE);
+			setAllSwitchState(SocketInputTask.MESSAGE.substring(40, 80));
+			break;	
+		case HAVE:
+			Log.d(TAG, "[Recv:HAVE]" + MESSAGE + "[状态 1-更新缓存 2-更新数据库]");
+			 setAllJackTaskMark(SocketInputTask.MESSAGE.substring(40, 80));
+			break;
+		case TACK://设置定时任务回执，收到回执后清除消息队列中的BUND
+			Log.d(TAG, "[Recv:TACK]" + MESSAGE);
+			setAllJackTask(SocketInputTask.MESSAGE.substring(40, 80));
+			break;
+		case DELE:
+			Log.d(TAG, "[Recv:DELE]" + MESSAGE);
+			deletelJackTask(SocketInputTask.MESSAGE.substring(40, 80));
+			break;
+			//--------------------------只更新消息队列不做数据同步的回执报文-------------------------------------
+		case TASK:
+			Log.d(TAG, "[Recv: TASK]" + MESSAGE);
+//			setAllJackTask(SocketInputTask.MESSAGE.substring(40, 80));
+			break;
+		case BUND:
+			Log.d(TAG, "[Recv: BUND]" + MESSAGE);
+			break;
+		}
+	}
+
+	
 	
 	/**
-	 * CONT OPEN/CLOS ���Ĵ���
+	 * CONT OPEN/CLOS 
 	 * @param 
 	 * @return 
 	 */
-	public static void setSwitchState(String data) {
+	private static void setSwitchState(String data) {
 		int index1 = 2, offset1 = 4, index2 = 4, offset2 = 8;
 		String id_obj = data.substring(index1, offset1);
 		final int id = Integer.parseInt(id_obj);
@@ -51,8 +175,6 @@ public class MessageHandle {
 			if (SocketOutputTask.sendMsgQueue.contains("CONT" + data)) {
 				SocketOutputTask.sendMsgQueue.remove("CONT" + data);
 			}
-//			JackFragmentSwitchTest.jacks.get(id - 1).setSwitchstate(1);
-			
 			JackService jackService = new JackService(GreenHouseApplication.getContext());
 			jackService.modifySwitchstate(1, id);
 			
@@ -60,48 +182,19 @@ public class MessageHandle {
 			if (SocketOutputTask.sendMsgQueue.contains("CONT" + data)) {
 				SocketOutputTask.sendMsgQueue.remove("CONT" + data);
 			}
-			
-//			JackFragmentSwitchTest.jacks.get(id - 1).setSwitchstate(0);
 			JackService jackService = new JackService(GreenHouseApplication.getContext());
 			jackService.modifySwitchstate(0, id);
 		}	
 		
-//		if (JackFragmentSwitchTest.handler != null) {
-//			JackFragmentSwitchTest.handler.post(new Runnable() {
-//				@Override
-//				public void run() {
-//					// TODO Auto-generated method stub
-//					Message msg = JackFragmentSwitchTest.handler.obtainMessage();
-//					msg.arg1 = id - 1;
-//					JackFragmentSwitchTest.handler.sendMessage(msg);
-//				}
-//			});
-//		}
-		
 		Log.i(TAG, "[JackId " + id + "]");
 	}
 	
-	// REMO 
-	public static void setRemoSensor(String data) {
+	private static void setRemoSensor(String data) {
 		int index1 = 2, offset1 = 4;
 		String id_obj = data.substring(index1, offset1);
 		final int id = Integer.parseInt(id_obj);
-		
 		JackService jackService = new JackService(GreenHouseApplication.getContext());
 		jackService.deleteSensorTask(id);
-//		if (JackFragmentShowinfo.jacks != null) {
-//			JackFragmentShowinfo.jacks.get(id - 1).setBund(0);
-//			JackFragmentShowinfo.handler.post(new Runnable() {
-//				@Override
-//				public void run() {
-//					// TODO Auto-generated method stub
-//					Message msg = JackFragmentShowinfo.handler.obtainMessage();
-//					msg.arg1 = id - 1;
-//					JackFragmentShowinfo.handler.sendMessage(msg);
-//				}
-//			});
-//		}
-		Log.i(TAG, "[REMO]");
 	}
 
 	/**
@@ -120,22 +213,22 @@ public class MessageHandle {
 		JackService jackService = new JackService(GreenHouseApplication.getContext());
 		jackService.modifySwitchstate(switchstate);
 		
-		if (JackFragmentSwitchTest.jackSwitchInfoList != null) {
-			for(int i = 0; i < 35; i++){
-				Integer state = Integer.parseInt(switchstate.substring(i, i+1));
-				JackFragmentSwitchTest.jackSwitchInfoList.get(i).setSwitchstate(state);
-			}
-			
-			JackFragmentSwitchTest.switchHandler.post(new Runnable() {
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					Message msg = JackFragmentSwitchTest.switchHandler.obtainMessage();
-					msg.arg1 = Const.UI_SWITCH_TEST;
-					JackFragmentSwitchTest.switchHandler.sendMessage(msg);
-				}
-			});
-		}
+//		if (JackFragmentSwitchTest.jackSwitchInfoList != null) {
+//			for(int i = 0; i < 35; i++){
+//				Integer state = Integer.parseInt(switchstate.substring(i, i+1));
+//				JackFragmentSwitchTest.jackSwitchInfoList.get(i).setSwitchstate(state);
+//			}
+//			
+//			JackFragmentSwitchTest.switchHandler.post(new Runnable() {
+//				@Override
+//				public void run() {
+//					// TODO Auto-generated method stub
+//					Message msg = JackFragmentSwitchTest.switchHandler.obtainMessage();
+//					msg.arg1 = Const.UI_SWITCH_TEST;
+//					JackFragmentSwitchTest.switchHandler.sendMessage(msg);
+//				}
+//			});
+//		}
 		
 	}
 	
@@ -143,40 +236,10 @@ public class MessageHandle {
 	 * HAVE
 	 */
 	public static void setAllJackTaskMark(String hexstring) {
-		
 		String taskmark = DataFormatConversion.HexStringToBinaryString(hexstring);
-		
 		JackService jackService = new JackService(GreenHouseApplication.getContext());
 		jackService.modifyJackTaskMark(taskmark);
-		
-//		if (JackFragmentShowinfo.jacks != null) {
-//			
-//			for(int i = 0; i < Const.JACK_SUM; i++){
-//				Integer mark = Integer.parseInt(taskmark.substring(i, i+1));
-//				if(mark == 1){
-//				} else {
-//					JackFragmentShowinfo.jacks.get(i).setBund(0);
-//				}
-//			}
-//			
-//			JackFragmentShowinfo.handler.post(new Runnable() {
-//				@Override
-//				public void run() {
-//					// TODO Auto-generated method stub
-//					Message msg = JackFragmentShowinfo.handler.obtainMessage();
-//					msg.arg1 = Const.UI_REFRESH;
-//					JackFragmentShowinfo.handler.sendMessage(msg);
-//				}
-//			});
-//			
-//		}
-		
 	}
-	
-
-
-	
-	
 
 	/**
 	 * @Title:       setJackBundSensorTask
@@ -187,7 +250,7 @@ public class MessageHandle {
 	 * @author       Elsa elsarong715@gmail.com
 	 * @data         Aug 21, 2016, 9:53:54 AM
 	 */
-	public static void setJackBundSensorTask(String data) {
+	private static void setJackBundSensorTask(String data) {
 		
 		String hexJackId = data.substring(0,2);              //插座编号十六进制字符
 		String hexSensorAndDeviceType = data.substring(2,4); //传感器和设备类型
@@ -234,42 +297,7 @@ public class MessageHandle {
 		Integer dayThre7 = Integer.parseInt(hexDayThre7,16);											        //夜间门限7
 		Integer nightThre7 = Integer.parseInt(hexNightThre7,16);											    //夜间门限7
 		
-//		if (JackFragmentShowinfo.jacks != null) {
-//			JackFragmentShowinfo.jacks.get(jackId-1).setBund(1);                //绑定标志位置1
-////			JackFragmentShowinfo.jacks.get(jackId-1).setbundtype1(deviceType);  //绑定类型/设备类型0or1
-//			JackFragmentShowinfo.jacks.get(jackId-1).setSensors(binBundSensor); //绑定传感器00110000
-//			JackFragmentShowinfo.jacks.get(jackId-1).setbundtype1(bundType1);
-//			JackFragmentShowinfo.jacks.get(jackId-1).setDay_threshold1(dayThre1);
-//			JackFragmentShowinfo.jacks.get(jackId-1).setNight_threshold1(nightThre1);
-//			JackFragmentShowinfo.jacks.get(jackId-1).setbundtype2(bundType2);
-//			JackFragmentShowinfo.jacks.get(jackId-1).setDay_threshold2(dayThre2);
-//			JackFragmentShowinfo.jacks.get(jackId-1).setNight_threshold2(nightThre2);
-//			JackFragmentShowinfo.jacks.get(jackId-1).setbundtype3(bundType3);
-//			JackFragmentShowinfo.jacks.get(jackId-1).setDay_threshold3(dayThre3);
-//			JackFragmentShowinfo.jacks.get(jackId-1).setNight_threshold3(nightThre3);
-//			JackFragmentShowinfo.jacks.get(jackId-1).setbundtype4(bundType4);
-//			JackFragmentShowinfo.jacks.get(jackId-1).setDay_threshold4(dayThre4);
-//			JackFragmentShowinfo.jacks.get(jackId-1).setNight_threshold4(nightThre4);
-//			JackFragmentShowinfo.jacks.get(jackId-1).setbundtype5(bundType5);
-//			JackFragmentShowinfo.jacks.get(jackId-1).setDay_threshold5(dayThre5);
-//			JackFragmentShowinfo.jacks.get(jackId-1).setNight_threshold5(nightThre5);
-//			JackFragmentShowinfo.jacks.get(jackId-1).setbundtype6(bundType6);
-//			JackFragmentShowinfo.jacks.get(jackId-1).setDay_threshold6(dayThre6);
-//			JackFragmentShowinfo.jacks.get(jackId-1).setNight_threshold6(nightThre6);
-//			JackFragmentShowinfo.jacks.get(jackId-1).setbundtype7(bundType7);
-//			JackFragmentShowinfo.jacks.get(jackId-1).setDay_threshold7(dayThre7);
-//			JackFragmentShowinfo.jacks.get(jackId-1).setNight_threshold7(nightThre7);
-//		}
-		
-//		//好像没用？？？？
-//		JackFragmentShowinfo.handler.post(new Runnable() {
-//			@Override
-//			public void run() {
-//				// TODO Auto-generated method stub
-//				JackFragmentShowinfo.handler.sendEmptyMessage(Const.UI_REFRESH);
-//			}
-//		});
-		
+		Log.v(TAG, "BUDD解析: "+"插座id＝"+jackId + ", 绑定传感器＝"+binBundSensor+", 设备类型＝"+deviceType);
 		JackService jackService = new JackService(GreenHouseApplication.getContext());
 		jackService.modifyAllTypeSensorTask(jackId, binBundSensor, deviceType,
 				bundType1, dayThre1, nightThre1, 
@@ -283,67 +311,14 @@ public class MessageHandle {
 	
 
 	public static void setJackSensorRestriction(String data) {
-		
 		final Integer jackId = Integer.parseInt(data.substring(0, 2)) - 1;
 		String sensors = DataFormatConversion.IntSensorToBinSensor(data.substring(2, 4));
 		Integer sensortype = Integer.parseInt(data.substring(7, 8));
 		Integer day = Integer.parseInt(data.substring(8, 12));
 		Integer night = Integer.parseInt(data.substring(12, 16));
-		
-//		if (JackFragmentShowinfo.jacks != null) {
-//			JackFragmentShowinfo.jacks.get(jackId).setBund(1);
-//			JackFragmentShowinfo.jacks.get(jackId).setSensortype(sensortype);
-//			
-//			switch(sensortype) {
-//			case 1:
-//				JackFragmentShowinfo.jacks.get(jackId-1).setDay_threshold1(day);
-//				JackFragmentShowinfo.jacks.get(jackId-1).setNight_threshold1(night);
-//				break;
-//			case 2:
-//				JackFragmentShowinfo.jacks.get(jackId-1).setDay_threshold2(day);
-//				JackFragmentShowinfo.jacks.get(jackId-1).setNight_threshold2(night);
-//				break;
-//			case 3:
-//				JackFragmentShowinfo.jacks.get(jackId-1).setDay_threshold3(day);
-//				JackFragmentShowinfo.jacks.get(jackId-1).setNight_threshold3(night);
-//				break;
-//			case 4:
-//				JackFragmentShowinfo.jacks.get(jackId-1).setDay_threshold4(day);
-//				JackFragmentShowinfo.jacks.get(jackId-1).setNight_threshold4(night);
-//				break;
-//			case 5:
-//				JackFragmentShowinfo.jacks.get(jackId-1).setDay_threshold5(day);
-//				JackFragmentShowinfo.jacks.get(jackId-1).setNight_threshold5(night);
-//				break;
-//			case 6:
-//				JackFragmentShowinfo.jacks.get(jackId-1).setDay_threshold6(day);
-//				JackFragmentShowinfo.jacks.get(jackId-1).setNight_threshold6(night);
-//				break;
-//			case 7:
-//				JackFragmentShowinfo.jacks.get(jackId-1).setDay_threshold7(day);
-//				JackFragmentShowinfo.jacks.get(jackId-1).setNight_threshold7(night);
-//				break;
-//				default:
-//					break;
-//			}
-//			
-//			
-//			JackFragmentShowinfo.handler.post(new Runnable() {
-//				@Override
-//				public void run() {
-//					// TODO Auto-generated method stub
-//					Message msg = JackFragmentShowinfo.handler.obtainMessage();
-//					msg.arg1 = jackId;
-//					JackFragmentShowinfo.handler.sendMessage(msg);
-//				}
-//			});
-//		}
-		
 		JackService jackService = new JackService(GreenHouseApplication.getContext());
-//		jackService.modifyJackSensorRestriction((jackId + 1), sensors, day, night, sensortype);
-		
-		
-		Log.i(TAG, "[BUDD]" + (jackId+1) + "-" + sensors + "-" + sensortype + "-" + day + "-" + night);
+		jackService.modifyJackSensorRestriction((jackId + 1), sensors, day, night, sensortype);
+		Log.i(TAG, "setJackSensroRestriction: " + (jackId+1) + "-" + sensors + "-" + sensortype + "-" + day + "-" + night);
 	}
 	
 	
@@ -360,6 +335,7 @@ public class MessageHandle {
 	public static void setSensorCurrentValue(String data) {
 		
 		SensorService sensorService = new SensorService(GreenHouseApplication.getContext());
+		JackService jackService = new JackService(GreenHouseApplication.getContext());
 		
 		Integer sensorid = Integer.parseInt(data.substring(0, 2));
 		Integer soiltemp = Integer.parseInt(data.substring(2, 4));
@@ -380,43 +356,23 @@ public class MessageHandle {
 		} else {
 			sensorService.modifySensorCurrentValue(sensorid, 1, soiltemp, soilhum, soilph, airtemp, airhum, co2, illu);
 		}
-			
-		//未完成，需要实现的功能：通知对应插座，更新传感器实时平均值
-		JackService jackService = new JackService(GreenHouseApplication.getContext());
-			
-//		if (JackFragmentShowinfo.jacks != null) {				
-//			for (int i = 0; i < Const.JACK_SUM; i++) {
-//				if (JackFragmentShowinfo.jacks.get(i).getBund() == 1) {
-//					String sensors = JackFragmentShowinfo.jacks.get(i).getSensors();//��ð󶨵�sensors��id��010001000
-//					Integer sensortype = JackFragmentShowinfo.jacks.get(i).getSensortype();//��ð󶨵�sensors�����ͣ�0��1��2��3������
-//					int currentvalue[] = CalculateJackBundSensorsCurrentValue(sensors, sensortype);//��������ϰ󶨵�sensors��ʵʱƽ��ֵ������ȡָ����Ȩƽ��
-//					JackFragmentShowinfo.jacks.get(i).setCurrentValue1(currentvalue[0]);
-//					JackFragmentShowinfo.jacks.get(i).setCurrentValue2(currentvalue[1]);
-//					JackFragmentShowinfo.jacks.get(i).setCurrentValue3(currentvalue[2]);
-//					JackFragmentShowinfo.jacks.get(i).setCurrentValue4(currentvalue[3]);
-//					JackFragmentShowinfo.jacks.get(i).setCurrentValue5(currentvalue[4]);
-//					JackFragmentShowinfo.jacks.get(i).setCurrentValue6(currentvalue[5]);
-//					JackFragmentShowinfo.jacks.get(i).setCurrentValue7(currentvalue[6]);
-//					//更新指定插座id=i的currentValue1-7
-//					jackService.modifyJackCurrentValue(i, currentvalue);
-//				}
-//			}
-//				
-//		}
-		
-		//刷新环境参数界面
-		if (JackFragmentEnvironment.handler != null) {
-			JackFragmentEnvironment.handler.post(new Runnable() {
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					JackFragmentEnvironment.handler.sendEmptyMessage(Const.UI_REFRESH);
+
+		if (JackFragmentShowinfo.jackInfoList.size() > 0) {
+			for (int i = 0; i < 35; i++) {
+				String bundSensors = JackFragmentShowinfo.jackInfoList.get(i).getSensors();
+				int[] jackCurrValue = sensorService.getIntSelectSensorAverage(bundSensors);
+				Log.v(TAG, "第"+i+"列插座上绑定的传感器："+JackFragmentShowinfo.jackInfoList.get(i).getSensors());
+				Log.v(TAG, "（数据库）更新其平均值＝"+jackCurrValue[0]+jackCurrValue[1]+jackCurrValue[2]+jackCurrValue[3]
+						+jackCurrValue[4]+jackCurrValue[5]+jackCurrValue[6]);
+				
+				if (!bundSensors.equals("00000000")) {
+					jackService.modifyJackCurrentValue((i+1), jackCurrValue);
 				}
-			});
+			}
 		}
-		
+			
 	   //将传感器实时值[在每天的8，12，17，19点的四个时间点]保存到统计查询表
-	   setSensorCurrentValueToStatistic(soiltemp, soilhum, soilph, airtemp, airhum, co2, illu);
+//	   setSensorCurrentValueToStatistic(soiltemp, soilhum, soilph, airtemp, airhum, co2, illu);
 			
 		Log.i(TAG, "sensor" + sensorid + "-" + soiltemp + "-" + soilhum + "-" + soilph + "-" + airtemp + "-" + airhum + "-" + co2 + "-" + illu);
 	}
@@ -474,15 +430,7 @@ public class MessageHandle {
 		return currentvalue;
 	}
 
-	/**
-	 * TASK ���涨ʱ����1-���浽���ݿ⣻2-���浽���棻3������msgˢ�¶�ʱ�����б�
-	 * @param jacktasks Ҫɾ����ʱ����Ĳ�����־λ����ʽΪ����12��ʮ�����ƣ�ff-ff-ff-ff-ff-ff
-	 */
 	public static void setAllJackTask(String jacktasks) {
-		
-		if (Timer.sendMsgQueue.contains("TASK" + jacktasks.substring(22, 34))) {
-			Timer.sendMsgQueue.remove("TASK" + jacktasks.substring(22, 34));
-		}
 		
 		String year = Integer.valueOf(jacktasks.substring(0, 4), 16).toString();
 		String month = Integer.valueOf(jacktasks.substring(4, 6), 16).toString();
@@ -496,97 +444,28 @@ public class MessageHandle {
 		Integer cycle = Integer.valueOf(jacktasks.substring(22, 24), 16);
 		Integer jackId = DataFormatConversion.HexStrBit12ToJackId(jacktasks.substring(24, 36));
 		
-		Log.i(TAG, year + "-" + month + "-" + day + " " + hour + ":" + minute + "----" + on_hour + ":" + on_minute + "-"
-				+ off_hour + ":" + off_minute + "-" + cycle + "次-插座" + jackId);
+		Log.i(TAG, "[(数据库同步)定时任务]" + year + "-" + month + "-" + day + " 开始:" + hour + ":" + minute 
+				+ " 打开:" + on_hour + ":" + on_minute + " 关闭:" + off_hour + ":" + off_minute + " 循环:" 
+				+ cycle + "次 插座" + jackId);
 		
 		JackService jackService = new JackService(GreenHouseApplication.getContext());
 		jackService.modifyJackTask(year + "-" + month + "-" + day + " " + hour + ":" + minute, 
 				on_hour + ":" + on_minute, off_hour + ":" + off_minute, cycle, jackId+"");
-		
-//		if (JackFragmentShowinfo.jacks != null) {
-//			JackFragmentShowinfo.jacks.get(jackId-1).setBund(2);
-//			JackFragmentShowinfo.jacks.get(jackId-1).setStart(year + "-" + month + "-" + day + " " + hour + ":" + minute);
-//			JackFragmentShowinfo.jacks.get(jackId-1).setPoweron(on_hour + ":" + on_minute);
-//			JackFragmentShowinfo.jacks.get(jackId-1).setPoweroff(off_hour + ":" + off_minute);
-//			JackFragmentShowinfo.jacks.get(jackId-1).setCycle(cycle);
-//		}
-		
-		if (AlarmclockListView.sAlarmListHandler != null) {
-			AlarmclockListView.sAlarmListHandler.post(new Runnable() {
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					Message msg = AlarmclockListView.sAlarmListHandler.obtainMessage();
-					msg.arg1 = Const.UI_REFRESH;
-					AlarmclockListView.sAlarmListHandler.sendMessage(msg);
-				}
-			});
-		}
-		
-		
 	}
 	
 	
 	public static void setSensorLost(String data) {
-		
 		Integer sensorid = Integer.valueOf(data.substring(3, 4));
 		SensorService sensorService = new SensorService(GreenHouseApplication.getContext());
-		
-//		sensorService.modifySensorOnline(sensorid, 0);
 		sensorService.modifySensorCurrentValue(sensorid, 0, 00, 00, 00, 00, 00, 0000, 0000);
-		
-//		if (JackFragmentShowinfo.jacks != null) {
-//			SensorRecyclerView.handler.post(new Runnable() {
-//				@Override
-//				public void run() {
-//					// TODO Auto-generated method stub
-//					Message msg = SensorRecyclerView.handler.obtainMessage();
-//					msg.arg1 = Const.UI_REFRESH;
-//					SensorRecyclerView.handler.sendMessage(msg);
-//				}
-//				
-//			});
-//		}
-		Log.i(TAG, "[���������ߣ�����ˢ��]" );
 	}
 	
-	
-	/**
-	 * DELE ɾ����ʱ����1-ˢ�����ݿ⣻2-ˢ�²�������bund��3-����msgˢ�¶�ʱ�����б����
-	 * @param jacktasks Ҫɾ����ʱ����Ĳ�����־λ����ʽΪ����12��ʮ�����ƣ�ff-ff-ff-ff-ff-ff
-	 */
 	public static void deletelJackTask(String jacktasks) {
-		
-		if (Timer.sendMsgQueue.contains("DELE" + jacktasks.substring(0, 14))) {
-			Timer.sendMsgQueue.remove("DELE" + jacktasks.substring(0, 14));
-			Log.i(TAG, "[��ʱ�����ִ��ɾ���ɹ�]" );
-		}
 		
 		String jackIds = DataFormatConversion.HexStringToBinaryString(jacktasks.substring(0, 12));
 		
 		JackService jackService = new JackService(GreenHouseApplication.getContext());
 		jackService.deleteJackTask(jackIds);
-		
-//		if (JackFragmentShowinfo.jacks != null) {
-//			for (int i = 0; i < 48; i++) {
-//				if (jackIds.substring(i, i + 1).equals("1")) {
-//					JackFragmentShowinfo.jacks.get(i).setBund(0);
-//				}
-//			}
-//		}
-		
-		if (AlarmclockListView.sAlarmListHandler != null) {
-			AlarmclockListView.sAlarmListHandler.post(new Runnable() {
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					Message msg = AlarmclockListView.sAlarmListHandler.obtainMessage();
-					msg.arg1 = Const.UI_REFRESH;
-					AlarmclockListView.sAlarmListHandler.sendMessage(msg);
-				}
-			});
-		}
-		
 		
 	}
 	
@@ -632,8 +511,7 @@ public class MessageHandle {
 		
 	}
 	
-	
-	
+
 
 
 	

@@ -4,6 +4,7 @@ import com.greenhouse.networkservice.NetworkManager;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Handler;
 
 /** 
 * class <code>NetBroadcastReceiver</code> 将在Application中需要调用应用
@@ -17,12 +18,21 @@ import android.content.Context;
 public class GreenHouseApplication extends Application{
 	
 	
-	private static GreenHouseApplication ghApplication; //有的地方需要application
+	private static GreenHouseApplication mApplication; //有的地方需要application
 	private static Context mContext; // 有的地方需要context
+	private Handler mainHandler = null;
 	
 	private static int mNetworkState;
 	
 	private static String SsidPassword = "";
+	
+	public void setMainHandler(Handler mainHandler) {
+		this.mainHandler = mainHandler;
+	}	
+
+	public Handler getMainHandler() {
+		return mainHandler;
+	}
 	
 	
 	/**
@@ -47,7 +57,7 @@ public class GreenHouseApplication extends Application{
     } 
 	
 	public static synchronized Application getApplicationInstance() {
-		return ghApplication; 		
+		return mApplication; 		
 	}
 	
 	public void InitNetworkParam() {

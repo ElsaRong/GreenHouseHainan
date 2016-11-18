@@ -46,34 +46,12 @@ public class EditJack extends Activity implements View.OnClickListener {
 	public Handler handler = new Handler() {
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
-			case Const.SOCKET_RECONNECTED:
-				title_waiting.setVisibility(View.GONE);
-				SocketInputTask.getHandler().sendEmptyMessage(Const.SOCKET_CONNECTED);
-				try {
-					Thread.sleep(300);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				SocketOutputTask.getHandler().sendEmptyMessage(Const.TIME);
-				handler.sendEmptyMessageDelayed(Const.BACK_TO_LAUNCHER, 2000);
-				break;
-			case Const.TIME_SERVICE_FINISHED:
-				ThreadPoolManager.getInstance().startSocketServerAccept();
-				break;
 			case Const.BACK_TO_LAUNCHER:
-				ToastUtil.TextToastLong(EditJack.this, "ÍøÂçÒì³£");
-				Launcher.client.setState(Const.SOCKET_DISCONNECTED);
-				Launcher.server.setServerState(Const.SOCKET_DISCONNECTED);
-				Launcher.client.destroy();
-				Launcher.server.destroy();
+				ToastUtil.TextToastLong(EditJack.this, "NET ERR");
 				Intent intent = new Intent(EditJack.this, Launcher.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
 				break;	
-			case Const.SOCKET_CONNECTING:
-				title_waiting.setVisibility(View.VISIBLE);
-				break;
 			default:
 				break;
 			}
@@ -130,30 +108,17 @@ public class EditJack extends Activity implements View.OnClickListener {
 				// TODO Auto-generated method stub
 				
 				if (JackName.getText().toString() == null | "".equals(JackName.getText().toString())) {
-					ToastUtil.TextToastLong(getApplicationContext(), "ÖØÃüÃûÇ°ÇëÊäÈëÃû³Æ");
+					ToastUtil.TextToastLong(getApplicationContext(), "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
 				} else if(JackName.getText().toString().length() > 10) {
-					ToastUtil.TextToastLong(getApplicationContext(),"ÇëÖØÐÂÊäÈëÃû³Æ£¨ÒªÇó²»¶àÓàÊ®¸öºº×Ö£©");
+					ToastUtil.TextToastLong(getApplicationContext(),"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½Òªï¿½ó²»¶ï¿½ï¿½ï¿½Ê®ï¿½ï¿½ï¿½ï¿½ï¿½Ö£ï¿½");
 				} else {
 					final String jackName = JackName.getText().toString();
 					//20160521 xiufuzhong
 //					final Integer jackId = JackFragmentRe.selectJack.getJackId();//20160521 xiufuzhong
 					
-					//modify µ±Ç°½çÃæ»º´æ£¯µÚ¶þ½çÃæ»º´æ£¯Êý¾Ý¿âÔ´±¾µØ±£´æ
 					txt_rename.setText(jackName);					
 //					JackFragmentShowinfo.jacks.get(jackId-1).setName(jackName);//20160521 xiufuzhong
 //					jackService.modifyName(jackId, jackName);//20160521 xiufuzhong
-					
-					JackFragmentShowinfo.handler.postDelayed(new Runnable() {
-
-						@Override
-						public void run() {
-							// TODO Auto-generated method stub
-							Message msg = JackFragmentShowinfo.handler.obtainMessage();
-//							msg.arg1 = jackId - 1;
-							JackFragmentShowinfo.handler.sendMessage(msg);
-						}
-						
-					}, 200);
 					
 					EditJack.this.finish();
 				}

@@ -100,8 +100,8 @@ public class SocketServerTask implements Runnable {
 //				}
 //				
 //				Log.d(TAG, "[Server:Send]" + tvMsg2);	
-				
-				
+//				
+//				
 //				try {
 //					Thread.sleep(6000);
 //				} catch (InterruptedException e1) {

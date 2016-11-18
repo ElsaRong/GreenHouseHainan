@@ -70,10 +70,6 @@ public class JackFragmentStatistics extends Fragment {
 	
 	public static SocketClient queryClient = new SocketClient();
 	
-	public JackFragmentStatistics (String msg, Handler handler) {
-		this.QUERY_TYPE = msg;
-		this.handler = handler;
-	}
 	
 	/**
 	 * 20160124 每刷新一次statistic界面，查询时间和跨度界面都会重新初始化，但是时间和跨度的值没有变

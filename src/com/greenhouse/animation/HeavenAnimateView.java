@@ -119,7 +119,7 @@ public class HeavenAnimateView extends View
     for (boolean j = true; ; j = false)
     {
       this.isDaytime = false;
-      this.mTimeText = new SimpleDateFormat("hh:mma", Locale.US).format(localCalendar.getTime());
+      this.mTimeText = new SimpleDateFormat("hh:mm:ss", Locale.US).format(localCalendar.getTime());
       return;
     }
   }

@@ -29,7 +29,7 @@ public class CommProtocol{
 
 	public static void sendMessageHEARTBEAT() {
 		String 	msg = "HFUT" + Launcher.selectMac + "HEARTBEAT00000000000WANG";
-		SocketOutputTask.sendMessageStr(msg);
+//		SocketOutputTask.sendMessageStr(msg);
 		Log.d(TAG, "[Send:HEARTBEAT]" + msg);
 	}
 	
@@ -66,7 +66,7 @@ public class CommProtocol{
 		
 
 		Log.d(TAG, "[TIME]" + msg);
-		SocketOutputTask.sendMessageStr(msg);
+//		SocketOutputTask.sendMessageStr(msg);
 		
 	}
 	
@@ -92,10 +92,9 @@ public class CommProtocol{
 	 * @data         Aug 24, 2016, 4:52:25 PM
 	 */
 	public static void sendMessageINTE() {
-		String msg;
-		msg = "HFUT" + Launcher.selectMac + "INTE00000000000000000000WANG";
+		final String msg = "HFUT" + Launcher.selectMac + "INTE00000000000000000000WANG";
 		Log.e(TAG, "[INTE]" + msg);
-		SocketOutputTask.sendMessageStr(msg.replace("", ""));
+//		SocketOutputTask.sendMessageStr(msg.replace("", ""));
 	}
 	
 	/**
@@ -111,7 +110,7 @@ public class CommProtocol{
 		String msg;
 		msg = "HFUT" + Launcher.selectMac + "OUTT00000000000000000000WANG";
 		Log.e(TAG, "[OUTT]" + msg);
-		SocketOutputTask.sendMessageStr(msg.replace("", ""));
+//		SocketOutputTask.sendMessageStr(msg.replace("", ""));
 	}
 	
 
@@ -130,7 +129,6 @@ public class CommProtocol{
 		}
 		msg = "HFUT" + Launcher.selectMac + "DANI" + sDay + "00" + sNight + "00" + "000000000000" + "WANG";
 		Log.d(TAG, "[DANI]" + msg);
-		SocketOutputTask.sendMessageStr(msg.replace("", ""));
 	}
 	
 	// 20151201基本修改完成
@@ -176,7 +174,6 @@ public class CommProtocol{
 		}
 		
 		Log.d(TAG, "[THRE]" + msg);
-		SocketOutputTask.sendMessageStr(msg.replace("", ""));
 	}
 	
 
@@ -186,7 +183,6 @@ public class CommProtocol{
 		String msg;
 		msg = "HFUT" + Launcher.selectMac + "CONT" + "00" + id + "OPEN" + "000000000000WANG";
 		Log.d(TAG, "[OPEN]" + msg);
-		SocketOutputTask.sendMessageStr(msg.replace("", ""));
 	}
 	
 
@@ -195,13 +191,11 @@ public class CommProtocol{
 		String msg;
 		msg = "HFUT" + Launcher.selectMac + "CONT" + "00" + id + "CLOS" + "000000000000WANG";
 		Log.d(TAG, "[CLOS]" + msg);
-		SocketOutputTask.sendMessageStr(msg.replace("", ""));
 	}
 	
 	public static void sendMessageREMO(Object id) {
 		String msg = "HFUT" + Launcher.selectMac + "REMO00" + id + "0000000000000000WANG";
 		Log.d(TAG, "[REMO]" + msg);
-		SocketOutputTask.sendMessageStr(msg.replace("", ""));
 	}
 
 
@@ -209,7 +203,6 @@ public class CommProtocol{
 		String msg = null;
 		msg = "HFUT" + Launcher.selectMac + "PROB00" + SensorRecyclerView.sProbeSensor + "0000000000000000WANG";
 		Log.d(TAG, "[PROB]" + msg);
-		SocketOutputTask.sendMessageStr(msg.replace("", ""));
 	}
 	
 	public static void sendMessageTASK() {
@@ -234,7 +227,7 @@ public class CommProtocol{
 		byte[] b = DataFormatConversion.HexStringToByte(msg);
 		Log.d(TAG, "[TASK-JACK]" + Timer.chosedJackGroupHex);
 		Log.d(TAG, "[TASK]" + msg);
-		SocketOutputTask.sendMessageByte(b);
+//		SocketOutputTask.sendMessageByte(b);
 	}
 	
     public static final byte[] hex2byte(String hex)
@@ -268,12 +261,11 @@ public class CommProtocol{
 		
 		byte[] b = DataFormatConversion.HexStringToByte(msg);	
 		Log.d(TAG, "[DELE]" + msg);
-		SocketOutputTask.sendMessageByte(b);
+//		SocketOutputTask.sendMessageByte(b);
 	}
 
 	public static void sendMessageSENS() {
 		String msg = "HFUT" + Launcher.selectMac + "SENSOPEN0000000000000000WANG";
-		SocketOutputTask.sendMessageStr(msg);
 	}
 	
 	
@@ -329,7 +321,7 @@ public class CommProtocol{
 		byte[] b = DataFormatConversion.HexStringToByte(msg);	
 		
 		Log.d(TAG, "[BUND]" + msg);
-		SocketOutputTask.sendMessageByte(b);
+//		SocketOutputTask.sendMessageByte(b);
 
 	}
 	
@@ -392,10 +384,11 @@ public class CommProtocol{
 		byte[] b = DataFormatConversion.HexStringToByte(msg);	
 		
 		Log.d(TAG, "[BUND]" + msg);
-		SocketOutputTask.sendMessageByte(b);
+//		SocketOutputTask.sendMessageByte(b);
 
 		
 	}
+
 	
 
 

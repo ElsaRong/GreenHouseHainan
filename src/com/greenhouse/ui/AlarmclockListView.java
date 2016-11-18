@@ -8,27 +8,18 @@ import java.util.Map;
 import com.greenhouse.R;
 import com.greenhouse.database.JackService;
 import com.greenhouse.model.Jack;
-import com.greenhouse.networkservice.NetBroadcastReceiver;
-import com.greenhouse.networkservice.SocketInputTask;
 import com.greenhouse.networkservice.SocketOutputTask;
-import com.greenhouse.networkservice.ThreadPoolManager;
 import com.greenhouse.specialversion.LockCheck;
 import com.greenhouse.ui.AlarmclockListView.AlarmClockListAdapter.ViewHolder;
-import com.greenhouse.util.Const;
 import com.greenhouse.util.DataFormatConversion;
 import com.greenhouse.util.ToastUtil;
-
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -42,7 +33,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class AlarmclockListView extends Activity {
@@ -50,99 +40,50 @@ public class AlarmclockListView extends Activity {
 	private static final String TAG = "AlarmclockListView.java";
 	
 	private ListView listview;
-	
 	private LayoutInflater mInflater;
 	
-	private JackService jackService;
-	private ArrayList<Jack> jackTasks;
-	
-	public static List<Map<String, String>> mMultiCheck; //选中的插座id,保存格式eg.{{0=1},{1=2},{2=3},{3=4}}
-	
-	private Boolean MapIsExist = false;
-
-	
-	private static ProgressBar title_waiting;
-	
-	public BroadcastReceiver myReceiver;
-	
+	private JackService jackService = new JackService(this);
+	private static ArrayList<Jack> jackTasks;
 	private static AlarmClockListAdapter adapter;
 	
-
+	public static List<Map<String, String>> chooseJacks = new ArrayList<Map<String, String>>(); //选中的插座id,保存格式eg.{{0=1},{1=2},{2=3},{3=4}}
 	
-	/**
-	 * 20160107 把handler声明为static public，在MessageHandleTask中就能直接调用了
-	 * 存在的问题是：其中要操作的变量，也必须是static，那么这些static变量的多线程安全问题就很难保�??
-	 */	
-	public static Handler sAlarmListHandler;
+	private Boolean MapIsExist = false;
+	private Handler handler = new Handler(); //handler.removeCallbacks
+	
+	//1s刷新一次时间显示和socket状态
+	private Runnable refreshAlarmList = new Runnable() {
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			jackTasks = jackService.getAllJackTask(Launcher.selectMac);
+			adapter.notifyDataSetChanged();
+			handler.postDelayed(refreshAlarmList, 3000);
+		}
+	};
+	
 
 	public void onCreate(Bundle savedInstanceState) {
 		Log.d(TAG, "[onCreate]");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.alarmclock_list);	
+		handler.post(refreshAlarmList);
 		
-		title_waiting = (ProgressBar) findViewById(R.id.title_waiting); 
+		for (int i=0; i<chooseJacks.size(); i++) {
+			Log.e(TAG+", line 83", chooseJacks.get(i).toString());
+		}
+		chooseJacks.clear();
 		
-		IntentFilter filter=new IntentFilter();
-		filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-		filter.addAction("com.greenhosue.backtolauncheraction");
-        myReceiver = new NetBroadcastReceiver(sAlarmListHandler);
-        this.registerReceiver(myReceiver, filter);
 		
-		jackService = new JackService(this);
 		jackTasks = jackService.getAllJackTask(Launcher.selectMac);
-		
-		sAlarmListHandler = new Handler() {
-			public void handleMessage(Message msg) {
-				switch (msg.what) {
-				case Const.UI_REFRESH:
-					Log.d(TAG, "[定时任务列表－刷新]");
-					jackTasks = jackService.getAllJackTask(Launcher.selectMac);
-					adapter.notifyDataSetChanged();
-					break;
-				case Const.SOCKET_RECONNECTED:
-					title_waiting.setVisibility(View.GONE);
-					SocketInputTask.getHandler().sendEmptyMessage(Const.SOCKET_CONNECTED);
-					try {
-						Thread.sleep(300);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					SocketOutputTask.getHandler().sendEmptyMessage(Const.TIME);
-					sAlarmListHandler.sendEmptyMessageDelayed(Const.BACK_TO_LAUNCHER, 2000);
-					break;
-				case Const.TIME_SERVICE_FINISHED:
-					ThreadPoolManager.getInstance().startSocketServerAccept();
-					break;
-				case Const.BACK_TO_LAUNCHER:
-					ToastUtil.TextToastLong(AlarmclockListView.this, "网络异常");
-					Launcher.client.setState(Const.SOCKET_DISCONNECTED);
-					Launcher.server.setServerState(Const.SOCKET_DISCONNECTED);
-					Launcher.client.destroy();
-					Launcher.server.destroy();
-					Intent intent = new Intent(AlarmclockListView.this, Launcher.class);
-					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-					startActivity(intent);
-					break;	
-				case Const.SOCKET_CONNECTING:
-					title_waiting.setVisibility(View.VISIBLE);
-					break;
-				default:
-					break;
-				}
-				super.handleMessage(msg);
-			}
-		};
-		
-		
 		adapter = new AlarmClockListAdapter(this);
 		
 		listview = (ListView) findViewById(R.id.list);
 		listview.setAdapter(adapter);
-		
 		listview.setItemsCanFocus(false);
 		listview.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-		mMultiCheck = new ArrayList<Map<String, String>>();
+		
+		listview.clearChoices();
 
 		listview.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -153,9 +94,9 @@ public class AlarmclockListView extends Activity {
 				isSelected.put(position,vHollder.cBox.isChecked());
 				Map<String, String> map = new HashMap<String, String>();
 				map.put(position + "", jackTasks.get(position).getJackId().toString());
-				Iterator<Map<String, String>> iterator = mMultiCheck.iterator();
+				Iterator<Map<String, String>> iterator = chooseJacks.iterator();
 				if (!iterator.hasNext()) {
-					mMultiCheck.add(map);
+					chooseJacks.add(map);
 				} else {
 					while (iterator.hasNext()) {
 						Object object = iterator.next();
@@ -165,9 +106,9 @@ public class AlarmclockListView extends Activity {
 					}
 
 					if (MapIsExist == false) {
-						mMultiCheck.add(map);
+						chooseJacks.add(map);
 					} else {
-						mMultiCheck.remove(map);
+						chooseJacks.remove(map);
 						MapIsExist = false;
 					}
 				}
@@ -194,14 +135,14 @@ public class AlarmclockListView extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Iterator<Map<String, String>> iterator = mMultiCheck.iterator();
+				Iterator<Map<String, String>> iterator = chooseJacks.iterator();
 				//设置定时任务互锁
-				if (LockCheck.checkTimerChosedJack(mMultiCheck)) {
+				if (LockCheck.checkTimerChosedJack(chooseJacks)) {
 					if (iterator.hasNext()) {
 						new AlertDialog.Builder(AlarmclockListView.this).setTitle("")
 						.setMessage(
 								"您已经选择了"
-										+ mMultiCheck.size()
+										+ chooseJacks.size()
 										+ " 个插座,"
 										+ " 确定设置这些插座的定时任务？")
 						.setNegativeButton("否",
@@ -219,7 +160,7 @@ public class AlarmclockListView extends Activity {
 						}).show();
 						
 					} else {
-						ToastUtil.TextToastShort(AlarmclockListView.this, "请至少�?�择�?个插座进行设�?");
+						ToastUtil.TextToastShort(AlarmclockListView.this, "请至少选择一个设备！");
 					}
 				}
 
@@ -231,44 +172,54 @@ public class AlarmclockListView extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Iterator<Map<String, String>> iterator = mMultiCheck.iterator();
+				Iterator<Map<String, String>> iterator = chooseJacks.iterator();
 				if (iterator.hasNext()) {
 					new AlertDialog.Builder(AlarmclockListView.this)
 							.setTitle("提示")
 							.setMessage(
 									"您已经选择了"
-											+ mMultiCheck.size()
+											+ chooseJacks.size()
 											+ " 个插座，"
 											+ " 确定删除这些插座的定时任务？")
 							.setNegativeButton("否",
 									new DialogInterface.OnClickListener() {
 										public void onClick(DialogInterface dialog,	int which) {
 											// TODO Auto-generated method stub
+											listview.clearChoices();
 										}
 									})
 							.setPositiveButton("是",
 									new DialogInterface.OnClickListener() {
 										public void onClick( DialogInterface dialog, int whichButton) {
 											Count2ndFormatChosedJacks();
-											SocketOutputTask.getHandler().sendEmptyMessage(Const.DELE);//发�?�删除报�?
-											SocketOutputTask.getHandler().sendEmptyMessageDelayed(Const.DELE, 200);
-											AlarmclockListView.sAlarmListHandler.sendEmptyMessageDelayed(Const.UI_REFRESH, 800);
+											SocketOutputTask.sendMsgQueue.addLast(createDELEmsg());
+											SocketOutputTask.sendMsgQueue.addLast(createDELEmsg());
+											SocketOutputTask.sendMsgQueue.addLast(createDELEmsg());
+											SocketOutputTask.sendMsgQueue.addLast(createDELEmsg());
+											SocketOutputTask.sendMsgQueue.addLast(createDELEmsg());
 											ClearMultiCheck();
-										}
-										
-									}).show();
+										}								
+							}).show();
 				} else {
-					ToastUtil.TextToastShort(AlarmclockListView.this, "删除定时任务，请至少选择一个插座");
+					ToastUtil.TextToastShort(AlarmclockListView.this, "删除定时任务，请至少选择一个设备");
 				}
 				
 			}
 		});
 	}
 	
+	private byte[] createDELEmsg() {
+		String msg = DataFormatConversion.stringToHexString("HFUT" + Launcher.selectMac + "DELE")		
+				+ Timer.chosedJackGroupHex + DataFormatConversion.stringToHexString("00000000000000WANG");
+		Log.d(TAG, "(Str) createDELEmsg: " + msg);
+		byte[] b = DataFormatConversion.HexStringToByte(msg);
+		return b;
+	}
 	
+
 	
 	public void Count2ndFormatChosedJacks() {
-		Iterator<Map<String, String>> iterator = mMultiCheck.iterator();
+		Iterator<Map<String, String>> iterator = chooseJacks.iterator();
 		String extractJackId = "";
 		
 		Timer.chosedJackGroupHex = null;
@@ -286,19 +237,19 @@ public class AlarmclockListView extends Activity {
 			Timer.chosedJackGroup[chosedJackId - 1] = 1;	
 		}		
 			
-		Log.i(TAG,DataFormatConversion.Int2String(Timer.chosedJackGroup));
-		Log.i(TAG,DataFormatConversion.BinStr48ToHexStr12(DataFormatConversion.Int2String(Timer.chosedJackGroup)));	
+//		Log.i(TAG,DataFormatConversion.Int2String(Timer.chosedJackGroup));
+		Log.i(TAG,"被选中的插座: " + DataFormatConversion.BinStr48ToHexStr12(DataFormatConversion.Int2String(Timer.chosedJackGroup)));	
 		
 		//f000000000000000000-111100000000...
 		Timer.chosedJackGroupHex = DataFormatConversion.BinStr48ToHexStr12(DataFormatConversion.Int2String(Timer.chosedJackGroup));
 	}
-	
+
 	/**
 	 * 怎样清理ArrayList即高效又能防止内存泄漏，待定
 	 */
 	public void ClearMultiCheck() {
-		mMultiCheck.clear();
-		mMultiCheck = new ArrayList<Map<String, String>>();
+		chooseJacks.clear();
+		chooseJacks = new ArrayList<Map<String, String>>();
 	}
 	
 
@@ -311,7 +262,6 @@ public class AlarmclockListView extends Activity {
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub	
-		unregisterReceiver(myReceiver);
 		super.onDestroy();	
 	}
 

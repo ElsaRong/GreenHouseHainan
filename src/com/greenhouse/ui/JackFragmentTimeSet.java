@@ -10,6 +10,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,12 +25,12 @@ import android.widget.TextView;
 * 
 * @author       Elsa 
 * @Email        elsarong715@gmail.com
-* @date         2015��11��24�� ����5:11:32 
+* @date         2015-11-24 5:11:32 
 * @version      1.0  
 */
 public class JackFragmentTimeSet extends Fragment {
 	
-	private static final String TAG = "JackFragmentBaseSet.java";
+	private static final String TAG = "JackFragmentBaseSet";
 
 	private NumberPicker dayNumberPicker;
 	private NumberPicker nightNumberPicker;
@@ -79,36 +80,10 @@ public class JackFragmentTimeSet extends Fragment {
 				if (day_history>0 && day_history<25 && night_history>0 && night_history<25) {
 					ToastUtil.TextToastShort(context, "设置成功");
 					
-					Message msg = SocketOutputTask.getHandler().obtainMessage(Const.DANI);
+					Message msg = Message.obtain();
 					msg.arg1 = day_history;
 					msg.arg2 = night_history;
-					SocketOutputTask.getHandler().sendMessage(msg);
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					Message msg1 = SocketOutputTask.getHandler().obtainMessage(Const.DANI);
-					msg1.arg1 = day_history;
-					msg1.arg2 = night_history;
-					SocketOutputTask.getHandler().sendMessage(msg1);
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					Message msg2 = SocketOutputTask.getHandler().obtainMessage(Const.DANI);
-					msg2.arg1 = day_history;
-					msg2.arg2 = night_history;
-					SocketOutputTask.getHandler().sendMessage(msg2);
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					SocketOutputTask.sendMsgQueue.addLast(createDANImsg(msg));
 					
 					mainHandler.sendEmptyMessage(Const.UI_REFRESH_FRAG_TIMESET);
 					
@@ -139,6 +114,22 @@ public class JackFragmentTimeSet extends Fragment {
 			night_history = newVal;
 		}
 	};
+	
+	private String createDANImsg(Message message) {
+		String sDay = "", sNight = "";
+		if (message.arg1 < 10) {
+			sDay = "0" + message.arg1;
+		} else {
+			sDay = message.arg1 + "";
+		}
+		if (message.arg2 < 10) {
+			sNight = "0" + message.arg2;
+		} else {
+			sNight = message.arg2 + "";
+		}
+		final String msg = "HFUT" + Launcher.selectMac + "DANI" + sDay + "00" + sNight + "00" + "000000000000" + "WANG";
+		return msg;
+	}
 	
 	
 

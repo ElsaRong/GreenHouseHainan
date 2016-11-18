@@ -14,7 +14,7 @@ import android.util.Log;
 * 
 * @author       Elsa 
 * @Email        elsarong715@gmail.com
-* @date         2015Äê11ÔÂ9ÈÕ ÏÂÎç9:44:05 
+* @date         2015-11-9 9:44:05 
 * @version      1.0  
 */
 public class NetBroadcastReceiver extends BroadcastReceiver{
@@ -27,7 +27,7 @@ public class NetBroadcastReceiver extends BroadcastReceiver{
 	
 	private Handler handler;
 	
-	public NetBroadcastReceiver(Handler handler) {//ËùÓĞ±»°ó¶¨¹ã²¥µÄActivityµÄHandler£¬ÓÃÓÚÏòµ«Ç°aciivty·¢msgÌø×ª
+	public NetBroadcastReceiver(Handler handler) {
 		this.handler = handler;
 	}
 	
@@ -36,7 +36,7 @@ public class NetBroadcastReceiver extends BroadcastReceiver{
 		// TODO Auto-generated method stub
 		if (intent.getAction().equals(NET_CHANGE_ACTION)) {	
 			if (NetworkManager.getNetworkState(GreenHouseApplication.getContext()) == NetworkManager.NETWORK_NONE) {
-				Log.d(TAG, "ÎŞÍøÂç");
+				Log.d(TAG, "è¯·æ£€æŸ¥ç½‘ç»œ");
 				handler.sendEmptyMessage(Const.BACK_TO_LAUNCHER);
 			} 
 		} else if (intent.getAction().equals(BACK_TO_LAUNCHER_ACTION)) {	

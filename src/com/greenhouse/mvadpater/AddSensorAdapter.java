@@ -5,6 +5,7 @@ import java.util.Map;
 import com.greenhouse.R;
 import com.greenhouse.model.Sensor;
 import com.greenhouse.networkservice.SocketOutputTask;
+import com.greenhouse.ui.Launcher;
 import com.greenhouse.ui.SensorRecyclerView;
 import com.greenhouse.util.Const;
 
@@ -102,9 +103,14 @@ public class AddSensorAdapter extends RecyclerView.Adapter<AddSensorAdapter.View
 				} else {
 					SensorRecyclerView.sProbeSensor = (position + 1) + "";
 				}
-				SocketOutputTask.getHandler().sendEmptyMessage(Const.PROB);	
+				SocketOutputTask.sendMsgQueue.addLast(createPROBmsg());
 			}
 		});		
+	}
+	
+	private String createPROBmsg() {
+		final String msg = "HFUT" + Launcher.selectMac + "PROB00" + SensorRecyclerView.sProbeSensor + "0000000000000000WANG";
+		return msg;
 	}
 	
 	

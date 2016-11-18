@@ -8,6 +8,7 @@ import com.greenhouse.specialversion.LockCheck;
 import com.greenhouse.ui.JackFragmentSwitchTest;
 import com.greenhouse.ui.Launcher;
 import com.greenhouse.util.Const;
+import com.greenhouse.util.OnFragmentRefreshInterface;
 import com.greenhouse.widget.OptionButton;
 import android.content.Context;
 import android.os.Message;
@@ -21,7 +22,6 @@ import android.widget.TextView;
 public class JackSwitchItemAdapter extends BaseAdapter{
 	
 	private LayoutInflater mInflater;
-	
 	public JackSwitchItemAdapter(Context context, List<Jack> jackSwitchInfoList) {
 		mInflater = LayoutInflater.from(context);
 	}
@@ -77,107 +77,27 @@ public class JackSwitchItemAdapter extends BaseAdapter{
 				if (JackFragmentSwitchTest.jackSwitchInfoList.get(position).getSwitchstate() == 0) {
 					//开关互锁，打开前检查互锁插座是否关闭
 					if (LockCheck.CheckLockStateAccordingMac(position, 1, Launcher.selectMac)) {
-						SocketOutputTask.sendMsgQueue.add("CONT00" + id + "OPEN" + "000000000000"); //加入消息队列
-						Message msg = SocketOutputTask.getHandler().obtainMessage(Const.CONTOPEN, id);
-						SocketOutputTask.getHandler().sendMessage(msg);
-						try {
-							Thread.sleep(200);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						if (SocketOutputTask.sendMsgQueue.contains("CONT00" + id + "OPEN" + "000000000000")) {
-							Message msg1 = SocketOutputTask.getHandler().obtainMessage(Const.CONTOPEN, id);
-							SocketOutputTask.getHandler().sendMessage(msg1);
-						}
-						try {
-							Thread.sleep(200);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						if (SocketOutputTask.sendMsgQueue.contains("CONT00" + id + "OPEN" + "000000000000")) {
-							Message msg2 = SocketOutputTask.getHandler().obtainMessage(Const.CONTOPEN, id);
-							SocketOutputTask.getHandler().sendMessage(msg2);
-						}
-						try {
-							Thread.sleep(200);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						if (SocketOutputTask.sendMsgQueue.contains("CONT00" + id + "OPEN" + "000000000000")) {
-							Message msg3 = SocketOutputTask.getHandler().obtainMessage(Const.CONTOPEN, id);
-							SocketOutputTask.getHandler().sendMessage(msg3);
-						}
-						try {
-							Thread.sleep(200);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						if (SocketOutputTask.sendMsgQueue.contains("CONT00" + id + "OPEN" + "000000000000")) {
-							Message msg4 = SocketOutputTask.getHandler().obtainMessage(Const.CONTOPEN, id);
-							SocketOutputTask.getHandler().sendMessage(msg4);
-						}
+//						JackFragmentSwitchTest.jackSwitchInfoList.get(position).setSwitchstate(1);
+						
+						SocketOutputTask.sendMsgQueue.addLast(createCONTOPENmsg(id));
+						SocketOutputTask.sendMsgQueue.addLast(createCONTOPENmsg(id));
+						SocketOutputTask.sendMsgQueue.addLast(createCONTOPENmsg(id));
+						SocketOutputTask.sendMsgQueue.addLast(createCONTOPENmsg(id));
+						SocketOutputTask.sendMsgQueue.addLast(createCONTOPENmsg(id));
+				
 					} else {
 						//如果需要互锁，插座状态取反并刷新界面
 						JackFragmentSwitchTest.jackSwitchInfoList.get(position).setSwitchstate(0);
-						Message msg = JackFragmentSwitchTest.switchHandler.obtainMessage();
-						msg.arg1 = position;
-						JackFragmentSwitchTest.switchHandler.sendMessage(msg);
 					}
 					
-				} 
-				//关闭（关闭时不用检查互锁）
-				else {
-					SocketOutputTask.sendMsgQueue.add("CONT00" + id + "CLOS" + "000000000000");
-					final Message msg = SocketOutputTask.getHandler().obtainMessage(Const.CONTCLOS, id);
-					SocketOutputTask.getHandler().sendMessage(msg);
+				} else {
+//					JackFragmentSwitchTest.jackSwitchInfoList.get(position).setSwitchstate(0);
 					
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					if (SocketOutputTask.sendMsgQueue.contains("CONT00" + id + "CLOS" + "000000000000")) {
-						final Message msg1 = SocketOutputTask.getHandler().obtainMessage(Const.CONTCLOS, id);
-						SocketOutputTask.getHandler().sendMessage(msg1);
-					}
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					if (SocketOutputTask.sendMsgQueue.contains("CONT00" + id + "CLOS" + "000000000000")) {
-						final Message msg2 = SocketOutputTask.getHandler().obtainMessage(Const.CONTCLOS, id);
-						SocketOutputTask.getHandler().sendMessage(msg2);
-					}
-					
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					if (SocketOutputTask.sendMsgQueue.contains("CONT00" + id + "CLOS" + "000000000000")) {
-						final Message msg3 = SocketOutputTask.getHandler().obtainMessage(Const.CONTCLOS, id);
-						SocketOutputTask.getHandler().sendMessage(msg3);
-					}
-					
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					if (SocketOutputTask.sendMsgQueue.contains("CONT00" + id + "CLOS" + "000000000000")) {
-						final Message msg4 = SocketOutputTask.getHandler().obtainMessage(Const.CONTCLOS, id);
-						SocketOutputTask.getHandler().sendMessage(msg4);
-					}
-					
+					SocketOutputTask.sendMsgQueue.addLast(createCONTCLOSmsg(id));
+					SocketOutputTask.sendMsgQueue.addLast(createCONTCLOSmsg(id));
+					SocketOutputTask.sendMsgQueue.addLast(createCONTCLOSmsg(id));
+					SocketOutputTask.sendMsgQueue.addLast(createCONTCLOSmsg(id));
+					SocketOutputTask.sendMsgQueue.addLast(createCONTCLOSmsg(id));					
 				}
 				
 			}
@@ -185,6 +105,16 @@ public class JackSwitchItemAdapter extends BaseAdapter{
 
 		
 		return convertView;
+	}
+	
+	private String createCONTOPENmsg(String id) {
+		final String msg = "HFUT" + Launcher.selectMac + "CONT" + "00" + id + "OPEN" + "000000000000WANG";
+		return msg;
+	}
+	
+	private String createCONTCLOSmsg(String id) {
+		final String msg = "HFUT" + Launcher.selectMac + "CONT" + "00" + id + "CLOS" + "000000000000WANG";
+		return msg;
 	}
 	
 	public final class ViewHolder {

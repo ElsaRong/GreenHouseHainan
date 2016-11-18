@@ -1,10 +1,6 @@
 package com.greenhouse.util;
 
 import java.util.List;
-
-import com.greenhouse.model.Jack;
-
-import android.R.string;
 import android.util.Log;
 
 /** 
@@ -16,12 +12,22 @@ import android.util.Log;
 * @version      1.0  
 */
 public class DataFormatConversion {
-	public static final String TAG = "DataFormatConversion.java";
+	public static final String TAG = "DataFormatConversion";
 
 	public static void IntegerJackToHexString(int jackId) {
 		String hex = Integer.toBinaryString(jackId);  
-		Log.d(TAG, "jackId = " + jackId + "；Hex = " + hex);
+//		Log.d(TAG, "jackId = " + jackId + "；Hex = " + hex);
 	}
+	
+	 public static String stringToHexString(String strPart) {
+		    String hexString = "";
+		    for (int i = 0; i < strPart.length(); i++) {
+		        int ch = (int) strPart.charAt(i);
+		        String strHex = Integer.toHexString(ch);
+		        hexString = hexString + strHex;
+		    }
+		    return hexString;
+		 }
 	
 	/**
 	 * @Title:       HexStr2ToJackId
@@ -113,12 +119,12 @@ public class DataFormatConversion {
     		 } 
     	 }
     	 String binString = buffer.toString();
-    	 Log.i(TAG, "hex2bin jackId = " + buffer.toString());
+//    	 Log.i(TAG, "hex2bin jackId = " + buffer.toString());
     	 for  (int i=0; i<binString.length(); i++) {
     		 String s = binString.substring(i, i+1);
     		 if (s.equals("1")) {
     			 JackId = (i+1);
-    			 Log.i(TAG, "hex2int jackId = " + JackId);
+//    			 Log.i(TAG, "hex2int jackId = " + JackId);
     			 return JackId;
     		 }
     	 }
@@ -196,7 +202,7 @@ public class DataFormatConversion {
 			 buffer.append(Integer.toHexString(intTmp));
 		 }
 		 hexString = buffer.toString();
-		 Log.i(TAG, "binString=" + binString + "; hexString=" + hexString);
+//		 Log.i(TAG, "binString=" + binString + "; hexString=" + hexString);
 		 return hexString;
 	 }
 	 
@@ -219,7 +225,7 @@ public class DataFormatConversion {
 		 }
 		 hexString = buffer.toString();
 		 hexString = FormatStringByAddZero2(hexString, 12);
-		 Log.i(TAG, "Chosed Jack = " + hexString); 
+//		 Log.i(TAG, "Chosed Jack = " + hexString); 
 		 return hexString;
 	 }
 	 
@@ -290,9 +296,9 @@ public class DataFormatConversion {
 			 }
 		 }
 		 buffer.replace(7, 8, device_type+"");
-		 Log.i(TAG, "-----> (bin)hexMultiSensorAndDeviceType = " + buffer.toString());
+//		 Log.i(TAG, "-----> (bin)hexMultiSensorAndDeviceType = " + buffer.toString());
 		 hexMultiSensAndDevType = Integer.toHexString(Integer.valueOf(buffer.toString(),2));
-		 Log.i(TAG, "-----> (hex)hexMultiSensorAndDeviceType = " + hexMultiSensAndDevType);
+//		 Log.i(TAG, "-----> (hex)hexMultiSensorAndDeviceType = " + hexMultiSensAndDevType);
 		 return hexMultiSensAndDevType;
 	 }
 	 
@@ -336,7 +342,7 @@ public class DataFormatConversion {
 			 buffer.replace(id-1, id, "1");
 		 }
 		 binString = buffer.toString();
-		 Log.i(TAG, "binString=" + buffer.toString());
+//		 Log.i(TAG, "binString=" + buffer.toString());
 		 return binString;
 	 }
 	 
@@ -361,7 +367,9 @@ public class DataFormatConversion {
 		 for (int i=0; i<hexLen; i++) {
 			 int position = i*2;
 			 b[i] = (byte) (charToByte(hexChar[position]) << 4 | charToByte(hexChar[position+1]));
+//			 Log.e(TAG, "b["+i+"] = "+b[i]);
 		 }
+
 		 return b;
 	 }
 	 
@@ -388,7 +396,7 @@ public class DataFormatConversion {
 			 buffer.append(Integer.toHexString(c));
 		 }
 		 hexStr = buffer.toString();
-		 Log.i(TAG,"irreguStr=" + irreguStr + "; hexStr=" + hexStr);
+//		 Log.i(TAG,"irreguStr=" + irreguStr + "; hexStr=" + hexStr);
 		 return hexStr;
 	 }
 	 
@@ -516,7 +524,7 @@ public class DataFormatConversion {
 		 default:
 			 break;
 		 }
-		 Log.i(TAG, buffer_all_thre.toString());
+//		 Log.i(TAG, buffer_all_thre.toString());
 		 return buffer_all_thre;
 	 }
 	 

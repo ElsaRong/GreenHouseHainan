@@ -1,15 +1,19 @@
 package com.greenhouse.networkservice;
 
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.Queue;
 
 import com.greenhouse.ui.Launcher;
 import com.greenhouse.util.Const;
+import com.greenhouse.util.GreenHouseApplication;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -26,109 +30,107 @@ import android.util.Log;
 */
 public class SocketOutputTask implements Runnable{	
 	
-	private static final String TAG = "SocketOutputThread.java";
+	private static final String TAG = "SocketOutputThread";
 	
-	private static Handler outputHandler;                          //发送线程handler
-	private static OutputStream outputStream;				       //Socket输出流
-	public static Queue<String> sendMsgQueue = new LinkedList<>(); //发送消息队列
-	public Handler mainHandler; 								   //主线程handler,用于异步重连
+	private OutputStream outputStream;				       //Socket输出流
+	public static LinkedList<Object> sendMsgQueue = new LinkedList<Object>(); //发送消息队列
+
 	
-	/**
-	 * @param mainHandler
-	 */
-	public SocketOutputTask(Handler mainHandler) {
-		this.mainHandler = mainHandler;
-	}
-	
-	/**
-	 * @Title:       sendEncodeData
-	 * @description: TODO 根据handler传递的消息的msg,调用对应的组装报文方法(在对应的组装方法中有对应的发送方法)
-	 * @param        @param msg
-	 * @return       void
-	 * @throws
-	 * @author       Elsa elsarong715@gmail.com
-	 * @data         Aug 23, 2016, 3:23:02 PM
-	 */
-	public void sendEncodeData(Message msg){
-		switch (msg.what) {
-		case Const.TIME:
-			CommProtocol.sendMessageTIME();
-			break;
-		case Const.TASK:
-			CommProtocol.sendMessageTASK();
-			break;
-		case Const.DELE:
-			CommProtocol.sendMessageDELE();
-			break;
-		case Const.SENS:
-			CommProtocol.sendMessageSENS();
-			break;
-		case Const.PROB:
-			CommProtocol.sendMessagePROB();
-			break;
-		case Const.BUND:
-			CommProtocol.sendMessageMultiBund();
-			break;
-		case Const.CONTOPEN:
-			CommProtocol.sendMessageCONTOPEN(msg.obj);
-			break;
-		case Const.CONTCLOS:
-			CommProtocol.sendMessageCONTCLOS(msg.obj);
-			break;
-		case Const.REMO:
-			CommProtocol.sendMessageREMO(msg.obj);
-			break;
-		case Const.HEARTBEAT:
-			CommProtocol.sendMessageHEARTBEAT();
-			break;
-		case Const.DANI:
-			CommProtocol.sendMessageTIMESET(msg);
-			break;
-		case Const.THRE:
-			CommProtocol.sendMessageTHRE(msg);
-			break;
-		case Const.OUTT:
-			CommProtocol.sendMessageOUTT();
-			break;
-		case Const.INTE:
-			CommProtocol.sendMessageINTE();
-			break;
-		default:
-			break;
-		}
-	}
-	
-	/**
-	 * @Title:       sendMessageStr
-	 * @description: TODO 发送字符串格式报文
-	 * @param        @param strMsg
-	 * @return       void
-	 * @throws
-	 * @author       Elsa elsarong715@gmail.com
-	 * @data         Aug 20, 2016, 7:14:03 PM
-	 */
-	public static void sendMessageStr(String strMsg) {
-		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream));
+	public void run() {
+		Log.d(TAG, "Output Task Run");
 		try {
-			writer.write(strMsg.replace("", ""));
-			writer.flush();
+			outputStream = Launcher.client.getOutputStream();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Log.d(TAG, "[Send]" + strMsg);
+		
+		sendMsgQueue.addLast(createTIMEmsg());
+		sendMsgQueue.addLast(createTIMEmsg());
+		sendMsgQueue.addLast(createTIMEmsg());
+		
+		if (outputStream != null) {	
+			while (Launcher.client != null && Launcher.client.isConnected() && !Launcher.client.isClosed()) {
+				if (!sendMsgQueue.isEmpty()) {
+					Object msg = sendMsgQueue.getFirst();
+					try {
+						sendMsgQueue.removeFirst();
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						Log.e(TAG, "NoSuchElement Exception");
+						e1.printStackTrace();
+					}
+					if (msg.toString().contains("HFUT") || msg.toString().contains("WANG")) {
+						sendMessageStr(msg.toString());
+					} else {
+						sendMessageByte(toByteArray(msg));
+					}
+					
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		
+		Log.d(TAG, "Output Task End");
 	}
 	
-	/**
-	 * @Title:       sendMessageByte
-	 * @description: TODO 发送字节格式报文
-	 * @param        @param byteMsg
-	 * @return       void
-	 * @throws
-	 * @author       Elsa elsarong715@gmail.com
-	 * @data         Aug 20, 2016, 7:13:48 PM
-	 */
-	public static void sendMessageByte(byte[] byteMsg) {
+    public byte[] toByteArray (Object obj) {      
+        byte[] bytes = null;      
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();      
+        try {        
+            ObjectOutputStream oos = new ObjectOutputStream(bos);         
+            oos.writeObject(obj);        
+            oos.flush();         
+            bytes = bos.toByteArray ();      
+            oos.close();         
+            bos.close();        
+        } catch (IOException ex) {        
+            ex.printStackTrace();   
+        }      
+//        Log.d(TAG, "转换后的byte: " + bytes);
+        return bytes;    
+    }
+	
+	private String createTIMEmsg() {
+		Calendar c = Calendar.getInstance();
+		int year = c.get(Calendar.YEAR);
+		int month = c.get(Calendar.MONTH) + 1;
+		int day = c.get(Calendar.DAY_OF_MONTH);
+		int hour = c.get(Calendar.HOUR_OF_DAY);
+		int minute = c.get(Calendar.MINUTE);
+		int second = c.get(Calendar.SECOND);
+		String Year = Integer.toString(year);
+		String Month = Integer.toString(month);
+		String Day = Integer.toString(day);
+		String Hour = Integer.toString(hour);
+		String Minute = Integer.toString(minute);
+		String Second = Integer.toString(second);
+		if (month < 10) {
+			Month = "0" + Month;
+		}
+		if (day < 10) {
+			Day = "0" + Day;
+		}
+		if (hour < 10) {
+			Hour = "0" + Hour;
+		}
+		if (minute < 10) {
+			Minute = "0" + Minute;
+		}
+		if (second < 10) {
+			Second = "0" + Second;
+		}
+		final String msg = "HFUT" + Launcher.selectMac + "TIME" + Year + Month + Day + Hour + Minute + Second + "00" + "0000" + "WANG";
+		return msg;
+	}
+	
+
+	public void sendMessageByte(byte[] byteMsg) {
 		DataOutputStream writer  = new DataOutputStream(outputStream);
 		try {
 			writer.write(byteMsg);
@@ -137,63 +139,21 @@ public class SocketOutputTask implements Runnable{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Log.d(TAG, "[Send]" + byteMsg);
-	}
-	
-
-	public void run() {
-		ThreadPoolManager.OUTPUT_IsRUNNING = true;
-		Log.d(TAG, "[Output-Run]");
-		Looper.prepare();		
-		outputHandler = new Handler() {
-			public void handleMessage (Message msg) {
-				if (Launcher.client != null && Launcher.client.getState() == Const.SOCKET_CONNECTED) {
-					try {
-						outputStream = Launcher.client.getSocket().getOutputStream();
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-						Launcher.client.setState(Const.SOCKET_DISCONNECTED);
-					}
-					if (outputStream != null) {
-						sendEncodeData(msg); 
-					}
-				} else {
-					Launcher.client.setState(Const.SOCKET_DISCONNECTED);
-					
-					try {
-						Thread.sleep(3000);
-					} catch (InterruptedException interruptException) {
-						// TODO Auto-generated catch block
-						interruptException.printStackTrace();
-					}
-					
-					if (!Launcher.BACK_TO_LAUNCHER && Launcher.client.getRunningState()) {
-						new AsyncNetChangedSocketReq(mainHandler).execute();
-					}
-				}
-			}
-		};
-		
-		Looper.myQueue();
-		Looper.loop();
-		ThreadPoolManager.OUTPUT_IsRUNNING = false;
-		Log.d(TAG, "[Output-End]");
-	}
-	
-
-	
-	public static Handler getHandler() {
-		return outputHandler; 
+		Log.d(TAG, "[Send:Byte]" + byteMsg);
 	}
 
-
-
-
-	
-
-	
-	
-
+	private Integer sendMessageStr(String msg) {
+		Integer ret = Integer.valueOf(-1);
+		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream));
+		try {
+			writer.write(msg.replace("", ""));
+			writer.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Log.d(TAG, "[Send: Str]" + msg);
+		return ret;
+	}
 
 }

@@ -1,25 +1,12 @@
 package com.greenhouse.specialversion;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import com.greenhouse.ui.JackFragmentMaster;
-import com.greenhouse.ui.JackFragmentShowinfo;
-import com.greenhouse.ui.JackFragmentSwitchTest;
-import com.greenhouse.ui.Launcher;
-import com.greenhouse.ui.Timer;
-import com.greenhouse.util.DataFormatConversion;
-import com.greenhouse.util.GreenHouseApplication;
-import com.greenhouse.util.ToastUtil;
-
-import android.content.Context;
-import android.util.Log;
 
 /** 
 * @author       Elsa 
 * @Email		elsarong715@gmail.com
-* @date			2016��4��15������10:25:41 
+* @date			2016-4-15 10:25:41 
 * @version		1.0  
 * @description			 
 */

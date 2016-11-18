@@ -15,6 +15,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -113,38 +114,11 @@ public class JackFragmentThresholdSet extends Fragment {
 				thre1 = Integer.valueOf(airtemp.getText().toString());
 				if (thre1 <= 5 && thre1 >= 0) {
 					
-					Message msg = SocketOutputTask.getHandler().obtainMessage(Const.THRE);
+					Message msg = Message.obtain();
 					msg.arg1 = 1;
-					msg.arg2 = thre1;
-					SocketOutputTask.getHandler().sendMessage(msg);
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-					Message msg2 = SocketOutputTask.getHandler().obtainMessage(Const.THRE);
-					msg2.arg1 = 1;
-					msg2.arg2 = thre1;
-					SocketOutputTask.getHandler().sendMessage(msg2);
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-					Message msg3 = SocketOutputTask.getHandler().obtainMessage(Const.THRE);
-					msg3.arg1 = 1;
-					msg3.arg2 = thre1;
-					SocketOutputTask.getHandler().sendMessage(msg3);
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					msg.arg2 = thre1;					
+					SocketOutputTask.sendMsgQueue.addLast(createTHREmsg(msg));
+	
 					
 					controllerService.modifyThredshold1(thre1);
 					mainHandler.sendEmptyMessage(Const.UI_REFRESH_FRAG_THRESET);
@@ -163,36 +137,10 @@ public class JackFragmentThresholdSet extends Fragment {
 				thre2 = Integer.valueOf(airhum .getText().toString());
 				if (thre2 <= 10 && thre2 >= 0) {
 					
-					Message msg = SocketOutputTask.getHandler().obtainMessage(Const.THRE);
+					Message msg = Message.obtain();
 					msg.arg1 = 2;
-					msg.arg2 = thre2;
-					SocketOutputTask.getHandler().sendMessage(msg);
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					Message msg2 = SocketOutputTask.getHandler().obtainMessage(Const.THRE);
-					msg2.arg1 = 2;
-					msg2.arg2 = thre1;
-					SocketOutputTask.getHandler().sendMessage(msg2);
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					Message msg3 = SocketOutputTask.getHandler().obtainMessage(Const.THRE);
-					msg3.arg1 = 2;
-					msg3.arg2 = thre1;
-					SocketOutputTask.getHandler().sendMessage(msg3);
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					msg.arg2 = thre2;					
+					SocketOutputTask.sendMsgQueue.addLast(createTHREmsg(msg));
 					
 					controllerService.modifyThredshold2(thre2);
 					mainHandler.sendEmptyMessage(Const.UI_REFRESH_FRAG_THRESET);
@@ -211,36 +159,10 @@ public class JackFragmentThresholdSet extends Fragment {
 				thre3 = Integer.valueOf(co2.getText().toString());
 				if (thre3 <= 2 && thre3 >= 0) {
 					
-					Message msg = SocketOutputTask.getHandler().obtainMessage(Const.THRE);
+					Message msg = Message.obtain();
 					msg.arg1 = 3;
-					msg.arg2 = thre3;
-					SocketOutputTask.getHandler().sendMessage(msg);
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					Message msg2 = SocketOutputTask.getHandler().obtainMessage(Const.THRE);
-					msg2.arg1 = 3;
-					msg2.arg2 = thre1;
-					SocketOutputTask.getHandler().sendMessage(msg2);
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					Message msg3 = SocketOutputTask.getHandler().obtainMessage(Const.THRE);
-					msg3.arg1 = 3;
-					msg3.arg2 = thre1;
-					SocketOutputTask.getHandler().sendMessage(msg3);
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					msg.arg2 = thre3;					
+					SocketOutputTask.sendMsgQueue.addLast(createTHREmsg(msg));
 					
 					controllerService.modifyThredshold3(thre3);
 					mainHandler.sendEmptyMessage(Const.UI_REFRESH_FRAG_THRESET);
@@ -258,31 +180,11 @@ public class JackFragmentThresholdSet extends Fragment {
 				// TODO Auto-generated method stub
 				thre4 = Integer.valueOf(soiltemp.getText().toString());
 				if (thre4 <= 5 && thre4 >= 0) {
-					
-					Message msg = SocketOutputTask.getHandler().obtainMessage(Const.THRE);
+
+					Message msg = Message.obtain();
 					msg.arg1 = 4;
-					msg.arg2 = thre4;
-					SocketOutputTask.getHandler().sendMessage(msg);
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					Message msg2 = SocketOutputTask.getHandler().obtainMessage(Const.THRE);
-					msg2.arg1 = 4;
-					msg2.arg2 = thre1;
-					SocketOutputTask.getHandler().sendMessage(msg2);
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					Message msg3 = SocketOutputTask.getHandler().obtainMessage(Const.THRE);
-					msg3.arg1 = 4;
-					msg3.arg2 = thre1;
-					SocketOutputTask.getHandler().sendMessage(msg3);
+					msg.arg2 = thre4;					
+					SocketOutputTask.sendMsgQueue.addLast(createTHREmsg(msg));
 					
 					controllerService.modifyThredshold4(thre4);
 					mainHandler.sendEmptyMessage(Const.UI_REFRESH_FRAG_THRESET);
@@ -301,31 +203,10 @@ public class JackFragmentThresholdSet extends Fragment {
 				thre5 = Integer.valueOf(soilhum.getText().toString());
 				if (thre5 <= 10 && thre5 >= 0) {
 					
-					Message msg = SocketOutputTask.getHandler().obtainMessage(Const.THRE);
+					Message msg = Message.obtain();
 					msg.arg1 = 5;
-					msg.arg2 = thre5;
-					SocketOutputTask.getHandler().sendMessage(msg);
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					Message msg2 = SocketOutputTask.getHandler().obtainMessage(Const.THRE);
-					msg2.arg1 = 5;
-					msg2.arg2 = thre1;
-					SocketOutputTask.getHandler().sendMessage(msg2);
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					Message msg3 = SocketOutputTask.getHandler().obtainMessage(Const.THRE);
-					msg3.arg1 = 5;
-					msg3.arg2 = thre1;
-					SocketOutputTask.getHandler().sendMessage(msg3);
-					
+					msg.arg2 = thre5;					
+					SocketOutputTask.sendMsgQueue.addLast(createTHREmsg(msg));
 					
 					controllerService.modifyThredshold5(thre5);
 					mainHandler.sendEmptyMessage(Const.UI_REFRESH_FRAG_THRESET);
@@ -343,30 +224,11 @@ public class JackFragmentThresholdSet extends Fragment {
 				// TODO Auto-generated method stub
 				thre6 = Integer.valueOf(ph.getText().toString());
 				if (thre6 <= 500 && thre6 >= 0) {
-					Message msg = SocketOutputTask.getHandler().obtainMessage(Const.THRE);
+					
+					Message msg = Message.obtain();
 					msg.arg1 = 6;
-					msg.arg2 = thre6;
-					SocketOutputTask.getHandler().sendMessage(msg);
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					Message msg2 = SocketOutputTask.getHandler().obtainMessage(Const.THRE);
-					msg2.arg1 = 6;
-					msg2.arg2 = thre1;
-					SocketOutputTask.getHandler().sendMessage(msg2);
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					Message msg3 = SocketOutputTask.getHandler().obtainMessage(Const.THRE);
-					msg3.arg1 = 6;
-					msg3.arg2 = thre1;
-					SocketOutputTask.getHandler().sendMessage(msg3);
+					msg.arg2 = thre6;					
+					SocketOutputTask.sendMsgQueue.addLast(createTHREmsg(msg));
 					
 					controllerService.modifyThredshold6(thre6);
 					mainHandler.sendEmptyMessage(Const.UI_REFRESH_FRAG_THRESET);
@@ -385,30 +247,11 @@ public class JackFragmentThresholdSet extends Fragment {
 				// TODO Auto-generated method stub
 				thre7 = Integer.valueOf(illum.getText().toString());
 				if (thre7 <= 5000 && thre7 >= 0) {
-					Message msg = SocketOutputTask.getHandler().obtainMessage(Const.THRE);
+					
+					Message msg = Message.obtain();
 					msg.arg1 = 7;
 					msg.arg2 = thre7;
-					SocketOutputTask.getHandler().sendMessage(msg);
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					Message msg2 = SocketOutputTask.getHandler().obtainMessage(Const.THRE);
-					msg2.arg1 = 7;
-					msg2.arg2 = thre1;
-					SocketOutputTask.getHandler().sendMessage(msg2);
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					Message msg3 = SocketOutputTask.getHandler().obtainMessage(Const.THRE);
-					msg3.arg1 = 7;
-					msg3.arg2 = thre1;
-					SocketOutputTask.getHandler().sendMessage(msg3);
+					SocketOutputTask.sendMsgQueue.addLast(createTHREmsg(msg));
 					
 					controllerService.modifyThredshold7(thre7);
 					mainHandler.sendEmptyMessage(Const.UI_REFRESH_FRAG_THRESET);
@@ -421,6 +264,50 @@ public class JackFragmentThresholdSet extends Fragment {
 		
 		return vw;
 
+	}
+	
+	
+	public String createTHREmsg(Message message) {
+		String msg = "";
+		
+		switch(message.arg1) {
+		case 1:
+			msg = "HFUT" + Launcher.selectMac + "THRE0" + message.arg1 + "0" + message.arg2 + "0000000000000000" + "WANG";
+			break;
+		case 2:
+			msg = "HFUT" + Launcher.selectMac + "THRE0" + message.arg1 + "0" + message.arg2 + "0000000000000000" + "WANG";
+			break;
+		case 3:
+			if (message.arg2 > 10) {
+				msg = "HFUT" + Launcher.selectMac + "THRE0" + message.arg1 + "0" + message.arg2 + "0000000000000000" + "WANG";
+			} else {
+				msg = "HFUT" + Launcher.selectMac + "THRE0" + message.arg1 + "0" + message.arg2 + "0000000000000000" + "WANG";
+			}
+			break;
+		case 4:
+			msg = "HFUT" + Launcher.selectMac + "THRE0" + message.arg1 + "0" + message.arg2 + "0000000000000000" + "WANG";
+			break;
+		case 5:
+			msg = "HFUT" + Launcher.selectMac + "THRE0" + message.arg1 + "0" + message.arg2 + "0000000000000000" + "WANG";
+			break;
+		case 6:
+			msg = "HFUT" + Launcher.selectMac + "THRE0" + message.arg1 + "000" + message.arg2 + "00" + "000000000000" + "WANG";
+			break;
+		case 7:
+			if (message.arg2 < 10) {
+				msg = "HFUT" + Launcher.selectMac + "THRE0" + message.arg1 + "000" + message.arg2 + "00000000000000" + "WANG";
+			} else if (message.arg2 >= 10 && message.arg2 < 100) {
+				msg = "HFUT" + Launcher.selectMac + "THRE0" + message.arg1 + "00" + message.arg2 + "00000000000000" + "WANG";
+			} else if (message.arg2 >= 100 && message.arg2 < 1000) {
+				msg = "HFUT" + Launcher.selectMac + "THRE0" + message.arg1 + "0" + message.arg2 + "00000000000000" + "WANG";
+			} else if (message.arg2 >= 1000 && message.arg2 < 10000) {
+				msg = "HFUT" + Launcher.selectMac + "THRE0" + message.arg1 + message.arg2 + "00000000000000" + "WANG";
+			}
+			break;
+			default:
+				break;
+		}
+		return msg;
 	}
 
 

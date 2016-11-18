@@ -36,6 +36,7 @@ import com.greenhouse.networkservice.SocketInputTask;
 import com.greenhouse.networkservice.SocketOutputTask;
 import com.greenhouse.networkservice.ThreadPoolManager;
 import com.greenhouse.util.Const;
+import com.greenhouse.util.DataFormatConversion;
 import com.greenhouse.util.TimerConfigure;
 import com.greenhouse.util.ToastUtil;
 import com.greenhouse.widget.CustomDatePicker;
@@ -44,8 +45,8 @@ import com.greenhouse.widget.CustomTimePicker;
 
 public class Timer extends Activity {
 	
-	public static Queue<String> sendMsgQueue = new LinkedList<>();
-
+	private static final String TAG = "Timer";
+	
 	public static boolean poweronFlag = false;
 	public static boolean poweroffFlag = false;
 	public static boolean circleFlag = false;
@@ -56,7 +57,7 @@ public class Timer extends Activity {
 	private TextView circleTime;
 	private TextView startTime;
 
-	private List<Map<String, String>> mMultiJack;
+	private List<Map<String, String>> mMultiJack = new ArrayList<Map<String, String>>();
 	private Iterator<Map<String, String>> iterator_timer;
 	public static int[] chosedJackGroup = {0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,
 			0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0};
@@ -67,53 +68,18 @@ public class Timer extends Activity {
 	
 	private JackService jackService;
 	
-	private static ProgressBar title_waiting;
-	
-	public BroadcastReceiver myReceiver;
-	
-	public Handler handler = new Handler() {
-		public void handleMessage(Message msg) {
-			switch (msg.what) {
-			case Const.BACK_TO_LAUNCHER:
-				ToastUtil.TextToastLong(Timer.this, "没有网络");
-				Launcher.client.setState(Const.SOCKET_DISCONNECTED);
-				Launcher.server.setServerState(Const.SOCKET_DISCONNECTED);
-				Launcher.client.destroy();
-				Launcher.server.destroy();
-				Intent intent = new Intent(Timer.this, Launcher.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivity(intent);
-				break;	
-			default:
-				break;
-			}
-		}
-	};
-
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		
 		setContentView(R.layout.timer);
-		title_waiting = (ProgressBar) findViewById(R.id.title_waiting); 
-		
-		IntentFilter filter=new IntentFilter();
-		filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-		filter.addAction("com.greenhosue.backtolauncheraction");
-        myReceiver = new NetBroadcastReceiver(handler);
-        this.registerReceiver(myReceiver, filter);
 		
 		poweronFlag = false;
 		poweroffFlag = false;
-		mMultiJack = new ArrayList<Map<String, String>>();
-		mMultiJack = AlarmclockListView.mMultiCheck;
+		mMultiJack = AlarmclockListView.chooseJacks;
 		
 		jackService = new JackService(this);
-
 		iterator_timer = mMultiJack.iterator();
-
 
 		// title_btn
 		ImageView localImageView = (ImageView) findViewById(R.id.title_btn);
@@ -138,52 +104,22 @@ public class Timer extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub			
 				if (poweronFlag && poweroffFlag && circleFlag ) {
-					
 					if( (CustomTimePicker.on_hour + "" + CustomTimePicker.on_minute).equals("00") ){
-						
 						Toast.makeText(Timer.this, "打开时间不能为：0H0M !",	Toast.LENGTH_LONG).show();
-						
 					}  else {						
-				
 					if (startFlag) {
 						CustomTimePicker.YY  = TimerConfigure.calculate(CustomTimePicker.x1, 
 								CustomTimePicker.x2, CustomTimePicker.x3, CustomTimePicker.x4, CustomTimePicker.x5);
-						
 						stopdate = TimerConfigure.addDateMinut(CustomDatePicker.ZZ, CustomTimePicker.YY);
 						poweronFlag = poweroffFlag = circleFlag = false;
 						
 						// 1-加入消息队列
-						SocketOutputTask.getHandler().sendEmptyMessage(Const.TASK);	
-						try {
-							Thread.sleep(300);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						SocketOutputTask.getHandler().sendEmptyMessage(Const.TASK);	
-						try {
-							Thread.sleep(300);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						SocketOutputTask.getHandler().sendEmptyMessage(Const.TASK);	
-						try {
-							Thread.sleep(300);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						SocketOutputTask.getHandler().sendEmptyMessage(Const.TASK);	
-						try {
-							Thread.sleep(300);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						SocketOutputTask.getHandler().sendEmptyMessage(Const.TASK);	
+						SocketOutputTask.sendMsgQueue.addLast(createTASKmsg());
+						SocketOutputTask.sendMsgQueue.addLast(createTASKmsg());
+						SocketOutputTask.sendMsgQueue.addLast(createTASKmsg());
+						SocketOutputTask.sendMsgQueue.addLast(createTASKmsg());
+						SocketOutputTask.sendMsgQueue.addLast(createTASKmsg());
 						
-						AlarmclockListView.sAlarmListHandler.sendEmptyMessageDelayed(Const.UI_REFRESH, 300);
 						Intent intent = new Intent();
 						intent.setClass(Timer.this, AlarmclockListView.class);
 						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -210,7 +146,7 @@ public class Timer extends Activity {
 						
 						try {
 							StopDate = sdf2.parse(stopdate).getTime();
-							Log.i("Stop time = timeDate",	StopDate + "");
+//							Log.i("Stop time = timeDate",	StopDate + "");
 						} catch (ParseException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -218,43 +154,17 @@ public class Timer extends Activity {
 						
 						poweronFlag = poweroffFlag = circleFlag= false;
 						
-						SocketOutputTask.getHandler().sendEmptyMessage(Const.TASK);	
-						try {
-							Thread.sleep(300);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						SocketOutputTask.getHandler().sendEmptyMessage(Const.TASK);	
-						try {
-							Thread.sleep(300);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						SocketOutputTask.getHandler().sendEmptyMessage(Const.TASK);	
-						try {
-							Thread.sleep(300);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						SocketOutputTask.getHandler().sendEmptyMessage(Const.TASK);	
-						try {
-							Thread.sleep(300);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						SocketOutputTask.getHandler().sendEmptyMessage(Const.TASK);	
-						
+						// 1-加入消息队列
+						SocketOutputTask.sendMsgQueue.addLast(createTASKmsg());
+						SocketOutputTask.sendMsgQueue.addLast(createTASKmsg());
+						SocketOutputTask.sendMsgQueue.addLast(createTASKmsg());
+						SocketOutputTask.sendMsgQueue.addLast(createTASKmsg());
+						SocketOutputTask.sendMsgQueue.addLast(createTASKmsg());
 						
 						for (int i = 0; i < 48; i++) {
 							Timer.chosedJackGroup[i] = 0;
 							Timer.chosedJackGroupHex = null;
 						}
-						
-						AlarmclockListView.sAlarmListHandler.sendEmptyMessageDelayed(Const.UI_REFRESH, 300);
 						
 						Intent intent = new Intent();
 						intent.setClass(Timer.this, AlarmclockListView.class);
@@ -338,7 +248,38 @@ public class Timer extends Activity {
 		});
 	}
 
+	public byte[] createTASKmsg() {
+		final String year, month, day, hour, minute, on_hour, on_minute, off_hour, off_minute, circle;
+		year = "0" +Integer.toHexString(CustomDatePicker.Year);
+		month = modifyFormat(Integer.toHexString(CustomDatePicker.Month));
+		day = modifyFormat(Integer.toHexString(CustomDatePicker.Day));
+		hour = modifyFormat(Integer.toHexString(CustomDatePicker.Hour));
+		minute = modifyFormat(Integer.toHexString(CustomDatePicker.Minute));
+		on_hour = modifyFormat(Integer.toHexString(CustomTimePicker.on_hour));
+		on_minute = modifyFormat(Integer.toHexString(CustomTimePicker.on_minute));
+		off_hour = modifyFormat(Integer.toHexString(CustomTimePicker.off_hour));
+		off_minute = modifyFormat(Integer.toHexString(CustomTimePicker.off_minute));
+		circle = "00" + modifyFormat(Integer.toHexString(CustomTimePicker.CIRCLE));
+		
+		final String msg = DataFormatConversion.IrreguStringToHexValue("HFUT" + Launcher.selectMac + "TASK") 
+				+ year + month + day + hour + minute + on_hour + on_minute + off_hour + off_minute + circle
+				+ Timer.chosedJackGroupHex + "0000"
+				+ DataFormatConversion.IrreguStringToHexValue("WANG");
+		
+		Log.e(TAG, "转换成字节前的TASK报文: "+msg);
+		
+		byte[] b = DataFormatConversion.HexStringToByte(msg);
+		return b;
+	}
 
+private static String modifyFormat(String s) {
+	if (s.length() == 1) {
+		s = "0" + s;
+		return s;
+	} else {
+		return s;
+	}
+}
 
 	@Override
 	public void onStop() {
@@ -350,7 +291,6 @@ public class Timer extends Activity {
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
-		unregisterReceiver(myReceiver);
 		super.onDestroy();
 	}
 

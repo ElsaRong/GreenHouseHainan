@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.greenhouse.R;
 import com.greenhouse.database.SensorService;
+import com.greenhouse.database.SourceDataManager;
 import com.greenhouse.model.Sensor;
 import com.greenhouse.mvadpater.EnvironmentListAdapter;
 import com.greenhouse.util.Const;
@@ -33,30 +34,16 @@ public class JackFragmentEnvironment extends Fragment {
 	
 	private ListView listview;
 	
-	private static EnvironmentListAdapter adapter;
-	
+	static EnvironmentListAdapter adapter;
 	public static List<Sensor> sensors = new ArrayList<Sensor>();
-	public static Handler handler;
-	
-	
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		
 		final Context context = getActivity();
 		View vw = inflater.inflate(R.layout.jack_fragment_environment, container, false);	
 		
-		handler = new Handler(){
-			@Override
-			public void handleMessage(Message msg){
-				switch (msg.what) {
-				case Const.UI_REFRESH:
-					adapter.notifyDataSetChanged();
-					break;
-				}
-			}
-		};
-		
-		adapter = new EnvironmentListAdapter(context, sensors);
+		sensors = SourceDataManager.initEnvironmentList();
+		adapter = new EnvironmentListAdapter(context);
 		listview = (ListView)vw.findViewById(R.id.list);
 		listview.setAdapter(adapter);
 		

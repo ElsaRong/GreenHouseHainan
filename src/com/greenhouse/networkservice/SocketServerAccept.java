@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import com.greenhouse.model.SocketServer;
+import com.greenhouse.ui.Launcher;
 import com.greenhouse.util.Const;
 
 import android.util.Log;
@@ -17,9 +18,7 @@ import android.util.Log;
 */
 public class SocketServerAccept implements Runnable {
 	
-	private static final String TAG = "[new Accept Task Run]";
-	
-	private ServerSocket server;
+	private static final String TAG = "SocketServerAccept";
 	
 	private Socket socket;
 	
@@ -29,37 +28,39 @@ public class SocketServerAccept implements Runnable {
 	public void run() {
 		// TODO Auto-generated method stub
 		
-		ThreadPoolManager.ACCEPT_IsRUNNING = true;
-		
-		Log.d(TAG, "[Accept-Run]");
-		
-		while(true) {
+		while (true) {
+			Log.d(TAG, "Accept Task Run");
 			
 			try {
-				server = new ServerSocket(Const.server_PORT);
+				Launcher.server = new ServerSocket(Const.server_PORT);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
 			try {
-				Log.d(TAG, "accepting...");
-				socket = server.accept();
+				socket = Launcher.server.accept();
+				Log.d(TAG, "accepted");
+				if(socket.isConnected() && !socket.isClosed()) {
+					SocketServer tvServer = new SocketServer();
+					tvServer.setSocketServer(socket);
+					tvServer.setServerState(Const.SOCKET_CONNECTED);
+					manager = ThreadPoolManager.getInstance();
+					manager.startSocketServerTask(tvServer);
+				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
+				Log.d(TAG, "Server is exception");
 				e.printStackTrace();
 			}
 			
-			Log.d(TAG, "accepted");
-			
-			if(socket.isConnected() && !socket.isClosed()) {
-				SocketServer tvServer = new SocketServer();
-				tvServer.setSocketServer(socket);
-				tvServer.setServerState(Const.SOCKET_CONNECTED);
-				manager = ThreadPoolManager.getInstance();
-				manager.startSocketServerTask(tvServer);
+			try {
+				Launcher.server.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} finally {
+				Launcher.server = null;
 			}
-			
 		}
 		
 	}

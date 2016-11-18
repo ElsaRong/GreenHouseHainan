@@ -59,6 +59,7 @@ public class StatisticService {
 			b = false;
 		}
 		cursor.close();
+		db.close();
 		return b;
 	}
 	
@@ -72,6 +73,7 @@ public class StatisticService {
 			listHistory.add(Integer.parseInt(cursor.getString(cursor.getColumnIndex("soiltemp"))));
 		}
 		cursor.close();
+		db.close();
 		if(listHistory.size()>0) {
 			return listHistory;
 		} else {
@@ -89,6 +91,7 @@ public class StatisticService {
 			listHistory.add(Integer.parseInt(cursor.getString(cursor.getColumnIndex("soilhum"))));
 		}
 		cursor.close();
+		db.close();
 		if(listHistory.size()>0) {
 			return listHistory;
 		} else {
@@ -106,6 +109,7 @@ public class StatisticService {
 			listHistory.add(Integer.parseInt(cursor.getString(cursor.getColumnIndex("soilph"))));
 		}
 		cursor.close();
+		db.close();
 		if(listHistory.size()>0) {
 			return listHistory;
 		} else {
@@ -123,6 +127,7 @@ public class StatisticService {
 			listHistory.add(Integer.parseInt(cursor.getString(cursor.getColumnIndex("airtemp"))));
 		}
 		cursor.close();
+		db.close();
 		if(listHistory.size()>0) {
 			return listHistory;
 		} else {
@@ -140,6 +145,7 @@ public class StatisticService {
 			listHistory.add(Integer.parseInt(cursor.getString(cursor.getColumnIndex("airhum"))));
 		}
 		cursor.close();
+		db.close();
 		if(listHistory.size()>0) {
 			return listHistory;
 		} else {
@@ -157,6 +163,7 @@ public class StatisticService {
 			listHistory.add(Integer.parseInt(cursor.getString(cursor.getColumnIndex("co2"))));
 		}
 		cursor.close();
+		db.close();
 		if(listHistory.size()>0) {
 			return listHistory;
 		} else {
@@ -174,6 +181,7 @@ public class StatisticService {
 			listHistory.add(Integer.parseInt(cursor.getString(cursor.getColumnIndex("illum"))));
 		}
 		cursor.close();
+		db.close();
 		if(listHistory.size()>0) {
 			return listHistory;
 		} else {

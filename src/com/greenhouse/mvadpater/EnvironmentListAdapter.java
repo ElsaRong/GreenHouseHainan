@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.greenhouse.R;
 import com.greenhouse.model.Sensor;
+import com.greenhouse.ui.JackFragmentEnvironment;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,17 +25,14 @@ public class EnvironmentListAdapter extends BaseAdapter {
 	
 	private LayoutInflater mInflater;
 	
-	private List<Sensor> sensors = new ArrayList<Sensor>();
-	
-	public EnvironmentListAdapter(Context context, List<Sensor> sensors) {
+	public EnvironmentListAdapter(Context context) {
 		mInflater = LayoutInflater.from(context);
-		this.sensors = sensors;
 	}
 
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
-		return sensors.size();
+		return JackFragmentEnvironment.sensors.size();
 	}
 
 	@Override
@@ -68,19 +67,19 @@ public class EnvironmentListAdapter extends BaseAdapter {
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-		holder.sensorid.setText("传感器" + sensors.get(position).getId() + "号");
-		if (sensors.get(position).getOnline() == 1) {
+		holder.sensorid.setText("传感器" + JackFragmentEnvironment.sensors.get(position).getId() + "号");
+		if (JackFragmentEnvironment.sensors.get(position).getOnline() == 1) {
 			holder.online.setText("是");
 		} else {
 			holder.online.setText("否");
 		}
-		holder.airtemp.setText(sensors.get(position).getAirtemp() + " ℃");
-		holder.airhum.setText(sensors.get(position).getAirhum() + "%");
-		holder.co2.setText(sensors.get(position).getCo2() + " ppm");
-		holder.soiltemp.setText(sensors.get(position).getSoiltemp() + " ℃");
-		holder.soilhum.setText(sensors.get(position).getSoilhum() + "%");
-		holder.ph.setText(sensors.get(position).getSoilph()/10 + "." + sensors.get(position).getSoilph()%10  + "");
-		holder.illum.setText(10*sensors.get(position).getIllumination() + "lux");
+		holder.airtemp.setText(JackFragmentEnvironment.sensors.get(position).getAirtemp() + " ℃");
+		holder.airhum.setText(JackFragmentEnvironment.sensors.get(position).getAirhum() + "%");
+		holder.co2.setText(JackFragmentEnvironment.sensors.get(position).getCo2() + " ppm");
+		holder.soiltemp.setText(JackFragmentEnvironment.sensors.get(position).getSoiltemp() + " ℃");
+		holder.soilhum.setText(JackFragmentEnvironment.sensors.get(position).getSoilhum() + "%");
+		holder.ph.setText(JackFragmentEnvironment.sensors.get(position).getSoilph()/10 + "." + JackFragmentEnvironment.sensors.get(position).getSoilph()%10  + "");
+		holder.illum.setText(10*JackFragmentEnvironment.sensors.get(position).getIllumination() + "lux");
 		return convertView;
 	}
 

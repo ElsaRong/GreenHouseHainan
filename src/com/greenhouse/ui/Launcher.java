@@ -1,5 +1,7 @@
 package com.greenhouse.ui;
 
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import android.app.Activity;
@@ -12,6 +14,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -41,11 +44,12 @@ import com.greenhouse.model.SocketClient;
 import com.greenhouse.model.SocketServer;
 import com.greenhouse.mvadpater.GridItemDataAdapter;
 import com.greenhouse.networkservice.NetworkManager;
+import com.greenhouse.networkservice.SocketClientInit;
 import com.greenhouse.networkservice.SocketHeartbeatTask;
 import com.greenhouse.networkservice.SocketInputTask;
 import com.greenhouse.networkservice.SocketOutputTask;
-import com.greenhouse.networkservice.AsyncSocketReq;
 import com.greenhouse.networkservice.ThreadPoolManager;
+import com.greenhouse.networkservice.UdpBroadcastTask;
 import com.greenhouse.util.Const;
 import com.greenhouse.util.GreenHouseApplication;
 import com.greenhouse.util.SlideMenuAdapter;
@@ -65,11 +69,11 @@ public class Launcher extends Activity {
 	/*界面相关标志位*/
 	public static boolean isClickable;            //控制器图标是否可点击，如果已经点击且正在连接，则不能再点击
 	public static boolean IsFirstConnect = true;  //
-	public static int IsStartActivity;			  //
+	public static boolean recvTIME = false;			  //
 	public static String selectMac = null;		  //已点击选中的控制器MAC
 	public static String selectIp = null;         //已点击选中的控制器IP
 	
-	/*主界面布局视图相关*/
+	/*主界面布局视图*/
 	private LinearLayout linearLayout;       //单个滑动布局
 	private LinearLayout.LayoutParams param; //单个滑动布局	
 	private ScrollLayout scrollLayout;       //滑动布局
@@ -78,42 +82,67 @@ public class Launcher extends Activity {
 	private DrawerLayout drawerLayuout;      //左侧滑菜单布局
 	private ListView listView;               //左侧滑菜单视图
 	
-	/*主界面控件相关*/
+	/*主界面控件*/
 	private ImageView runImage, deleteBtn;         //删除button
 	private static ProgressBar controller_waiting; //等待菊花
 	private static TextView txt_controllerwaiting; //等待文字
 	private static ProgressBar title_waiting;      //title栏等待小菊花
+	private ActionBarDrawerToggle mDrawerToggle;
 	
 	
-	/*主界面布局－数据绑定相关*/
+	/*主界面布局－数据绑定*/
 	public static List<String> controllersList = new ArrayList<String>();                             //所有控制器信息
 	private ArrayList<ArrayList<String>> scrollControllersList = new ArrayList<ArrayList<String>>();  //分页显示控制器信息
 	private ArrayList<DragGrid> dragGridArray = new ArrayList<DragGrid>();	                          //分页网格布局Adapter
 	
-	
-	private ActionBarDrawerToggle mDrawerToggle;
-	
-	
 	public static boolean BACK_TO_LAUNCHER = false;
 	
 
+	//线程池对象，持有对主线程的引用
+	private ThreadPoolManager threadPoolManager =  ThreadPoolManager.getInstance();
+	public static GreenHouseApplication mApplication = null;
+
 	public BroadcastReceiver myReceiver;
+	
+	public static Socket client = null;
+	public static ServerSocket server = null;
 
 	/*数据库表对象*/
 	private ControllerService controllerService = new ControllerService(this); //数据库Controller表对象
 	private JackService jackService = new JackService(this);				   //数据库Jack表对象
-	private SensorService sensorService = new SensorService(this);			   //数据库Sensor表对象
+	private SensorService sensorService = new SensorService(this);			   //数据库Sensor表对象	
 	
-	
-	
-	public static SocketClient client;
-	public static SocketServer server;
+    private Handler mainHandler = new Handler() {
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);  
+			switch (msg.what) {
+			case Const.UI_REFRESH:
+				scrollLayout.removeAllViews();
+				initControllerList();
+				initClassifiedControllers();
+				for (int i = 0; i < LauncherViewConfig.countPages; i++) {
+					scrollLayout.addView(initGridViewItem(i));
+				}
+				break;
+			case Const.BACK_TO_LAUNCHER:
+				Intent intent = new Intent();
+				intent.setAction("com.greenhosue.backtolauncheraction");
+				sendBroadcast(intent);
+				break;
+			default:
+				break;
+	        }
+		}
+	};
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); 
 		setContentView(R.layout.main);	
+		
+		mApplication = (GreenHouseApplication)getApplication(); //初始化APP对象
+		mApplication.setMainHandler(mainHandler);				//初始化主线程handler
 		
 		initControllerList();              //初始化所有mac信息到ArrayList<String>
 		initClassifiedControllers();       //初始化分页mac信息到ArrayList<ArrayList<String>>
@@ -178,94 +207,83 @@ public class Launcher extends Activity {
 			}
 		});
 	}
+	
+	/**
+	 * 异步请求控制器或服务器，建立Socket连接
+	 */
+	class AsyncSocketReqTask extends AsyncTask<Void, Integer, Integer> {	
 
+		//初始化工作，显示进度，btn不能点击
+		protected void onPreExecute() {
+			Launcher.recvTIME = false;
+			Launcher.isClickable = false;            //本次请求处理结束前btn为不可点击
+			Launcher.BACK_TO_LAUNCHER = false;
+			progressShow();
+		};
 
-
-    Handler mainHandler = new Handler() {
-		public void handleMessage(Message msg) {
-			super.handleMessage(msg);  
-			switch (msg.what) {
-			case Const.SOCKET_CONNECTING:
-				controller_waiting.setVisibility(View.VISIBLE);
-				txt_controllerwaiting.setVisibility(View.VISIBLE);		
-				break;
-			case Const.SOCKET_CONNECTED:
-				IsStartActivity = Const.TIME_SERVICE_FAILED;
-				if (Launcher.client != null) {
-					Launcher.client.setRunningState(false);
-				}
-				threadPoolManager.startSocketClient();//线程池管理对象在这里生成，永远单例并且不会被kill
-				txt_controllerwaiting.setText("连接成功，APP正在为控制器授时...");
+		//后台线程，建立连接
+		@Override
+		protected Integer doInBackground(Void... params) {
+			// TODO Auto-generated method stub	
+			Integer ret = Integer.valueOf(-1);
+			
+			if(NetworkManager.getNetworkState(GreenHouseApplication.getContext()) == NetworkManager.NETWORK_MOBILE) {
+				Log.i(TAG, "NETWORK_MOBILE");
+				ret = SocketClientInit.connAliyun();
+			} else if(NetworkManager.getNetworkState(GreenHouseApplication.getContext()) == NetworkManager.NETWORK_WIFI) {
+				Log.i(TAG, "NETWORK_WIFI");
+				ret = SocketClientInit.connController();
+			} else {
+//				ToastUtil.TextToastShort(Launcher.this, "请打开平板网络");
+				return ret;
+			}			
+			
+			if (ret != -1) {
+				
+				threadPoolManager.startClientTasks();
+				
 				try {
-					Thread.sleep(200);
+					Thread.sleep(3000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				SocketOutputTask.getHandler().sendEmptyMessage(Const.TIME);//发两遍会在另一个时间段收到time的一串回执
-				SocketOutputTask.getHandler().sendEmptyMessageDelayed(Const.TIME, 500);
-				SocketInputTask.getHandler().sendEmptyMessage(Const.SOCKET_CONNECTED);
-				SocketHeartbeatTask.getHandler().sendEmptyMessageDelayed(Const.HEARTBEAT, 300000);
-				mainHandler.sendEmptyMessageDelayed(Const.TIMEOUT, 8000);
-				break;
-			case Const.TIME_SERVICE_FINISHED:
-				isClickable = true;
-				if (Launcher.client != null) {
-					Launcher.client.setRunningState(true);
+				
+				if (Launcher.recvTIME) {
+					ret = 0;
 				}
-				controller_waiting.setVisibility(View.GONE);
-				txt_controllerwaiting.setVisibility(View.GONE);	
-				threadPoolManager.startSocketServerAccept();
-				IsStartActivity = Const.TIME_SERVICE_FINISHED;
-				// 20160417bug修复－每次跳转前都会清空数据库中�?有sensor：设置为offline
-				sensorService.modifyAllSensorOffline();
-				startActivity(new Intent(Launcher.this, JackFragmentMaster.class));//跳转前等待是否收到stop报文（服务器－APP�?
-				break;	
-			case Const.TIMEOUT:
-				if (Launcher.IsStartActivity == Const.TIME_SERVICE_FAILED) {
-					isClickable = true;
-					Launcher.client.destroy();
-					Launcher.server.destroy();
-					/* add by Elsa, 2016/8/27 多次连接失败后再也无法连接的原因:socket已连接，InputTask不能GET到TIME回执
-					threadPoolManager.stopSocketClient(); 
-					*/
-					controller_waiting.setVisibility(View.GONE);
-					txt_controllerwaiting.setVisibility(View.GONE);	
-					ToastUtil.TextToastShort(Launcher.this, "授时失败，请重新连接");
-					Log.d(TAG, "Time Out 连接超时");
-				}
-				break;	
-			case Const.SOCKET_DISCONNECTED:
-				isClickable = true;
-				IsStartActivity = Const.TIME_SERVICE_FAILED;
-				Launcher.client.destroy();
-				Launcher.server.destroy();
-				controller_waiting.setVisibility(View.GONE);
-				txt_controllerwaiting.setVisibility(View.GONE);
-				title_waiting.setVisibility(View.GONE);
-				ToastUtil.TextToastShort(Launcher.this, "连接失败，请重新尝试");
-				break;
-			case Const.UI_REFRESH:
-				scrollLayout.removeAllViews();
-				initControllerList();
-				initClassifiedControllers();
-				for (int i = 0; i < LauncherViewConfig.countPages; i++) {
-					scrollLayout.addView(initGridViewItem(i));
-				}
-				break;
-			case Const.BACK_TO_LAUNCHER:
-				Intent intent = new Intent();
-				intent.setAction("com.greenhosue.backtolauncheraction");
-				sendBroadcast(intent);
-				break;
-			default:
-				break;
-	        }
+			}
+			return ret;		
 		}
-	};
+		
+		//doInBackground完成后自动调用，并将doInBackground的返回值传给该方法
+		protected void onPostExecute(Integer ret) {
+			Launcher.isClickable = true;
+			progressDismiss();
+			if (ret.intValue() == -1) {				
+				threadPoolManager.destroyClientTasks();
+				ToastUtil.TextToastShort(Launcher.this, "连接失败，请重新尝试");
+			} else {
+				// 20160417bug修复－每次跳转前都会清空数据库中 sensor：设置为offline
+				sensorService.modifyAllSensorOffline();
+				threadPoolManager.startServerTask();
+				startActivity(new Intent(Launcher.this, JackFragmentMaster.class));
+			}
+		}
+		
+	}
 	
-	//线程池对象，持有对主线程的引用
-	private ThreadPoolManager threadPoolManager = ThreadPoolManager.getInstance(mainHandler);
+	private void progressShow() {
+		controller_waiting.setVisibility(View.VISIBLE);
+		txt_controllerwaiting.setVisibility(View.VISIBLE);	
+	}
+	
+	private void progressDismiss() {
+		controller_waiting.setVisibility(View.GONE);
+		txt_controllerwaiting.setVisibility(View.GONE);
+		title_waiting.setVisibility(View.GONE);		
+	}
+	
 	
 	private LinearLayout initGridViewItem(int i) {
 		isClickable = true;
@@ -291,19 +309,10 @@ public class Launcher extends Activity {
 					} else if (scrollControllersList.get(ii).get(arg2).equals("null")){
 						
 					} else {	
-						if (NetworkManager.getNetworkState(Launcher.this) == NetworkManager.NETWORK_NONE) {								
-							ToastUtil.TextToastShort(Launcher.this, "请打开手机网络");								
-						}else{
-							isClickable = false;
-							BACK_TO_LAUNCHER = false;
-							Integer selectId = ii * LauncherViewConfig.PAGE_SIZE + arg2 + 1;
-							selectMac = controllerService.queryMac(selectId);
-							client = new SocketClient();
-							server = new SocketServer();
-							selectIp = controllerService.queryIp(Launcher.selectMac);
-							Log.e(TAG, "ip" + selectIp);
-							new AsyncSocketReq(mainHandler).execute();
-					}
+						Integer selectId = ii * LauncherViewConfig.PAGE_SIZE + arg2 + 1;
+						Launcher.selectMac = controllerService.queryMac(selectId);
+						Launcher.selectIp = null;		
+						new AsyncSocketReqTask().execute();
 				}					
 			}
 		}
@@ -415,10 +424,8 @@ public class Launcher extends Activity {
 					break;
 				// Test UI entry
 				case 1:
-					client = new SocketClient();
-					Launcher.client.setTerminalType(2);
-					selectMac = controllerService.queryMac(1);
-					startActivity(new Intent(Launcher.this, JackFragmentMaster.class));			
+//					selectMac = controllerService.queryMac(1);
+//					startActivity(new Intent(Launcher.this, JackFragmentMaster.class));			
 					break;
 				case 2:
 					startActivity(new Intent(Launcher.this, About.class));
@@ -574,7 +581,7 @@ public class Launcher extends Activity {
 		pageNumber.startAnimation(a);
 	}
 
-	// 20160305 有时间把刷新界面时间的部分加上，比如用while ture �? handler �? msg
+	// 20160305 有时间把刷新界面时间的部分加上
 	private void refreshHeavenView() {
 		HeavenAnimateView localHeavenAnimateView = (HeavenAnimateView) findViewById(R.id.heaven);
 		if (localHeavenAnimateView != null) {
@@ -611,10 +618,7 @@ public class Launcher extends Activity {
 
 	protected void onRestart() {
 		// TODO Auto-generated method stub
-		if (Launcher.client != null) {
-			Launcher.client.setRunningState(false);
-		}
-		mainHandler.sendEmptyMessage(Const.UI_REFRESH);
+//		mainHandler.sendEmptyMessage(Const.UI_REFRESH);
 		Log.e(TAG,"[onRestart]");
 		super.onRestart();
 	}
@@ -644,7 +648,6 @@ public class Launcher extends Activity {
 	protected void onDestroy() {
 		// TODO Auto-generated method stub	
 		threadPoolManager.releaseInstance();
-		threadPoolManager = null;
 		mainHandler.removeCallbacksAndMessages(null);
 		super.onDestroy();	
 	}

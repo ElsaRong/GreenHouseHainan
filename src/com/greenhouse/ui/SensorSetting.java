@@ -20,6 +20,7 @@ import com.greenhouse.R;
 import com.greenhouse.networkservice.NetBroadcastReceiver;
 import com.greenhouse.networkservice.SocketOutputTask;
 import com.greenhouse.util.Const;
+import com.greenhouse.util.DataFormatConversion;
 import com.greenhouse.util.ToastUtil;
 
 public class SensorSetting extends Activity implements View.OnClickListener{
@@ -52,10 +53,6 @@ public class SensorSetting extends Activity implements View.OnClickListener{
 				switch (msg.what) {
 				case Const.BACK_TO_LAUNCHER:
 					ToastUtil.TextToastLong(SensorSetting.this, "网络异常");
-					Launcher.client.setState(Const.SOCKET_DISCONNECTED);
-					Launcher.server.setServerState(Const.SOCKET_DISCONNECTED);
-					Launcher.client.destroy();
-					Launcher.server.destroy();
 					Intent intent = new Intent(SensorSetting.this, Launcher.class);
 					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					startActivity(intent);
@@ -146,44 +143,12 @@ public class SensorSetting extends Activity implements View.OnClickListener{
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				
-				SocketOutputTask.sendMsgQueue.add("BUND");
-				SocketOutputTask.getHandler().sendEmptyMessage(Const.BUND);	
-				try {
-					Thread.sleep(300);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				if (SocketOutputTask.sendMsgQueue.contains("BUND")) {
-					SocketOutputTask.getHandler().sendEmptyMessage(Const.BUND);	
-				}
-				try {
-					Thread.sleep(300);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				if (SocketOutputTask.sendMsgQueue.contains("BUND")) {
-					SocketOutputTask.getHandler().sendEmptyMessage(Const.BUND);	
-				}
-				try {
-					Thread.sleep(300);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				if (SocketOutputTask.sendMsgQueue.contains("BUND")) {
-					SocketOutputTask.getHandler().sendEmptyMessage(Const.BUND);	
-				}
-				try {
-					Thread.sleep(300);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				if (SocketOutputTask.sendMsgQueue.contains("BUND")) {
-					SocketOutputTask.getHandler().sendEmptyMessage(Const.BUND);	
-				}
+				SocketOutputTask.sendMsgQueue.addLast(createBUNDmsg());
+				SocketOutputTask.sendMsgQueue.addLast(createBUNDmsg());
+				SocketOutputTask.sendMsgQueue.addLast(createBUNDmsg());
+				SocketOutputTask.sendMsgQueue.addLast(createBUNDmsg());
+				SocketOutputTask.sendMsgQueue.addLast(createBUNDmsg());
+			
 				Intent intent = new Intent(SensorSetting.this, JackFragmentMaster.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);				
@@ -201,6 +166,57 @@ public class SensorSetting extends Activity implements View.OnClickListener{
 			}
 		});
 		setDefaultFragment();
+	}
+	
+	
+	public byte[] createBUNDmsg() {
+		String msg = "";                    //拼接报文
+		String hexJackId = "";              //插座编号转十六进制字符
+		String hexSensorAndDeviceType = ""; //选定的传感器类型和设备类型编号转十六进制字符
+		String hexBundSensorId = "";        //选择绑定的传感器编号转十六进制字符
+		StringBuffer hexAllThreBuffer = new StringBuffer("0000000000000000000000000000000000");//拼接7种传感器早晚门限
+		String hexAllThre = "";
+		
+		hexJackId = Integer.toHexString(JackFragmentModeSet.sJackId);
+		hexBundSensorId = Integer.toHexString(Integer.valueOf(SensorRecyclerView.sBinSelectSensor,2));
+		hexSensorAndDeviceType = DataFormatConversion.MultiSensAndDevTypeToHexStr(SensorSetting.sChosedSensor, SensorSetting.sDeviceType);
+		
+		//补位: 插座&传感器&设备类型
+		hexJackId = DataFormatConversion.FormatStringByAddZero(hexJackId, 2);                           //插座编号：2位十六进制字符
+		hexSensorAndDeviceType = DataFormatConversion.FormatStringByAddZero(hexSensorAndDeviceType, 2); //传感器和设备类型：2位十六进制字符
+		//补位: 早晚门限
+		for (int i=0; i<7; i++) {
+			String hexDayThre = Integer.toHexString(SensorSetting.sSetDayThre[i]);
+			String hexNightThre = Integer.toHexString(SensorSetting.sSetNightThre[i]);
+//			Log.e(TAG, "第"+i+"种门限"+hexDayThre + ","+hexNightThre);
+			//第六种传感器要求长度6
+			if (i==5) {
+				hexDayThre = DataFormatConversion.FormatStringByAddZero(hexDayThre, 3);
+				hexNightThre = DataFormatConversion.FormatStringByAddZero(hexNightThre, 3);
+			} 
+			//第七种传感器要求长度6
+			else if (i==6) {
+				hexDayThre = DataFormatConversion.FormatStringByAddZero(hexDayThre, 4);
+				hexNightThre = DataFormatConversion.FormatStringByAddZero(hexNightThre, 4);
+			} 
+			//其它类型传感器要求长度2
+			else {
+				hexDayThre = DataFormatConversion.FormatStringByAddZero(hexDayThre, 2);
+				hexNightThre = DataFormatConversion.FormatStringByAddZero(hexNightThre, 2);
+			}
+			//拼接7种传感器早晚门限，累计34位十六进制字符
+			hexAllThreBuffer = DataFormatConversion.FormatMultiThreByReplace(hexAllThreBuffer, hexDayThre+hexNightThre, i+1);
+		}
+		hexAllThre = hexAllThreBuffer.toString();
+//		Log.e(TAG, "7种早晚门限: "+hexAllThre);
+		
+		msg = DataFormatConversion.IrreguStringToHexValue("HFUT" + Launcher.selectMac + "BUND")
+			    + hexJackId + hexSensorAndDeviceType  //插座［2］－传感器设备类型［2］
+				+ hexAllThre + hexBundSensorId        //早晚1［4］－早晚2［4］－早晚3［4］－早晚5［4］－早晚5［4］－早晚6［6］-早晚7［8］－选择定传感器［2］
+				+ DataFormatConversion.IrreguStringToHexValue("WANG");
+		
+		byte[] b = DataFormatConversion.HexStringToByte(msg);	
+		return b;
 	}
 	
 	

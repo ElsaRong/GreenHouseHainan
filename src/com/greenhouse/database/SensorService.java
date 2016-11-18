@@ -25,14 +25,7 @@ public class SensorService {
 	public SensorService(Context context) {
 		databaseHelper =new DatabaseHelper(context);
 	}
-	
-	/**
-	 * 
-	 * 
-	 * description:
-	 * para mac
-	 * return:
-	 */
+
 	public void init(String mac) {
 		SQLiteDatabase db = databaseHelper.getWritableDatabase();
 		String s = "insert into sensor(mac, sensorid, online, soiltemp, soilhum, soilph, "
@@ -97,6 +90,79 @@ public class SensorService {
 	 * @author       Elsa elsarong715@gmail.com
 	 * @data         Aug 24, 2016, 4:11:31 PM
 	 */
+	public int[] getIntSelectSensorAverage(String sensors) {
+		int[] selectSensorAverage = new int[]{0,0,0,0,0,0,0};
+		SQLiteDatabase db = databaseHelper.getWritableDatabase();
+//		int averageSensorNum = SensorRecyclerView.selectSensors.size();
+//		Sensor sensorAverage = new Sensor();
+		Integer soiltemp=0, soilhum=0, soilph=0, airtemp=0, airhum=0, co2=0, illum=0;
+		Integer soiltempnum=0, soilhumnum=0, soilphnum=0, airtempnum=0, airhumnum=0, co2num=0, illumnum=0;
+		for (int i = 0; i < Const.SENSOR_SUM; i++) {
+			if (sensors.substring(i, i+1).equals("1")) {
+				String s = "select * from sensor where sensorid=? and mac=?";
+				String[] ss = new String[]{(i+1) + "", Launcher.selectMac};
+				Cursor cursor = db.rawQuery(s, ss);
+				while(cursor.moveToNext()) {
+					if (cursor.getInt(cursor.getColumnIndex("soiltemp"))!=0){
+						soiltemp += cursor.getInt(cursor.getColumnIndex("soiltemp"));
+						soiltempnum++;
+					}
+					if (cursor.getInt(cursor.getColumnIndex("soilhum"))!=0){
+						soilhum += cursor.getInt(cursor.getColumnIndex("soilhum"));
+						soilhumnum++;
+					}
+					if (cursor.getInt(cursor.getColumnIndex("soilph"))!=0){
+						soilph += cursor.getInt(cursor.getColumnIndex("soilph"));
+						soilphnum++;
+					}
+					if (cursor.getInt(cursor.getColumnIndex("airtemp"))!=0){
+						airtemp += cursor.getInt(cursor.getColumnIndex("airtemp"));
+						airtempnum++;
+					}
+					if (cursor.getInt(cursor.getColumnIndex("airhum"))!=0){
+						airhum += cursor.getInt(cursor.getColumnIndex("airhum"));
+						airhumnum++;
+					}
+					if (cursor.getInt(cursor.getColumnIndex("co2"))!=0){
+						co2 += cursor.getInt(cursor.getColumnIndex("co2"));
+						co2num++;
+					}
+					if (cursor.getInt(cursor.getColumnIndex("illum"))!=0){
+						illum += cursor.getInt(cursor.getColumnIndex("illum"));
+						illumnum++;
+					}
+				}
+				cursor.close();
+			}
+		}
+		
+		if (soiltempnum!=0) {
+			soiltemp = soiltemp/soiltempnum;
+		}
+		if (soilhumnum!=0) {
+			soilhum = soilhum/soilhumnum;
+		}
+		if (soilphnum!=0) {
+			soilph = soilph/soilphnum;
+		}
+		if (airtempnum!=0) {
+			airtemp = airtemp/airtempnum;
+		}
+		if (airhumnum!=0) {
+			airhum = airhum/airhumnum;
+		}
+		if (co2num!=0) {
+			co2 = co2/co2num;
+		}
+		if (illumnum!=0) {
+			illum = illum/illumnum;
+		}
+		
+		selectSensorAverage = new int[]{soiltemp, soilhum, soilph, airtemp, airhum, co2, illum};
+		db.close();
+		return selectSensorAverage;
+	}
+	
 	public Sensor getSelectSensorAverage(String sensors) {
 		SQLiteDatabase db = databaseHelper.getWritableDatabase();
 //		int averageSensorNum = SensorRecyclerView.selectSensors.size();

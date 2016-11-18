@@ -15,20 +15,23 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import net.tsz.afinal.exception.DbException;
 
 /** 
 * @author       Elsa 
 * @Email		elsarong715@gmail.com
-* @date			2016��2��20������1:09:09 
+* @date			2016-2-20 1:09:09 
 * @version		1.0  
-* @description		Jack������ɾ���ġ����������	 
+* @description		Jack 
 */
 public class JackService {
 
+	private final static String TAG = "JackService";
+	
 	private DatabaseHelper databaseHelper;
 	
 	public JackService(Context context) {
-		databaseHelper = new DatabaseHelper(context);//���һ��DataHelper��ʵ������
+		databaseHelper = new DatabaseHelper(context);
 	}
 	
 	//test success
@@ -102,6 +105,7 @@ public class JackService {
 			e.printStackTrace();
 		}
 		db.endTransaction();
+		db.close();
 	}
 	
 	
@@ -110,6 +114,7 @@ public class JackService {
 		String s = "update jack set name=? where jackId=? and mac=?";
 		Object[] object = new Object[]{name, jackid, mac};
 		db.execSQL(s,object);
+		db.close();
 	}
 	
 	public void modifyControllerJackDrawableTest(String drawable, int jackid, String mac) {
@@ -117,6 +122,7 @@ public class JackService {
 		String s = "update jack set drawable=? where jackId=? and mac=?";
 		Object[] object = new Object[]{drawable, jackid, mac};
 		db.execSQL(s,object);
+		db.close();
 	}
 	
 	public void modifyJackBund(int bund, int jackid, String mac) {
@@ -124,6 +130,7 @@ public class JackService {
 		String s = "update jack set bund=? where jackId=? and mac=?";
 		Object[] object = new Object[]{bund, jackid, mac};
 		db.execSQL(s,object);
+		db.close();
 	}
 	
 	public void deleteAllJack(String mac) {
@@ -131,6 +138,7 @@ public class JackService {
 		String s = "delete from jack where mac=?";
 		Object[] object = new Object[]{mac};
 		db.execSQL(s, object);
+		db.close();
 	}
 	
 //	public ArrayList<Jack> getAllJackInfo(String mac) {
@@ -145,7 +153,35 @@ public class JackService {
 //		cursor.close();
 //		return jacks;
 //	}
-
+	
+	/**
+	 * @Title:       modifyJackCurrentValue
+	 * @description: TODO 根据sen报文实时更新数据库Jack表中的currentvalue1-7的值，而且是根据绑定传感器情况计算所得的平均
+	 * @param        @param jackId
+	 * @param        @param current_value
+	 * @return       void
+	 * @throws
+	 * @author       Elsa elsarong715@gmail.com
+	 * @data         Aug 24, 2016, 4:20:31 PM
+	 */
+	public void modifyJackCurrentValue(int jackId, int[] current_value) {
+		SQLiteDatabase db = databaseHelper.getWritableDatabase();
+		Integer soiltemp = current_value[0];
+		Integer soilhum = current_value[1];
+		Integer soilph = current_value[2];
+		Integer airtemp = current_value[3];
+		Integer airhum = current_value[4];
+		Integer co2 = current_value[5];
+		Integer illum = current_value[6];
+//		Log.e(TAG, "修改平均值: JackId = " + jackId + ", Value = " + soiltemp +","+ soilhum 
+//				+","+ soilph +","+ airtemp +","+ airhum +","+ co2 +","+ illum + "");
+		String s = "update jack set current_value1=?, current_value2=?,current_value3=?,"
+				+ "current_value4=?,current_value5=?,current_value6=?,current_value7=? where jackId=? and mac=?";
+		Object[] object = new Object[]{soiltemp, soilhum, soilph, airtemp, airhum, co2, illum, jackId, Launcher.selectMac};
+		db.execSQL(s, object);
+		db.close();
+	}
+	
 	//test success
 	public ArrayList<Jack> getAllJack(String mac) {
 		ArrayList<Jack> jacks = new ArrayList<Jack>();
@@ -153,7 +189,16 @@ public class JackService {
 		String s = "select * from jack where mac=?";
 		String[] ss = new String[]{mac};
 		Cursor cursor = db.rawQuery(s, ss);
+		int i = 0;
 		while(cursor.moveToNext()) {
+			i++;
+			Log.v(TAG, "(数据库)第"+i+"个插座平均值: "+cursor.getInt(cursor.getColumnIndex("current_value1"))
+				+","+cursor.getInt(cursor.getColumnIndex("current_value2"))
+				+","+cursor.getInt(cursor.getColumnIndex("current_value3"))
+				+","+cursor.getInt(cursor.getColumnIndex("current_value4"))
+				+","+cursor.getInt(cursor.getColumnIndex("current_value5"))
+				+","+cursor.getInt(cursor.getColumnIndex("current_value6"))
+				+","+cursor.getInt(cursor.getColumnIndex("current_value7")));
 			Jack jack = new Jack();
 			jack.setMac(cursor.getString(cursor.getColumnIndex("mac")));
 			jack.setJackId(cursor.getInt(cursor.getColumnIndex("jackid")));
@@ -192,7 +237,7 @@ public class JackService {
 			jack.setCurrentValue6(cursor.getInt(cursor.getColumnIndex("current_value6")));
 			jack.setDay_threshold6(cursor.getInt(cursor.getColumnIndex("day_threshold6")));
 			jack.setNight_threshold6(cursor.getInt(cursor.getColumnIndex("night_threshold6")));
-			
+
 			jack.setbundtype7(cursor.getInt(cursor.getColumnIndex("bundtype7")));
 			jack.setCurrentValue7(cursor.getInt(cursor.getColumnIndex("current_value7")));
 			jack.setDay_threshold7(cursor.getInt(cursor.getColumnIndex("day_threshold7")));
@@ -206,6 +251,7 @@ public class JackService {
 			jacks.add(jack);
 		}
 		cursor.close();
+		db.close();
 		return jacks;
 	}
 	
@@ -228,6 +274,7 @@ public class JackService {
 			jacks.add(jack);
 		}
 		cursor.close();
+		db.close();
 		return jacks;
 	}
 	
@@ -245,7 +292,22 @@ public class JackService {
 			jacks.add(jack);
 		}
 		cursor.close();
+		db.close();
 		return jacks;
+	}
+	
+	public String getJackBundSensors(int jackId) {
+		String bundSensors = null;
+		SQLiteDatabase db = databaseHelper.getReadableDatabase();
+		String s = "select * from jack where sensors=? and mac=?";
+		String[] ss = new String[]{jackId+"", Launcher.selectMac};
+		Cursor cursor = db.rawQuery(s, ss);
+		while(cursor.moveToNext()) {
+			bundSensors = cursor.getString(cursor.getColumnIndex("sensors"));
+		}
+		cursor.close();
+		db.close();
+		return bundSensors;
 	}
 	
 	public void deleteSensorTask(Integer jackId) {
@@ -271,14 +333,17 @@ public class JackService {
 			return jack;
 		}
 		cursor.close();
+		db.close();
 		return null;
 	}
+	
+
 	
 	//STAT
 	public void modifySwitchstate(String switchstate) {
 		SQLiteDatabase db = databaseHelper.getWritableDatabase();
 		String s = "update jack set switch_state=? where jackId=? and mac=?";
-		db.beginTransaction();//����һ��execSQl���ʱ������
+		db.beginTransaction();
 		try {
 			for (int i = 0; i < 35; i++) {
 				Integer state = Integer.parseInt(switchstate.substring(i, i+1));
@@ -291,6 +356,7 @@ public class JackService {
 			e.printStackTrace();
 		}
 		db.endTransaction();
+		db.close();
 	}
 	
 	
@@ -300,6 +366,7 @@ public class JackService {
 		String s = "update jack set switch_state=? where jackId=? and mac=?";
 		Object[] object = new Object[]{switchstate, jackId, Launcher.selectMac};
 		db.execSQL(s,object);
+		db.close();
 	}
 	
 	
@@ -309,6 +376,7 @@ public class JackService {
 		String s = "update jack set name=? where mac=? and jackId=?";
 		Object[] object = new Object[]{name, Launcher.selectMac, i};
 		db.execSQL(s, object);
+		db.close();
 	}
 	
 	public void modifySensorTask(Integer jackId, List<Sensor> sensors,Integer day1, Integer night1,Integer day2, Integer night2,Integer day3, Integer night3,Integer day4, Integer night4,Integer day5, Integer night5,Integer day6, Integer night6,Integer day7, Integer night7) {
@@ -460,35 +528,10 @@ public class JackService {
 		String s = "update jack set bund=?, start=?, poweron=?, poweroff=?, cycle=? where jackId=? and mac=?";
 		Object[] object = new Object[]{2, start, poweron, poweroff, cycle, jackId, Launcher.selectMac};
 		db.execSQL(s, object);
-	}
-	
-	/**
-	 * @Title:       modifyJackCurrentValue
-	 * @description: TODO 根据sen报文实时更新数据库Jack表中的currentvalue1-7的值，而且是根据绑定传感器情况计算所得的平均
-	 * @param        @param jackId
-	 * @param        @param current_value
-	 * @return       void
-	 * @throws
-	 * @author       Elsa elsarong715@gmail.com
-	 * @data         Aug 24, 2016, 4:20:31 PM
-	 */
-	public void modifyJackCurrentValue(int jackId, int[] current_value) {
-		SQLiteDatabase db = databaseHelper.getWritableDatabase();
-		Integer soiltemp = current_value[0];
-		Integer soilhum = current_value[1];
-		Integer soilph = current_value[2];
-		Integer airtemp = current_value[3];
-		Integer airhum = current_value[4];
-		Integer co2 = current_value[5];
-		Integer illum = current_value[6];
-		String s = "update jack set current_value1=?, current_value2=?,current_value3=?,"
-				+ "current_value4=?,current_value5=?,current_value6=?,current_value7=? where jackId=? and mac=?";
-		Object[] object = new Object[]{soiltemp, soilhum, soilph, airtemp, airhum, co2, illum, jackId, Launcher.selectMac};
-		db.execSQL(s, object);
 		db.close();
 	}
+
 		
-	// û����һ�������󶨶��������
 	public void modifyJackSensorRestriction(Integer jackId, String sensors, int day, int night, int sensortype){
 		SQLiteDatabase db = databaseHelper.getWritableDatabase();
 		String s = "update jack set bund=?, sensors=?, sensortype=?, day_threshold=?, night_threshold=? where jackId=? and mac=?";
@@ -499,30 +542,30 @@ public class JackService {
 
 
 	// HAVE
-		public void modifyJackTaskMark(String taskmark) {
-			SQLiteDatabase db = databaseHelper.getWritableDatabase();
-			db.beginTransaction();
-			try {
-				for (int i = 0; i < 48; i++) {
-					Integer state = Integer.parseInt(taskmark.substring(i, i+1));
-					if (state == 1) {
-	//					String s = "update jack set bund=? where jackId=? and mac=?";
-	//					Object[] object = new Object[]{2, (i + 1), Launcher.selectMac};
-	//					db.execSQL(s,object);
-					} else if (state == 0) {
-						String s = "update jack set bund=?, start=?, poweron=?, poweroff=?, cycle=? where jackId=? and mac=?";
-						Object[] object = new Object[]{0, "0000-00-00", "00:00", "00:00", 0, (i + 1), Launcher.selectMac};
-						db.execSQL(s,object);
-					}
+	public void modifyJackTaskMark(String taskmark) {
+		SQLiteDatabase db = databaseHelper.getWritableDatabase();
+		db.beginTransaction();
+		try {
+			for (int i = 0; i < 48; i++) {
+				Integer state = Integer.parseInt(taskmark.substring(i, i+1));
+				if (state == 1) {
+					//					String s = "update jack set bund=? where jackId=? and mac=?";
+					//					Object[] object = new Object[]{2, (i + 1), Launcher.selectMac};
+					//					db.execSQL(s,object);
+				} else if (state == 0) {
+					String s = "update jack set bund=?, start=?, poweron=?, poweroff=?, cycle=? where jackId=? and mac=?";
+					Object[] object = new Object[]{0, "0000-00-00", "00:00", "00:00", 0, (i + 1), Launcher.selectMac};
+					db.execSQL(s,object);
 				}
-				db.setTransactionSuccessful();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
-			db.endTransaction();
-			db.close();
+			db.setTransactionSuccessful();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		db.endTransaction();
+		db.close();
+	}
 	
 
 	
