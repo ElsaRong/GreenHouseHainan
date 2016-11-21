@@ -104,6 +104,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			+ "month integer, "
 			+ "day integer, "
 			+ "hour integer, "
+			+ "minute integer, "
 			+ "soiltemp integer, "
 			+ "soilhum integer, "
 			+ "soilph integer, "

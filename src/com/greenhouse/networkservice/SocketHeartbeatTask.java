@@ -52,6 +52,7 @@ public class SocketHeartbeatTask implements Runnable{
 				}
 			}
 			
+			
 			try {
 				Thread.sleep(3000);
 			} catch (InterruptedException e1) {

@@ -15,8 +15,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
+import android.widget.TextView;
+
 import com.greenhouse.R;
+import com.greenhouse.animation.HeavenAnimateView;
 import com.greenhouse.networkservice.NetBroadcastReceiver;
 import com.greenhouse.networkservice.SocketOutputTask;
 import com.greenhouse.util.Const;
@@ -28,18 +32,44 @@ public class SensorSetting extends Activity implements View.OnClickListener{
 	public static final String TAG = "SensorSetting.class";
 	
 	OnSensorSettingClickedListener myListener;
-	public BroadcastReceiver myReceiver;
-	public static Handler handler;
 	private RadioGroup rg;
 	
-	public static int[] sSetDayThre   = {0,0,0,0,0,0,0}; //用户设置的白天门限值
-	public static int[] sSetNightThre = {0,0,0,0,0,0,0}; //用户设置的夜间门限值
-	public static int[] sChosedSensor = {0,0,0,0,0,0,0}; //用户选择设置的传感器类型
+	public static int[] sSetDayThre   = new int[]{0,0,0,0,0,0,0}; //用户设置的白天门限值
+	public static int[] sSetNightThre = new int[]{0,0,0,0,0,0,0}; //用户设置的夜间门限值
+	public static int[] sChosedSensor = new int[]{0,0,0,0,0,0,0}; //用户选择设置的传感器类型
 	public static int sDeviceType      =  0; //用户选中的插座上绑定的设备类型
 	public static int sSensorType      =  1; //用户选中的传感器类型
 	
 	private Button sensor_setting;
 	private Button save_setting;
+	private ProgressBar title_waiting;
+	private TextView text_waiting;
+	
+	private Handler handler = new Handler();
+	
+	private Runnable refreshSensorSetting = new Runnable() {
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			refreshHeavenView();
+			handler.postDelayed(refreshSensorSetting, 1000);
+		}
+	};
+	
+	private void refreshHeavenView() {
+		HeavenAnimateView localHeavenAnimateView = (HeavenAnimateView) findViewById(R.id.heaven);
+		if (localHeavenAnimateView != null) {
+			localHeavenAnimateView.update();
+			localHeavenAnimateView.postInvalidate();
+		}
+		if (Launcher.client == null) {
+			title_waiting.setVisibility(View.VISIBLE);	
+			text_waiting.setVisibility(View.VISIBLE);
+		} else {
+			title_waiting.setVisibility(View.GONE);
+			text_waiting.setVisibility(View.GONE);
+		}
+	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,28 +77,14 @@ public class SensorSetting extends Activity implements View.OnClickListener{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.sensor_setting_layout);
 		
-		handler = new Handler() {
-			public void handleMessage(Message msg) {
-				
-				switch (msg.what) {
-				case Const.BACK_TO_LAUNCHER:
-					ToastUtil.TextToastLong(SensorSetting.this, "网络异常");
-					Intent intent = new Intent(SensorSetting.this, Launcher.class);
-					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-					startActivity(intent);
-					break;	
-				default:
-					break;
-				}
-			}
-		};
+		sensor_setting = (Button)findViewById(R.id.sensor_setting);
+		save_setting =  (Button)findViewById(R.id.save_setting);
+		title_waiting = (ProgressBar) findViewById(R.id.title_waiting);
+		text_waiting = (TextView)findViewById(R.id.text_waiting);
 		
-		IntentFilter filter=new IntentFilter();
-		filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-		filter.addAction("com.greenhosue.backtolauncheraction");
-        myReceiver = new NetBroadcastReceiver(handler);
-        this.registerReceiver(myReceiver, filter);
-		
+		sSetDayThre   = new int[]{0,0,0,0,0,0,0};
+		sSetNightThre = new int[]{0,0,0,0,0,0,0};
+		sChosedSensor = new int[]{0,0,0,0,0,0,0};
 		
 		// title_btn
 		ImageView localImageView = (ImageView) findViewById(R.id.title_btn);
@@ -82,8 +98,7 @@ public class SensorSetting extends Activity implements View.OnClickListener{
 		});
 		
 		
-		sensor_setting = (Button)findViewById(R.id.sensor_setting);
-		save_setting =  (Button)findViewById(R.id.save_setting);
+		
 		
 		save_setting.setOnClickListener(new OnClickListener() {
 
@@ -128,7 +143,6 @@ public class SensorSetting extends Activity implements View.OnClickListener{
 						Integer intNightthre = doubleNightThre.intValue();
 						sSetDayThre[SensorSetting.sSensorType-1] = intDayThre;
 						sSetNightThre[SensorSetting.sSensorType-1] = intNightthre;
-						
 					} else {
 						sSetDayThre[SensorSetting.sSensorType-1] = Integer.parseInt(SensorSettingFragment.edDayThre.getText().toString());
 						sSetNightThre[SensorSetting.sSensorType-1] = Integer.parseInt(SensorSettingFragment.edNightThre.getText().toString()); 
@@ -142,19 +156,15 @@ public class SensorSetting extends Activity implements View.OnClickListener{
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				
 				SocketOutputTask.sendMsgQueue.addLast(createBUNDmsg());
 				SocketOutputTask.sendMsgQueue.addLast(createBUNDmsg());
 				SocketOutputTask.sendMsgQueue.addLast(createBUNDmsg());
 				SocketOutputTask.sendMsgQueue.addLast(createBUNDmsg());
 				SocketOutputTask.sendMsgQueue.addLast(createBUNDmsg());
-			
 				Intent intent = new Intent(SensorSetting.this, JackFragmentMaster.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);				
-					
 			}
-				
 		});
 
 		rg = (RadioGroup)findViewById(R.id.sensor_radio_group);
@@ -166,6 +176,7 @@ public class SensorSetting extends Activity implements View.OnClickListener{
 			}
 		});
 		setDefaultFragment();
+		handler.post(refreshSensorSetting);
 	}
 	
 	
@@ -275,8 +286,8 @@ public class SensorSetting extends Activity implements View.OnClickListener{
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		Log.i(TAG, "onDestoy()");
-		unregisterReceiver(myReceiver);
 		super.onDestroy();
+		handler.removeCallbacks(refreshSensorSetting);
 	}
 
 

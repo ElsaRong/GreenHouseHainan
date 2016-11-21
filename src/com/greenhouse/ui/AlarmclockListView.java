@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import com.greenhouse.R;
+import com.greenhouse.animation.HeavenAnimateView;
 import com.greenhouse.database.JackService;
 import com.greenhouse.model.Jack;
 import com.greenhouse.networkservice.SocketOutputTask;
@@ -20,7 +21,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +33,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class AlarmclockListView extends Activity {
@@ -41,6 +42,9 @@ public class AlarmclockListView extends Activity {
 	
 	private ListView listview;
 	private LayoutInflater mInflater;
+	
+	private ProgressBar title_waiting;
+	private TextView text_waiting;
 	
 	private JackService jackService = new JackService(this);
 	private static ArrayList<Jack> jackTasks;
@@ -51,47 +55,53 @@ public class AlarmclockListView extends Activity {
 	private Boolean MapIsExist = false;
 	private Handler handler = new Handler(); //handler.removeCallbacks
 	
-	//1s刷新一次时间显示和socket状态
 	private Runnable refreshAlarmList = new Runnable() {
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
+			refreshHeavenView();
 			jackTasks = jackService.getAllJackTask(Launcher.selectMac);
 			adapter.notifyDataSetChanged();
-			handler.postDelayed(refreshAlarmList, 3000);
+			handler.postDelayed(refreshAlarmList, 1000);
 		}
 	};
 	
-
+	private void refreshHeavenView() {
+		HeavenAnimateView localHeavenAnimateView = (HeavenAnimateView) findViewById(R.id.heaven);
+		if (localHeavenAnimateView != null) {
+			localHeavenAnimateView.update();
+			localHeavenAnimateView.postInvalidate();
+		}
+		if (Launcher.client == null) {
+			title_waiting.setVisibility(View.VISIBLE);	
+			text_waiting.setVisibility(View.VISIBLE);
+		} else {
+			title_waiting.setVisibility(View.GONE);
+			text_waiting.setVisibility(View.GONE);
+		}
+	}
+	
 	public void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "[onCreate]");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.alarmclock_list);	
-		handler.post(refreshAlarmList);
 		
-		for (int i=0; i<chooseJacks.size(); i++) {
-			Log.e(TAG+", line 83", chooseJacks.get(i).toString());
-		}
+		
 		chooseJacks.clear();
-		
 		
 		jackTasks = jackService.getAllJackTask(Launcher.selectMac);
 		adapter = new AlarmClockListAdapter(this);
-		
 		listview = (ListView) findViewById(R.id.list);
 		listview.setAdapter(adapter);
 		listview.setItemsCanFocus(false);
 		listview.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-		
 		listview.clearChoices();
-
 		listview.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				// TODO Auto-generated method stub				
-				ViewHolder vHollder = (ViewHolder) view.getTag();
-				vHollder.cBox.toggle();
-				isSelected.put(position,vHollder.cBox.isChecked());
+				ViewHolder vHolder = (ViewHolder) view.getTag();
+				vHolder.cBox.toggle();
+				isSelected.put(position,vHolder.cBox.isChecked());
 				Map<String, String> map = new HashMap<String, String>();
 				map.put(position + "", jackTasks.get(position).getJackId().toString());
 				Iterator<Map<String, String>> iterator = chooseJacks.iterator();
@@ -128,6 +138,9 @@ public class AlarmclockListView extends Activity {
 		// title_bar theme
 		TextView localTextView = (TextView) findViewById(R.id.title);
 		localTextView.setText("定时任务列表");
+		
+		title_waiting = (ProgressBar) findViewById(R.id.title_waiting);
+		text_waiting = (TextView)findViewById(R.id.text_waiting);
 
 		// add_btn
 		Button add_btn = (Button) findViewById(R.id.add_alarmclock);
@@ -185,7 +198,6 @@ public class AlarmclockListView extends Activity {
 									new DialogInterface.OnClickListener() {
 										public void onClick(DialogInterface dialog,	int which) {
 											// TODO Auto-generated method stub
-											listview.clearChoices();
 										}
 									})
 							.setPositiveButton("是",
@@ -197,7 +209,10 @@ public class AlarmclockListView extends Activity {
 											SocketOutputTask.sendMsgQueue.addLast(createDELEmsg());
 											SocketOutputTask.sendMsgQueue.addLast(createDELEmsg());
 											SocketOutputTask.sendMsgQueue.addLast(createDELEmsg());
-											ClearMultiCheck();
+											Intent intent = new Intent();
+											intent.setClass(AlarmclockListView.this, AlarmclockListView.class);
+											intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+											startActivity(intent);
 										}								
 							}).show();
 				} else {
@@ -206,12 +221,14 @@ public class AlarmclockListView extends Activity {
 				
 			}
 		});
+		
+		handler.post(refreshAlarmList);
 	}
 	
 	private byte[] createDELEmsg() {
 		String msg = DataFormatConversion.stringToHexString("HFUT" + Launcher.selectMac + "DELE")		
 				+ Timer.chosedJackGroupHex + DataFormatConversion.stringToHexString("00000000000000WANG");
-		Log.d(TAG, "(Str) createDELEmsg: " + msg);
+//		Log.d(TAG, "(Str) createDELEmsg: " + msg);
 		byte[] b = DataFormatConversion.HexStringToByte(msg);
 		return b;
 	}
@@ -237,8 +254,7 @@ public class AlarmclockListView extends Activity {
 			Timer.chosedJackGroup[chosedJackId - 1] = 1;	
 		}		
 			
-//		Log.i(TAG,DataFormatConversion.Int2String(Timer.chosedJackGroup));
-		Log.i(TAG,"被选中的插座: " + DataFormatConversion.BinStr48ToHexStr12(DataFormatConversion.Int2String(Timer.chosedJackGroup)));	
+//		Log.i(TAG,"被选中的插座: " + DataFormatConversion.BinStr48ToHexStr12(DataFormatConversion.Int2String(Timer.chosedJackGroup)));	
 		
 		//f000000000000000000-111100000000...
 		Timer.chosedJackGroupHex = DataFormatConversion.BinStr48ToHexStr12(DataFormatConversion.Int2String(Timer.chosedJackGroup));
@@ -255,13 +271,14 @@ public class AlarmclockListView extends Activity {
 
 
 	public void onRestart() {
-		Log.d(TAG, "[onRestart]");
+//		Log.d(TAG, "[onRestart]");
 		super.onRestart();
 	}
 	
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub	
+		handler.removeCallbacks(refreshAlarmList);
 		super.onDestroy();	
 	}
 

@@ -77,7 +77,7 @@ public class JackSwitchItemAdapter extends BaseAdapter{
 				if (JackFragmentSwitchTest.jackSwitchInfoList.get(position).getSwitchstate() == 0) {
 					//开关互锁，打开前检查互锁插座是否关闭
 					if (LockCheck.CheckLockStateAccordingMac(position, 1, Launcher.selectMac)) {
-//						JackFragmentSwitchTest.jackSwitchInfoList.get(position).setSwitchstate(1);
+						JackFragmentSwitchTest.jackSwitchInfoList.get(position).setSwitchstate(1);
 						
 						SocketOutputTask.sendMsgQueue.addLast(createCONTOPENmsg(id));
 						SocketOutputTask.sendMsgQueue.addLast(createCONTOPENmsg(id));
@@ -91,7 +91,7 @@ public class JackSwitchItemAdapter extends BaseAdapter{
 					}
 					
 				} else {
-//					JackFragmentSwitchTest.jackSwitchInfoList.get(position).setSwitchstate(0);
+					JackFragmentSwitchTest.jackSwitchInfoList.get(position).setSwitchstate(0);
 					
 					SocketOutputTask.sendMsgQueue.addLast(createCONTCLOSmsg(id));
 					SocketOutputTask.sendMsgQueue.addLast(createCONTCLOSmsg(id));

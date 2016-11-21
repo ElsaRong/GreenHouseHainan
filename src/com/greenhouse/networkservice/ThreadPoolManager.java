@@ -141,13 +141,19 @@ public class ThreadPoolManager {
 		}
 	}
 	
-	public void startServerTask() {
+	public void startServerAcceptTask() {
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		executor.execute(new SocketServerAccept());
 	}
 	
 	
-	public void startSocketServerTask(SocketServer socket) {
-		executor.execute(new SocketServerTask(socket));
+	public void startServerSendTask(SocketServer socket_server) {
+		executor.execute(new SocketServerSendTask(socket_server));
 	}
 	
 

@@ -3,11 +3,9 @@ package com.greenhouse.mvadpater;
 import java.util.ArrayList;
 import java.util.List;
 import com.greenhouse.R;
-import com.greenhouse.database.SourceDataManager;
 import com.greenhouse.model.Jack;
 import com.greenhouse.model.SensorItemInfo;
 import com.greenhouse.specialversion.UIDisplay;
-import com.greenhouse.ui.JackFragmentMaster;
 import com.greenhouse.ui.JackFragmentShowinfo;
 import android.content.Context;
 import android.graphics.Color;
@@ -95,7 +93,7 @@ public class JackInfoAdapter extends RecyclerView.Adapter<JackInfoAdapter.ViewHo
 	}
 	
 	
-	private View DynamicAddTimeMode() {		
+	private View DynamicAddTimeMode(int jackId) {		
 		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
 		LayoutInflater inflater = LayoutInflater.from(context);
 		View vw2 = inflater.inflate(R.layout.jack_fragment_showinfo, null);	
@@ -105,10 +103,7 @@ public class JackInfoAdapter extends RecyclerView.Adapter<JackInfoAdapter.ViewHo
 		taskmode.setText("定时模式");      //显示模式
 		sensors.setText("");              //显示绑定传感器[null]
 		
-//		List<Jack> jackTimeInfoList = new ArrayList<Jack>();
-//		jackTimeInfoList = SourceDataManager.initJackInfoList();
-		timeadapter = new JackTimeModeAdapter(inflater, JackFragmentShowinfo.jackInfoList);
-		
+		timeadapter = new JackTimeModeAdapter(inflater, jackId);
 		ListView listview = (ListView)vw2.findViewById(R.id.showinfo);
 		listview.setAdapter(timeadapter); //绑定适配器
 		return vw2;
@@ -223,7 +218,7 @@ public class JackInfoAdapter extends RecyclerView.Adapter<JackInfoAdapter.ViewHo
 			break;			
 		case 2:
 			viewHolder.showinfo.removeAllViews();
-			viewHolder.showinfo.addView(DynamicAddTimeMode());
+			viewHolder.showinfo.addView(DynamicAddTimeMode(i));
 			break;
 		}
 		

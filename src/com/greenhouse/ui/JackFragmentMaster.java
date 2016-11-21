@@ -4,11 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,7 +24,6 @@ import com.greenhouse.animation.HeavenAnimateView;
 import com.greenhouse.database.SensorService;
 import com.greenhouse.database.SourceDataManager;
 import com.greenhouse.model.Jack;
-import com.greenhouse.networkservice.NetBroadcastReceiver;
 import com.greenhouse.networkservice.NetworkManager;
 import com.greenhouse.networkservice.SocketClientInit;
 import com.greenhouse.networkservice.SocketOutputTask;
@@ -53,16 +49,18 @@ public class JackFragmentMaster extends Activity
 	private ThreadPoolManager threadPoolManager =  ThreadPoolManager.getInstance();
 	private SensorService sensorService;
 
-	public BroadcastReceiver myReceiver;
-	
 	private TextView localTextView;
+	private ProgressBar title_waiting;
+	private TextView text_waiting;
 	
-	public static List<Integer> listHistory = null; //统计查询界面从数据库查询的历史记录List
+	public static List<Integer> listHistory = new ArrayList<Integer>(); //统计查询界面从数据库查询的历史记录List
 	public static String FragmentFlag = "00";       //当前fragment标识,如果进入下一fragment前当前fragment开关测试(“10”),则发送退出报文
-	
+	public static boolean isQuery = false;
 	private OnFragmentRefreshInterface mCallback = this;
 	
-	private static ProgressBar title_waiting;
+	public static boolean isConnecting = false;
+	public static int reconnNum = 0;
+	
 	
 	private Handler handler = new Handler(); //handler.removeCallbacks
 	
@@ -96,9 +94,10 @@ public class JackFragmentMaster extends Activity
 			if (mCallback != null) {
 				mCallback.onShowinfoRefresh();
 			}
-			handler.postDelayed(refreshFragmentShowinfo, 30000);
+			handler.postDelayed(refreshFragmentShowinfo, 15000);
 		}
 	};
+	
 	
 	private Runnable refreshFragmentEnvironment = new Runnable() {
 		@Override
@@ -107,17 +106,32 @@ public class JackFragmentMaster extends Activity
 			if (mCallback != null) {
 				mCallback.onEnvironmentRefresh();
 			}
-			handler.postDelayed(refreshFragmentEnvironment, 3000);
+			handler.postDelayed(refreshFragmentEnvironment, 1000);
 		}
 	};
 	
 	private void refreshSocketConnect() {
 		if (Launcher.client == null) {
-			title_waiting.setVisibility(View.VISIBLE);		
+			title_waiting.setVisibility(View.VISIBLE);	
+			text_waiting.setVisibility(View.VISIBLE);
 			threadPoolManager.destroyClientTasks();
-			new AsyncSocketReReqTask().execute();			
+			if (!isConnecting) {
+				reconnNum++;
+				//超过30s重连失败就弹回主UI
+				if (reconnNum < 30) {
+					Log.e(TAG, "reconnNum=" + reconnNum);
+					new AsyncSocketReReqTask().execute();			
+				} else {
+					reconnNum = 0;
+					Intent intent = new Intent();
+					intent.setClass(JackFragmentMaster.this, Launcher.class);
+					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					startActivity(intent);
+				}
+			}
 		} else {
 			title_waiting.setVisibility(View.GONE);
+			text_waiting.setVisibility(View.GONE);
 		}
 	}
 	
@@ -126,6 +140,11 @@ public class JackFragmentMaster extends Activity
 	 */
 	class AsyncSocketReReqTask extends AsyncTask<Void, Integer, Integer> {	
 
+		protected void onPreExecute() {
+			isConnecting = true;
+//			ToastUtil.TextToastShort(JackFragmentMaster.this, "异步重连Start");
+		};
+		
 		//后台线程，建立连接
 		@Override
 		protected Integer doInBackground(Void... params) {
@@ -158,11 +177,11 @@ public class JackFragmentMaster extends Activity
 			return ret;		
 		}
 		
-		//doInBackground完成后自动调用，并将doInBackground的返回值传给该方法
 		protected void onPostExecute(Integer ret) {
-			if (ret.intValue() == -1) {				
-//				threadPoolManager.destroyClientTasks();
-//				ToastUtil.TextToastShort(JackFragmentMaster.this, "连接失败，请重新尝试");
+			isConnecting = false;
+			if (ret.intValue() == -1) {		
+			} else {
+				reconnNum = 0;
 			}
 		}
 		
@@ -204,12 +223,14 @@ public class JackFragmentMaster extends Activity
 		localTextView.setText("控制柜" );
 		
 		title_waiting = (ProgressBar) findViewById(R.id.title_waiting);
+		text_waiting = (TextView)findViewById(R.id.text_waiting);
 		
-		IntentFilter filter=new IntentFilter();
-		filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-		filter.addAction("com.greenhosue.backtolauncheraction");
-        myReceiver = new NetBroadcastReceiver(handler);
-        this.registerReceiver(myReceiver, filter);
+		
+//		IntentFilter filter=new IntentFilter();
+//		filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+//		filter.addAction("com.greenhosue.backtolauncheraction");
+//        myReceiver = new NetBroadcastReceiver(handler);
+//        this.registerReceiver(myReceiver, filter);
 		
 		ImageView localImageView = (ImageView) findViewById(R.id.title_btn);
 		localImageView.setImageResource(R.drawable.go_back);
@@ -274,6 +295,10 @@ public class JackFragmentMaster extends Activity
 
 	public void IsSwitchTest() {
 		final String msg = "HFUT" + Launcher.selectMac + "OUTT00000000000000000000WANG";
+		SocketOutputTask.sendMsgQueue.addLast(msg);
+		SocketOutputTask.sendMsgQueue.addLast(msg);
+		SocketOutputTask.sendMsgQueue.addLast(msg);
+		SocketOutputTask.sendMsgQueue.addLast(msg);
 		SocketOutputTask.sendMsgQueue.addLast(msg);
 	}
 
@@ -349,7 +374,7 @@ public class JackFragmentMaster extends Activity
 		FragmentManager fragmentManager = getFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 		localTextView.setText("阈值设置" );
-		JackFragmentThresholdSet jackFragmentThresholdSet = new JackFragmentThresholdSet(handler);
+		JackFragmentThresholdSet jackFragmentThresholdSet = new JackFragmentThresholdSet();
 		fragmentTransaction.replace(R.id.jack_fragment_container, jackFragmentThresholdSet);			
 		fragmentTransaction.commit();
 	}
@@ -367,7 +392,6 @@ public class JackFragmentMaster extends Activity
 	private void refreshStatistics() {
 		FragmentManager fragmentManager = getFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-		JackFragmentMaster.listHistory = null;
 		JackFragmentStatistics jackFragmentStatistics = new JackFragmentStatistics();
 		fragmentTransaction.replace(R.id.jack_fragment_container, jackFragmentStatistics);			
 		fragmentTransaction.commit();
@@ -386,10 +410,6 @@ public class JackFragmentMaster extends Activity
 		else if (msg.equals("00")) {
 			IsSwitchTest();
 			FragmentFlag="00";
-			//add by Elsa, 8/28
-//			jackService = new JackService(JackFragmentMaster.this);
-//			JackFragmentShowinfo.jacks = jackService.getAllJack(Launcher.selectMac); // 初始化JackFragmentShowinfo.jacks，插座当前信息
-//			JackFragmentShowinfo jackFragmentShowinfo = new JackFragmentShowinfo();
 			refreshShowinfo();
 		}
 		// 开关测试
@@ -418,9 +438,33 @@ public class JackFragmentMaster extends Activity
 			refreshModeset();			
 		}
 		//每次选中查询类型后，（1）清空查询记录的全局静态数组变量（2）跳转
-		else if(msg.equals("30") || msg.equals("31") || msg.equals("32") || msg.equals("33") || msg.equals("34") || msg.equals("35") || msg.equals("36")){
+		else if(msg.equals("30")){
 			IsSwitchTest();
 			FragmentFlag="30";
+			refreshStatistics();
+		} else if (msg.equals("31")) {
+			IsSwitchTest();
+			FragmentFlag="31";
+			refreshStatistics();
+		} else if(msg.equals("32")) {
+			IsSwitchTest();
+			FragmentFlag="32";
+			refreshStatistics();
+		} else if(msg.equals("33")) {
+			IsSwitchTest();
+			FragmentFlag="33";
+			refreshStatistics();
+		} else if (msg.equals("34")) {
+			IsSwitchTest();
+			FragmentFlag="34";
+			refreshStatistics();
+		} else if(msg.equals("35")) {
+			IsSwitchTest();
+			FragmentFlag="35";
+			refreshStatistics();
+		} else if(msg.equals("36")) {
+			IsSwitchTest();
+			FragmentFlag="36";
 			refreshStatistics();
 		}
 	}
@@ -466,7 +510,7 @@ public class JackFragmentMaster extends Activity
 	protected void onDestroy() {
 		// TODO Auto-generated method stub	
 		Log.d(TAG, "onDestroy");
-		unregisterReceiver(myReceiver);	
+//		unregisterReceiver(myReceiver);	
 		handler.removeCallbacks(refreshTitleBar);
 		handler.removeCallbacks(refreshFragmentShowinfo);
 		handler.removeCallbacks(refreshFragmentSwtich);
@@ -501,6 +545,50 @@ public class JackFragmentMaster extends Activity
 			JackFragmentEnvironment.sensors = SourceDataManager.initEnvironmentList();
 			JackFragmentEnvironment.adapter.notifyDataSetChanged();
 		}
+	}
+
+	@Override
+	public void onSoiltempClicked() {
+		// TODO Auto-generated method stub
+		refreshStatistics();
+	}
+
+	@Override
+	public void onSoilhumClicked() {
+		// TODO Auto-generated method stub
+		refreshStatistics();
+	}
+
+	@Override
+	public void onSoilphClicked() {
+		// TODO Auto-generated method stub
+		refreshStatistics();
+	}
+
+
+	@Override
+	public void onAirtempClicked() {
+		// TODO Auto-generated method stub
+		refreshStatistics();
+	}
+
+
+	@Override
+	public void onAirhumClicked() {
+		// TODO Auto-generated method stub
+		refreshStatistics();
+	}
+
+
+	public void onCo2Clicked() {
+		// TODO Auto-generated method stub
+		refreshStatistics();
+	}
+
+	@Override
+	public void onIllumClicked() {
+		// TODO Auto-generated method stub
+		refreshStatistics();
 	}
 	
 	

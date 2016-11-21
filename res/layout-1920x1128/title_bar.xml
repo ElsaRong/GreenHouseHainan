@@ -33,13 +33,36 @@
         android:layout_height="fill_parent" 
         android:layout_alignParentRight="true" />
 
-    <ProgressBar
+<!--     <ProgressBar
         android:id="@+id/title_waiting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:visibility="gone"
         android:layout_toLeftOf="@id/heaven" 
-        style="?android:attr/progressBarStyleInverse"/>
+        style="?android:attr/progressBarStyleInverse"/> -->
+    
+    <ProgressBar
+        android:id="@+id/title_waiting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="15.0dip"
+        android:layout_toLeftOf="@id/heaven" 
+        android:indeterminate="true"
+        android:indeterminateDrawable="@drawable/waiting_progress"
+        android:visibility="gone"/>
+    
+    <TextView 
+        android:id="@+id/text_waiting" 
+        android:textSize="20.0sp" 
+        android:textColor="@android:color/white" 
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content" 
+        android:layout_alignParentBottom="true"
+        android:layout_below="@id/title_waiting"
+        android:layout_toLeftOf="@id/heaven" 
+        android:visibility="gone"
+        android:text="@string/text_waiting" 
+        android:singleLine="true" />
 
 </RelativeLayout>

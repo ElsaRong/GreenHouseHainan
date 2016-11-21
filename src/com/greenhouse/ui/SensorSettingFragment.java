@@ -9,6 +9,7 @@ import com.greenhouse.util.Const;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,8 @@ import android.widget.TextView;
 * @description 
 */
 public class SensorSettingFragment extends Fragment implements OnSensorSettingClickedListener{
+	
+	private final String TAG = "SensorSettingFragmetn";
 	
 	private TextView tvSensorType, tvNightThre, tvDayThre,tvCurrent, tvNightRecord, tvDayRecord, tvCurrentRecord;
 	public static EditText edNightThre,edDayThre; //在SensorSetting中获取用户输入的早晚门限
@@ -46,6 +49,9 @@ public class SensorSettingFragment extends Fragment implements OnSensorSettingCl
 		edDayThre.setText(SensorSetting.sSetDayThre[0] + "");
 		
 		sensor = SensorRecyclerView.sSelectSensorInfo.get(SensorRecyclerView.sSelectSensorInfo.size()-1); //选定传感器的实时值平均
+		Log.e(TAG, "sBinSelectSensor = " + SensorRecyclerView.sBinSelectSensor);
+		Log.e(TAG, "sSelectSensorInfo.size() = " + SensorRecyclerView.sSelectSensorInfo.size());
+		
 		SensorSetting.sSensorType = 1;                      //初始化传感器类型
 		tvSensorType.setText(Const.SOIL_TEMP);              //显示初始化传感器类型
 		tvNightThre.setText(Const.DAY_THRE_VALUE);          //显示“白天门限”

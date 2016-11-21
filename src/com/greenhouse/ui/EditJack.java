@@ -37,7 +37,6 @@ public class EditJack extends Activity implements View.OnClickListener {
 	public static int flag_same_name;
 	public  static AlertDialog alertDialog;
 	
-	private JackService jackService;
 	
 	public BroadcastReceiver myReceiver;
 	
@@ -64,14 +63,6 @@ public class EditJack extends Activity implements View.OnClickListener {
 		setContentView(R.layout.jack_edit);
 		title_waiting = (ProgressBar) findViewById(R.id.title_waiting); 
 
-		jackService = new JackService(this);
-		
-		IntentFilter filter=new IntentFilter();
-		filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-		filter.addAction("com.greenhosue.backtolauncheraction");
-        myReceiver = new NetBroadcastReceiver(handler);
-        this.registerReceiver(myReceiver, filter);
-		
 		ImageView localImageView = (ImageView) findViewById(R.id.title_btn);
 		localImageView.setImageResource(R.drawable.go_back);
 		localImageView.setOnClickListener(new OnClickListener() {

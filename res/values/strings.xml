@@ -15,6 +15,7 @@
     <string name="sensorSet">设置传感器</string>
     <string name="jackSet">设置插座</string>
     <string name="connectwaiting">正在连接控制器，请耐心等待…</string>
+    <string name="text_waiting">网络异常，正在重连…</string>
     <string name="edit">编辑</string>
     <string name="cancel">取消</string>
     <string name="confirm">确定</string>

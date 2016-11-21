@@ -15,4 +15,12 @@ public interface OnFragmentRefreshInterface {
 	public void onShowinfoRefresh();
 	public void onEnvironmentRefresh();
 	
+	public void onSoiltempClicked();
+	public void onSoilhumClicked();
+	public void onSoilphClicked();
+	public void onAirtempClicked();
+	public void onAirhumClicked();
+	public void onCo2Clicked();
+	public void onIllumClicked();
+	
 }

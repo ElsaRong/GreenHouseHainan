@@ -5,20 +5,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
-
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -29,13 +21,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.greenhouse.R;
+import com.greenhouse.animation.HeavenAnimateView;
 import com.greenhouse.database.JackService;
 import com.greenhouse.model.Jack;
-import com.greenhouse.networkservice.NetBroadcastReceiver;
-import com.greenhouse.networkservice.SocketInputTask;
 import com.greenhouse.networkservice.SocketOutputTask;
-import com.greenhouse.networkservice.ThreadPoolManager;
-import com.greenhouse.util.Const;
 import com.greenhouse.util.DataFormatConversion;
 import com.greenhouse.util.TimerConfigure;
 import com.greenhouse.util.ToastUtil;
@@ -56,6 +45,9 @@ public class Timer extends Activity {
 	private TextView powerOffTime;
 	private TextView circleTime;
 	private TextView startTime;
+	
+	private ProgressBar title_waiting;
+	private TextView text_waiting;
 
 	private List<Map<String, String>> mMultiJack = new ArrayList<Map<String, String>>();
 	private Iterator<Map<String, String>> iterator_timer;
@@ -67,6 +59,32 @@ public class Timer extends Activity {
 	public static String stopdate = "0";
 	
 	private JackService jackService;
+	
+private Handler handler = new Handler(); //handler.removeCallbacks
+	
+	private Runnable refreshTimer = new Runnable() {
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			refreshHeavenView();
+			handler.postDelayed(refreshTimer, 1000);
+		}
+	};
+	
+	private void refreshHeavenView() {
+		HeavenAnimateView localHeavenAnimateView = (HeavenAnimateView) findViewById(R.id.heaven);
+		if (localHeavenAnimateView != null) {
+			localHeavenAnimateView.update();
+			localHeavenAnimateView.postInvalidate();
+		}
+		if (Launcher.client == null) {
+			title_waiting.setVisibility(View.VISIBLE);	
+			text_waiting.setVisibility(View.VISIBLE);
+		} else {
+			title_waiting.setVisibility(View.GONE);
+			text_waiting.setVisibility(View.GONE);
+		}
+	}
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -95,6 +113,9 @@ public class Timer extends Activity {
 		// title_bar theme
 		TextView localTextView = (TextView) findViewById(R.id.title);
 		localTextView.setText(R.string.timer);
+		
+		title_waiting = (ProgressBar) findViewById(R.id.title_waiting);
+		text_waiting = (TextView)findViewById(R.id.text_waiting);
 		
 		// start_btn
 		Button timer_start = (Button) findViewById(R.id.timer_btn);
@@ -246,6 +267,8 @@ public class Timer extends Activity {
 				numberPicker.NumberPickDialog3(circleTime);
 			}
 		});
+		
+		handler.post(refreshTimer);
 	}
 
 	public byte[] createTASKmsg() {
@@ -266,7 +289,7 @@ public class Timer extends Activity {
 				+ Timer.chosedJackGroupHex + "0000"
 				+ DataFormatConversion.IrreguStringToHexValue("WANG");
 		
-		Log.e(TAG, "转换成字节前的TASK报文: "+msg);
+//		Log.e(TAG, "转换成字节前的TASK报文: "+msg);
 		
 		byte[] b = DataFormatConversion.HexStringToByte(msg);
 		return b;
@@ -291,6 +314,7 @@ private static String modifyFormat(String s) {
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
+		handler.removeCallbacks(refreshTimer);
 		super.onDestroy();
 	}
 

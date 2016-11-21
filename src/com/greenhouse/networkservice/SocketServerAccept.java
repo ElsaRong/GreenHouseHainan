@@ -22,21 +22,22 @@ public class SocketServerAccept implements Runnable {
 	
 	private Socket socket;
 	
-	private ThreadPoolManager manager;
+	private ThreadPoolManager threadPoolManager;
 
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
 		
-		while (true) {
-			Log.d(TAG, "Accept Task Run");
-			
+		ThreadPoolManager.ACCEPT_IsRUNNING = true;
+		
+		while (ThreadPoolManager.ACCEPT_IsRUNNING) {
 			try {
 				Launcher.server = new ServerSocket(Const.server_PORT);
-			} catch (IOException e) {
+			} catch (IOException e2) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				e2.printStackTrace();
 			}
+			Log.d(TAG, "Accept Task Run");
 			try {
 				socket = Launcher.server.accept();
 				Log.d(TAG, "accepted");
@@ -44,8 +45,8 @@ public class SocketServerAccept implements Runnable {
 					SocketServer tvServer = new SocketServer();
 					tvServer.setSocketServer(socket);
 					tvServer.setServerState(Const.SOCKET_CONNECTED);
-					manager = ThreadPoolManager.getInstance();
-					manager.startSocketServerTask(tvServer);
+					threadPoolManager = ThreadPoolManager.getInstance();
+					threadPoolManager.startServerSendTask(tvServer);
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -63,6 +64,7 @@ public class SocketServerAccept implements Runnable {
 			}
 		}
 		
+		ThreadPoolManager.ACCEPT_IsRUNNING = false;
 	}
 
 }

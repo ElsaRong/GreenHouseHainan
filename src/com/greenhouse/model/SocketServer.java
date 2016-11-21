@@ -37,18 +37,6 @@ public class SocketServer {
 	public int getServerState() {
 		return state;
 	}
-
-//	public OutputStream getOutputStream() {
-//		// TODO Auto-generated method stub
-//		try {
-//			OutputStream outputStream = tvServer.getOutputStream();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//			tvServer = null;
-//		}
-//		return outputStream;
-//	}
 	
 	public void destroy() {
 		if (tvServer != null) {

@@ -17,7 +17,6 @@ import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.os.Vibrator;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -40,17 +39,10 @@ import com.greenhouse.animation.HeavenAnimateView;
 import com.greenhouse.database.ControllerService;
 import com.greenhouse.database.JackService;
 import com.greenhouse.database.SensorService;
-import com.greenhouse.model.SocketClient;
-import com.greenhouse.model.SocketServer;
 import com.greenhouse.mvadpater.GridItemDataAdapter;
 import com.greenhouse.networkservice.NetworkManager;
 import com.greenhouse.networkservice.SocketClientInit;
-import com.greenhouse.networkservice.SocketHeartbeatTask;
-import com.greenhouse.networkservice.SocketInputTask;
-import com.greenhouse.networkservice.SocketOutputTask;
 import com.greenhouse.networkservice.ThreadPoolManager;
-import com.greenhouse.networkservice.UdpBroadcastTask;
-import com.greenhouse.util.Const;
 import com.greenhouse.util.GreenHouseApplication;
 import com.greenhouse.util.SlideMenuAdapter;
 import com.greenhouse.util.ToastUtil;
@@ -86,13 +78,12 @@ public class Launcher extends Activity {
 	private ImageView runImage, deleteBtn;         //删除button
 	private static ProgressBar controller_waiting; //等待菊花
 	private static TextView txt_controllerwaiting; //等待文字
-	private static ProgressBar title_waiting;      //title栏等待小菊花
 	private ActionBarDrawerToggle mDrawerToggle;
 	
-	
 	/*主界面布局－数据绑定*/
+	public static GridItemDataAdapter adapter;
 	public static List<String> controllersList = new ArrayList<String>();                             //所有控制器信息
-	private ArrayList<ArrayList<String>> scrollControllersList = new ArrayList<ArrayList<String>>();  //分页显示控制器信息
+	public static ArrayList<ArrayList<String>> scrollControllersList = new ArrayList<ArrayList<String>>();  //分页显示控制器信息
 	private ArrayList<DragGrid> dragGridArray = new ArrayList<DragGrid>();	                          //分页网格布局Adapter
 	
 	public static boolean BACK_TO_LAUNCHER = false;
@@ -112,29 +103,24 @@ public class Launcher extends Activity {
 	private JackService jackService = new JackService(this);				   //数据库Jack表对象
 	private SensorService sensorService = new SensorService(this);			   //数据库Sensor表对象	
 	
-    private Handler mainHandler = new Handler() {
-		public void handleMessage(Message msg) {
-			super.handleMessage(msg);  
-			switch (msg.what) {
-			case Const.UI_REFRESH:
-				scrollLayout.removeAllViews();
-				initControllerList();
-				initClassifiedControllers();
-				for (int i = 0; i < LauncherViewConfig.countPages; i++) {
-					scrollLayout.addView(initGridViewItem(i));
-				}
-				break;
-			case Const.BACK_TO_LAUNCHER:
-				Intent intent = new Intent();
-				intent.setAction("com.greenhosue.backtolauncheraction");
-				sendBroadcast(intent);
-				break;
-			default:
-				break;
-	        }
+	private Handler handler = new Handler(); //handler.removeCallbacks
+	
+	//1s刷新一次时间显示和socket状态
+	private Runnable refreshTitleBar = new Runnable() {
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			refreshHeavenView();
+			refreshGridItem();
+			handler.postDelayed(refreshTitleBar, 1000);
 		}
 	};
 	
+	private void refreshGridItem() {
+		initControllerList();
+		initClassifiedControllers();
+		adapter.notifyDataSetChanged();
+	}
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -142,7 +128,7 @@ public class Launcher extends Activity {
 		setContentView(R.layout.main);	
 		
 		mApplication = (GreenHouseApplication)getApplication(); //初始化APP对象
-		mApplication.setMainHandler(mainHandler);				//初始化主线程handler
+		mApplication.setMainHandler(handler);				//初始化主线程handler
 		
 		initControllerList();              //初始化所有mac信息到ArrayList<String>
 		initClassifiedControllers();       //初始化分页mac信息到ArrayList<ArrayList<String>>
@@ -150,6 +136,8 @@ public class Launcher extends Activity {
 		initSlideMenu();
 		initSensor();
 		runAnimation();
+		
+		handler.post(refreshTitleBar);
 	}
 	
 	public void initControllerList() {
@@ -194,7 +182,6 @@ public class Launcher extends Activity {
 		deleteBtn = (ImageView) findViewById(R.id.dels); 
 		controller_waiting = (ProgressBar) findViewById(R.id.controller_waiting); 
 		txt_controllerwaiting = (TextView) findViewById(R.id.txt_controllerwaiting);
-		title_waiting = (ProgressBar) findViewById(R.id.title_waiting); 
 		pageNumber = (TextView) findViewById(R.id.tv_page);
 		pageNumber.setText("1");
 		for (int i = 0; i < LauncherViewConfig.countPages; i++) {
@@ -241,6 +228,11 @@ public class Launcher extends Activity {
 			if (ret != -1) {
 				
 				threadPoolManager.startClientTasks();
+				if (!ThreadPoolManager.ACCEPT_IsRUNNING) {
+					threadPoolManager.startServerAcceptTask();
+				} else {
+					Log.d(TAG, "Accept线程已经存在");
+				}
 				
 				try {
 					Thread.sleep(3000);
@@ -266,7 +258,6 @@ public class Launcher extends Activity {
 			} else {
 				// 20160417bug修复－每次跳转前都会清空数据库中 sensor：设置为offline
 				sensorService.modifyAllSensorOffline();
-				threadPoolManager.startServerTask();
 				startActivity(new Intent(Launcher.this, JackFragmentMaster.class));
 			}
 		}
@@ -281,7 +272,6 @@ public class Launcher extends Activity {
 	private void progressDismiss() {
 		controller_waiting.setVisibility(View.GONE);
 		txt_controllerwaiting.setVisibility(View.GONE);
-		title_waiting.setVisibility(View.GONE);		
 	}
 	
 	
@@ -291,7 +281,7 @@ public class Launcher extends Activity {
 		linearLayout = new LinearLayout(this);		
 		dragGridView = new DragGrid(Launcher.this);
 		dragGridArray.clear();
-		GridItemDataAdapter adapter = new GridItemDataAdapter(Launcher.this, scrollControllersList.get(i));
+		adapter = new GridItemDataAdapter(Launcher.this, scrollControllersList.get(i));
 		dragGridView.setAdapter(adapter);
 		dragGridView.setNumColumns(4);
 		dragGridView.setHorizontalSpacing(0);
@@ -368,8 +358,6 @@ public class Launcher extends Activity {
 						scrollControllersList.get(LauncherViewConfig.curentPage).set(del_count, "add");
 						scrollControllersList.get(LauncherViewConfig.curentPage).set(del_count + 1, null);
 						controllersList.remove(LauncherViewConfig.removeItem);
-						
-						mainHandler.sendEmptyMessage(Const.UI_REFRESH);
 					}
 					deleteBtn.startAnimation(down);
 					break;
@@ -607,6 +595,7 @@ public class Launcher extends Activity {
 				.setPositiveButton("是",	new DialogInterface.OnClickListener() {					
 					public void onClick(DialogInterface dialog,
 							int whichButton) {						
+						System.exit(0); 
 					}
 				}).show();
 			}
@@ -648,8 +637,9 @@ public class Launcher extends Activity {
 	protected void onDestroy() {
 		// TODO Auto-generated method stub	
 		threadPoolManager.releaseInstance();
-		mainHandler.removeCallbacksAndMessages(null);
+		handler.removeCallbacks(refreshTitleBar);
 		super.onDestroy();	
+		System.exit(0); 
 	}
 
 	public final static int px2dip(Context context, float pxValue) {

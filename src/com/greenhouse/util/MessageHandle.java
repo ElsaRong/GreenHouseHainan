@@ -54,7 +54,8 @@ public class MessageHandle {
 	private static final String STOP = "53544f50";
 	private static final String LOST = "4e4f5354";
 	private static final String DANI = "44414e49";
-	private static final String THRE = "54485245";
+//	private static final String THRE = "54485245";
+	private static final String TRES = "54524553";
 	
 	public static void MessageHandleFromController(final String MESSAGE) {
 		// TODO Auto-generated method stub
@@ -120,9 +121,9 @@ public class MessageHandle {
 			data = SocketInputTask.MESSAGE.substring(20, 28);
 			setControllerDayNight(data);
 			break;
-		case THRE:
+		case TRES:
 			SocketInputTask.MESSAGE = DataFormatConversion.convertHexToString(MESSAGE);
-			Log.d(TAG, "[Recv:THRE]" + SocketInputTask.MESSAGE);
+			Log.d(TAG, "[Recv:TRES]" + SocketInputTask.MESSAGE);
 			data = SocketInputTask.MESSAGE.substring(20, 28);
 			 setControllerThredshold(data);
 			break;
@@ -355,6 +356,8 @@ public class MessageHandle {
 			sensorService.modifySensorCurrentValue(sensorid, 0, soiltemp, soilhum, soilph, airtemp, airhum, co2, illu);
 		} else {
 			sensorService.modifySensorCurrentValue(sensorid, 1, soiltemp, soilhum, soilph, airtemp, airhum, co2, illu);
+			//将传感器实时值[在每天的8，12，17，19点的四个时间点]保存到统计查询表
+			setSensorCurrentValueToStatistic(soiltemp, soilhum, soilph, airtemp, airhum, co2, illu);
 		}
 
 		if (JackFragmentShowinfo.jackInfoList.size() > 0) {
@@ -362,7 +365,7 @@ public class MessageHandle {
 				String bundSensors = JackFragmentShowinfo.jackInfoList.get(i).getSensors();
 				int[] jackCurrValue = sensorService.getIntSelectSensorAverage(bundSensors);
 				Log.v(TAG, "第"+i+"列插座上绑定的传感器："+JackFragmentShowinfo.jackInfoList.get(i).getSensors());
-				Log.v(TAG, "（数据库）更新其平均值＝"+jackCurrValue[0]+jackCurrValue[1]+jackCurrValue[2]+jackCurrValue[3]
+				Log.v(TAG, "[(数据库同步)Sensor实时值]"+jackCurrValue[0]+jackCurrValue[1]+jackCurrValue[2]+jackCurrValue[3]
 						+jackCurrValue[4]+jackCurrValue[5]+jackCurrValue[6]);
 				
 				if (!bundSensors.equals("00000000")) {
@@ -371,8 +374,6 @@ public class MessageHandle {
 			}
 		}
 			
-	   //将传感器实时值[在每天的8，12，17，19点的四个时间点]保存到统计查询表
-//	   setSensorCurrentValueToStatistic(soiltemp, soilhum, soilph, airtemp, airhum, co2, illu);
 			
 		Log.i(TAG, "sensor" + sensorid + "-" + soiltemp + "-" + soilhum + "-" + soilph + "-" + airtemp + "-" + airhum + "-" + co2 + "-" + illu);
 	}
@@ -391,15 +392,18 @@ public class MessageHandle {
 		Calendar c = Calendar.getInstance();
 		Integer hour = Integer.valueOf(c.get(Calendar.HOUR_OF_DAY));
 		Integer minute = Integer.valueOf(c.get(Calendar.MINUTE));
-		Integer seconed = Integer.valueOf(c.get(Calendar.SECOND));
 		Integer year = Integer.valueOf(c.get(Calendar.YEAR));
 		Integer month = Integer.valueOf(c.get(Calendar.MONTH));
 		Integer day = Integer.valueOf(c.get(Calendar.DAY_OF_MONTH));
 		
 		StatisticService statisticService = new StatisticService(GreenHouseApplication.getContext());
-		if (!statisticService.isCurrentDataSaved(year, month, day, hour)) {
-			statisticService.insertRecord(Launcher.selectMac , year, month, day, hour, soiltemp, soilhum, soilph, airtemp, airhum, co2, illu);
-			Log.i(TAG, "insert statistic ------------> Data: " + year+"/"+month+"/"+day+"; Time: " + hour + ":" + minute + ":" + seconed);
+//		statisticService.insertRecord(Launcher.selectMac , year, month, day, hour, soiltemp, soilhum, soilph, airtemp, airhum, co2, illu);
+//		Log.d(TAG, "(SQLite TEST) Statistic: " + year+"/"+month+"/"+day+" " + hour + ":" + minute + ":" + seconed);
+		
+		
+		if (!statisticService.isCurrentDataSaved(year, month, day, hour, minute)) {
+			statisticService.insertRecord(Launcher.selectMac , year, month, day, hour, minute, soiltemp, soilhum, soilph, airtemp, airhum, co2, illu);
+			Log.d(TAG, "[(数据库同步)统计查询]" + year+"/"+month+"/"+day+" " + hour + ":" + minute);
 		} 
 		
 	}
@@ -457,7 +461,7 @@ public class MessageHandle {
 	public static void setSensorLost(String data) {
 		Integer sensorid = Integer.valueOf(data.substring(3, 4));
 		SensorService sensorService = new SensorService(GreenHouseApplication.getContext());
-		sensorService.modifySensorCurrentValue(sensorid, 0, 00, 00, 00, 00, 00, 0000, 0000);
+		sensorService.modifySensorCurrentValue(sensorid, 0, 0, 0, 0, 0, 0, 0, 0);
 	}
 	
 	public static void deletelJackTask(String jacktasks) {

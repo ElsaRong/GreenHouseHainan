@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.greenhouse.ui.Launcher;
-
-import android.R.integer;
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 /** 
 * @author       Elsa 
@@ -34,6 +32,7 @@ public class ControllerService {
 				+ "?,?,?,?,?,?,?)";
 		Object[] object = new Object[]{mac, ip, "controller", false, 1, 8, 18, 2, 5, 10, 2, 5, 10, 1000};
 		db.execSQL(s, object);
+		db.close();
 	}
 
 	
@@ -47,6 +46,7 @@ public class ControllerService {
 			ip = cursor.getString(cursor.getColumnIndex("ip"));
 		}
 		cursor.close();
+		db.close();
 		return ip;
 	}
 	
@@ -60,6 +60,7 @@ public class ControllerService {
 			day = cursor.getInt(cursor.getColumnIndex("day_threshold"));
 		}
 		cursor.close();
+		db.close();
 		return day;
 	}
 	
@@ -73,6 +74,7 @@ public class ControllerService {
 			night = cursor.getInt(cursor.getColumnIndex("night_threshold"));
 		}
 		cursor.close();
+		db.close();
 		return night;
 	}
 	
@@ -177,7 +179,7 @@ public class ControllerService {
 		return macs;
 	}
 	
-	public List<Integer> getAllThredshold() {//����jack��mac�б�
+	public List<Integer> getAllThredshold() {
 		List<Integer> thres = new ArrayList<Integer>();
 		SQLiteDatabase db = databaseHelper.getWritableDatabase();
 		String s = "select * from controller where mac=?";
@@ -191,7 +193,15 @@ public class ControllerService {
 			thres.add(cursor.getInt(cursor.getColumnIndex("thre5")));
 			thres.add(cursor.getInt(cursor.getColumnIndex("thre6")));
 			thres.add(cursor.getInt(cursor.getColumnIndex("thre7")));
+//			Log.e("SQL Controller", "thre = " + cursor.getInt(cursor.getColumnIndex("thre1")));
+//			Log.e("SQL Controller", "thre = " + cursor.getInt(cursor.getColumnIndex("thre2")));
+//			Log.e("SQL Controller", "thre = " + cursor.getInt(cursor.getColumnIndex("thre3")));
+//			Log.e("SQL Controller", "thre = " + cursor.getInt(cursor.getColumnIndex("thre4")));
+//			Log.e("SQL Controller", "thre = " + cursor.getInt(cursor.getColumnIndex("thre5")));
+//			Log.e("SQL Controller", "thre = " + cursor.getInt(cursor.getColumnIndex("thre6")));
+//			Log.e("SQL Controller", "thre = " + cursor.getInt(cursor.getColumnIndex("thre7")));
 		}
+		
 		cursor.close();
 		db.close();
 		return thres;
@@ -217,6 +227,7 @@ public class ControllerService {
 		cursor.moveToFirst();
 		long count = cursor.getLong(0);
 		cursor.close();
+		db.close();
 		return count;
 	}
 	
@@ -232,6 +243,7 @@ public class ControllerService {
 			return true;*/
 		}
 		cursor.close();
+		db.close();
 		return bool;
 	}
 

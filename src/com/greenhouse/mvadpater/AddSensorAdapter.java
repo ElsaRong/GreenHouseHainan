@@ -28,13 +28,13 @@ public class AddSensorAdapter extends RecyclerView.Adapter<AddSensorAdapter.View
 
 	private long sensorNum;
 	
-	private List<Sensor> onlineSensors;
+//	public static List<Sensor> onlineSensors;
 	
 	private static final String TAG = "SensorRecyclerViewAdapter";
 	
-	public AddSensorAdapter(Context context, List<Sensor> onlineSensors, Map<String, String> map) {
-		this.onlineSensors = onlineSensors;
-		this.sensorNum = onlineSensors.size();
+	public AddSensorAdapter(Context context, Map<String, String> map) {
+//		this.onlineSensors = onlineSensors;
+		this.sensorNum = SensorRecyclerView.sOnlineSensorInfo.size();
 		for (int i = 0; i < sensorNum; i++) {
 			SensorRecyclerView.selectSensorsMap.put(i+"",0+"");
 		}
@@ -62,10 +62,7 @@ public class AddSensorAdapter extends RecyclerView.Adapter<AddSensorAdapter.View
 
 	public void onBindViewHolder(final ViewHolder viewHolder, final int position) {
 		// TODO Auto-generated method stub
-		
-		// ���online��true������ѡ�񣬷��򲻵�����ѡ�񣬶���ͼ��Ҳ�ǻ�ɫ�����
-		// ������ߣ����Ա�����ƽ�����飻��������ߣ����ܼ���ƽ������	
-		if (onlineSensors.get(position).getOnline() == 1) {
+		if (SensorRecyclerView.sOnlineSensorInfo.get(position).getOnline() == 1) {
 			
 			viewHolder.sensor.setOnClickListener(new View.OnClickListener() {			
 				@Override
@@ -92,7 +89,7 @@ public class AddSensorAdapter extends RecyclerView.Adapter<AddSensorAdapter.View
 			viewHolder.sensor.setImageResource(R.drawable.sensor_unselected);
 		}
 		
-		viewHolder.sensorid.setText("传感器－" + onlineSensors.get(position).getId());
+		viewHolder.sensorid.setText("传感器－" + SensorRecyclerView.sOnlineSensorInfo.get(position).getId());
 		
 		viewHolder.probe.setOnClickListener(new View.OnClickListener() {			
 			@Override

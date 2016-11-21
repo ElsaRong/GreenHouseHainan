@@ -51,16 +51,23 @@ public class SocketOutputTask implements Runnable{
 		
 		if (outputStream != null) {	
 			while (Launcher.client != null && Launcher.client.isConnected() && !Launcher.client.isClosed()) {
-				if (!sendMsgQueue.isEmpty()) {
-					Object msg = sendMsgQueue.getFirst();
-					try {
-						sendMsgQueue.removeFirst();
-					} catch (Exception e1) {
-						// TODO Auto-generated catch block
-						Log.e(TAG, "NoSuchElement Exception");
-						e1.printStackTrace();
+				Object msg = null;
+					
+					synchronized (sendMsgQueue) {
+						if (!sendMsgQueue.isEmpty()) {			
+							try {
+								msg = sendMsgQueue.getFirst();
+								sendMsgQueue.removeFirst();
+							} catch (Exception nsee) {
+								// TODO Auto-generated catch block
+								nsee.printStackTrace();
+							}
+						}
 					}
-					if (msg.toString().contains("HFUT") || msg.toString().contains("WANG")) {
+					
+					if (msg == null) {
+//						Log.e(TAG, "msg==null (synchronized sendMsgQueue exception)");
+					} else if (msg.toString().contains("HFUT") || msg.toString().contains("WANG")) {
 						sendMessageStr(msg.toString());
 					} else {
 						sendMessageByte(toByteArray(msg));
@@ -72,7 +79,7 @@ public class SocketOutputTask implements Runnable{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-				}
+				
 			}
 		}
 		

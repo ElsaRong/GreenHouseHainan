@@ -80,15 +80,17 @@ public class SocketInputTask implements Runnable{
 	public void run() {
 		Log.d(TAG, "Input Task Run");
 		
-		try {
-			inputStream = Launcher.client.getInputStream();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		if (inputStream != null) {
-			readInputStream(inputStream);
+		if (Launcher.client != null) {
+			try {
+				inputStream = Launcher.client.getInputStream();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			if (inputStream != null) {
+				readInputStream(inputStream);
+			}
 		}
 		
 		Log.d(TAG, "Input Task End");
