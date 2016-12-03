@@ -5,6 +5,7 @@ import com.greenhouse.R;
 import com.greenhouse.model.Jack;
 import com.greenhouse.networkservice.SocketOutputTask;
 import com.greenhouse.specialversion.LockCheck;
+import com.greenhouse.ui.JackFragmentMaster;
 import com.greenhouse.ui.JackFragmentSwitchTest;
 import com.greenhouse.ui.Launcher;
 import com.greenhouse.util.Const;
@@ -22,8 +23,11 @@ import android.widget.TextView;
 public class JackSwitchItemAdapter extends BaseAdapter{
 	
 	private LayoutInflater mInflater;
+	private Context context;
+	
 	public JackSwitchItemAdapter(Context context, List<Jack> jackSwitchInfoList) {
-		mInflater = LayoutInflater.from(context);
+		this.context = context;
+		this.mInflater = LayoutInflater.from(context);
 	}
 
 	@Override
@@ -84,6 +88,11 @@ public class JackSwitchItemAdapter extends BaseAdapter{
 						SocketOutputTask.sendMsgQueue.addLast(createCONTOPENmsg(id));
 						SocketOutputTask.sendMsgQueue.addLast(createCONTOPENmsg(id));
 						SocketOutputTask.sendMsgQueue.addLast(createCONTOPENmsg(id));
+						SocketOutputTask.sendMsgQueue.addLast(createCONTOPENmsg(id));
+						SocketOutputTask.sendMsgQueue.addLast(createCONTOPENmsg(id));
+						SocketOutputTask.sendMsgQueue.addLast(createCONTOPENmsg(id));
+						SocketOutputTask.sendMsgQueue.addLast(createCONTOPENmsg(id));
+						SocketOutputTask.sendMsgQueue.addLast(createCONTOPENmsg(id));
 				
 					} else {
 						//如果需要互锁，插座状态取反并刷新界面
@@ -97,7 +106,12 @@ public class JackSwitchItemAdapter extends BaseAdapter{
 					SocketOutputTask.sendMsgQueue.addLast(createCONTCLOSmsg(id));
 					SocketOutputTask.sendMsgQueue.addLast(createCONTCLOSmsg(id));
 					SocketOutputTask.sendMsgQueue.addLast(createCONTCLOSmsg(id));
-					SocketOutputTask.sendMsgQueue.addLast(createCONTCLOSmsg(id));					
+					SocketOutputTask.sendMsgQueue.addLast(createCONTCLOSmsg(id));
+					SocketOutputTask.sendMsgQueue.addLast(createCONTCLOSmsg(id));
+					SocketOutputTask.sendMsgQueue.addLast(createCONTCLOSmsg(id));
+					SocketOutputTask.sendMsgQueue.addLast(createCONTCLOSmsg(id));
+					SocketOutputTask.sendMsgQueue.addLast(createCONTCLOSmsg(id));
+					SocketOutputTask.sendMsgQueue.addLast(createCONTCLOSmsg(id));
 				}
 				
 			}

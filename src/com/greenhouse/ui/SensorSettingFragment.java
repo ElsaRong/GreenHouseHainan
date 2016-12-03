@@ -54,8 +54,8 @@ public class SensorSettingFragment extends Fragment implements OnSensorSettingCl
 		
 		SensorSetting.sSensorType = 1;                      //初始化传感器类型
 		tvSensorType.setText(Const.SOIL_TEMP);              //显示初始化传感器类型
-		tvNightThre.setText(Const.DAY_THRE_VALUE);          //显示“白天门限”
-		tvDayThre.setText(Const.NIGHT_THRE_VALUE);          //显示“夜间门限”
+		tvNightThre.setText(Const.NIGHT_THRE_VALUE);          //显示“夜间门限”
+		tvDayThre.setText(Const.DAY_THRE_VALUE);          //显示“白天门限”
 		tvNightRecord.setText("建议值：25-29" + Const.SOIL_TEMP_UNIT); //显示夜间门限建议值
 		tvDayRecord.setText("建议值：25-29" + Const.SOIL_TEMP_UNIT);   //显示白天门限建议值
 		tvCurrent.setText(sensor.getSoiltemp() + Const.SOIL_TEMP_UNIT); 					   //显示选定传感器的实时平均值
@@ -69,7 +69,8 @@ public class SensorSettingFragment extends Fragment implements OnSensorSettingCl
 		
 		switch (msg) {
 		case "soil_temp":
-			SensorSetting.sSensorType = 1;         						 	//保存传感器类型                                     
+			SensorSetting.sSensorType = 1;         						 	//保存传感器类型     
+			SensorSetting.sDeviceType = 1;
 			tvSensorType.setText(Const.SOIL_TEMP); 						 	//显示传感器类型
 			tvNightRecord.setText("建议值：25-29" + Const.SOIL_TEMP_UNIT);	//显示夜间门限建议值
 			tvDayRecord.setText("建议值：25-29" + Const.SOIL_TEMP_UNIT);   	//显示白天门限建议值
@@ -81,6 +82,7 @@ public class SensorSettingFragment extends Fragment implements OnSensorSettingCl
 			break;
 		case "soil_hum":
 			SensorSetting.sSensorType = 2;
+			SensorSetting.sDeviceType = 0;
 			tvSensorType.setText(Const.SOIL_HUM); 						  //显示传感器类型
 			tvNightRecord.setText("建议值：60-80" + Const.SOIL_HUM_UNIT);  //显示夜间门限建议值
 			tvDayRecord.setText("建议值：60-80" + Const.SOIL_HUM_UNIT);    //显示白天门限建议值
@@ -92,6 +94,7 @@ public class SensorSettingFragment extends Fragment implements OnSensorSettingCl
 			break;
 		case "soil_ph":
 			SensorSetting.sSensorType = 3; 
+			SensorSetting.sDeviceType = 1;
 			tvSensorType.setText(Const.PH); 					   									//显示传感器类型
 			tvNightRecord.setText("建议值：5-7" + Const.PH_UNIT);   									//显示夜间门限建议值
 			tvDayRecord.setText("建议值：5-7" + Const.PH_UNIT);    									//显示白天门限建议值
@@ -105,6 +108,7 @@ public class SensorSettingFragment extends Fragment implements OnSensorSettingCl
 			break;
 		case "air_temp":
 			SensorSetting.sSensorType = 4;
+			SensorSetting.sDeviceType = 1;
 			tvSensorType.setText(Const.AIR_TEMP); 					      //显示传感器类型
 			tvNightRecord.setText("建议值：26-28" + Const.AIR_TEMP_UNIT);  //显示夜间门限建议值
 			tvDayRecord.setText("建议值：26-28" + Const.AIR_TEMP_UNIT);    //显示白天门限建议值
@@ -116,6 +120,7 @@ public class SensorSettingFragment extends Fragment implements OnSensorSettingCl
 			break;
 		case "air_hum":
 			SensorSetting.sSensorType = 5;
+			SensorSetting.sDeviceType = 0;
 			tvSensorType.setText(Const.AIR_HUM); 					    //显示传感器类型
 			tvNightRecord.setText("建议值：60-80" + Const.AIR_HUM_UNIT); //显示夜间门限建议值
 			tvDayRecord.setText("建议值：60-80" + Const.AIR_HUM_UNIT);   //显示白天门限建议值
@@ -127,6 +132,7 @@ public class SensorSettingFragment extends Fragment implements OnSensorSettingCl
 			break;
 		case "co2":
 			SensorSetting.sSensorType = 6;
+			SensorSetting.sDeviceType = 0;
 			tvSensorType.setText(Const.CO2); 					      //显示传感器类型
 			tvNightRecord.setText("建议值：300-800" + Const.CO2_UNIT); //显示夜间门限建议值
 			tvDayRecord.setText("建议值：300-800" + Const.CO2_UNIT);   //显示白天门限建议值
@@ -138,6 +144,7 @@ public class SensorSettingFragment extends Fragment implements OnSensorSettingCl
 			break;
 		case "illum":
 			SensorSetting.sSensorType = 7;
+			SensorSetting.sDeviceType = 0;
 			tvSensorType.setText(Const.ILLUMINATION); 					              //显示传感器类型
 			tvNightRecord.setText("建议值：5000-20000" + Const.ILLUMINATION_UNIT);     //显示夜间门限建议值
 			tvDayRecord.setText("建议值：5000-20000" + Const.ILLUMINATION_UNIT);       //显示白天门限建议值

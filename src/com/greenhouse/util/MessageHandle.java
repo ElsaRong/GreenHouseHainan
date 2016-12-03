@@ -6,28 +6,13 @@ import com.greenhouse.database.ControllerService;
 import com.greenhouse.database.JackService;
 import com.greenhouse.database.SensorService;
 import com.greenhouse.database.StatisticService;
-import com.greenhouse.model.Jack;
 import com.greenhouse.model.Sensor;
-import com.greenhouse.mvadpater.JackSwitchItemAdapter;
-import com.greenhouse.mvadpater.JackInfoAdapter;
 import com.greenhouse.networkservice.SocketInputTask;
 import com.greenhouse.networkservice.SocketOutputTask;
-import com.greenhouse.ui.AlarmclockListView;
-import com.greenhouse.ui.JackFragmentEnvironment;
 import com.greenhouse.ui.JackFragmentMaster;
 import com.greenhouse.ui.JackFragmentShowinfo;
-import com.greenhouse.ui.JackFragmentSwitchTest;
-import com.greenhouse.ui.JackFragmentTimeSet;
 import com.greenhouse.ui.Launcher;
-import com.greenhouse.ui.SensorRecyclerView;
-import com.greenhouse.ui.SensorSetting;
-import com.greenhouse.ui.Timer;
-
-import android.app.Activity;
-import android.os.Message;
-import android.provider.ContactsContract.Contacts.Data;
 import android.util.Log;
-import net.tsz.afinal.FinalActivity;
 
 /** 
 * @author       Elsa 
@@ -56,20 +41,28 @@ public class MessageHandle {
 	private static final String DANI = "44414e49";
 //	private static final String THRE = "54485245";
 	private static final String TRES = "54524553";
+	private static final String OUTT = "4f555454";
+	private static final String INTE = "494e5445";
 	
 	public static void MessageHandleFromController(final String MESSAGE) {
 		// TODO Auto-generated method stub
 		
 		final String strRegexMsg = MESSAGE.substring(0, 40) + "WANG";
 		final String byteRegexMsg = DataFormatConversion.convertHexToString(MESSAGE).substring(0,40) + "WANG";
+		Thread newThread;         //声明一个子线程
 		
-		if (SocketOutputTask.sendMsgQueue.remove(strRegexMsg)) {
-//			Log.d(TAG, "strRegexMsg: " + strRegexMsg);
-		} else if (SocketOutputTask.sendMsgQueue.remove(byteRegexMsg)) {
-//			Log.d(TAG, "byteRegexMsg: " + byteRegexMsg);
-		} else {
-//			Log.d(TAG, "sendMsgQueue remove null");
-		}
+		SocketOutputTask.sendMsgQueue.remove(strRegexMsg);
+		SocketOutputTask.sendMsgQueue.remove(byteRegexMsg);
+		
+		
+		
+//		if () {
+////			Log.d(TAG, "strRegexMsg: " + strRegexMsg);
+//		} else if () {
+////			Log.d(TAG, "byteRegexMsg: " + byteRegexMsg);
+//		} else {
+////			Log.d(TAG, "sendMsgQueue remove null");
+//		}
 		
 		final String func_key = MESSAGE.substring(32, 40);		
 		final String data;		
@@ -81,6 +74,7 @@ public class MessageHandle {
 			break;
 		case STOP:
 			SocketInputTask.MESSAGE = DataFormatConversion.convertHexToString(MESSAGE);
+			JackFragmentMaster.MCU_IS_STOP = true;
 			Log.d(TAG, "[Recv:STOP]" + SocketInputTask.MESSAGE);
 //			mainHandler.sendEmptyMessage(Const.SOCKET_DISCONNECTED);//弹出“连接失败提示框”
 //			mainHandler.removeMessages(Const.TIMEOUT);//取消弹出“连接超时提示框”
@@ -135,6 +129,8 @@ public class MessageHandle {
 		case STAT://TIME后收到该报文，1-数据库；2-本地缓存；3-通知刷新界面
 			Log.d(TAG, "[Recv:STAT]" + MESSAGE);
 			setAllSwitchState(SocketInputTask.MESSAGE.substring(40, 80));
+//			if( !SocketOutputTask.sendMsgQueue.contains("CONT")) {
+//			}
 			break;	
 		case HAVE:
 			Log.d(TAG, "[Recv:HAVE]" + MESSAGE + "[状态 1-更新缓存 2-更新数据库]");
@@ -155,6 +151,12 @@ public class MessageHandle {
 			break;
 		case BUND:
 			Log.d(TAG, "[Recv: BUND]" + MESSAGE);
+			break;
+		case OUTT:
+			Log.e(TAG, "[Recv: OUTT]");
+			break;
+		case INTE:
+			Log.e(TAG, "[Recv: INTE]");
 			break;
 		}
 	}
@@ -300,14 +302,18 @@ public class MessageHandle {
 		
 		Log.v(TAG, "BUDD解析: "+"插座id＝"+jackId + ", 绑定传感器＝"+binBundSensor+", 设备类型＝"+deviceType);
 		JackService jackService = new JackService(GreenHouseApplication.getContext());
+		jackService.deleteOneJackTask(jackId+"");
 		jackService.modifyAllTypeSensorTask(jackId, binBundSensor, deviceType,
 				bundType1, dayThre1, nightThre1, 
 				bundType2, dayThre2, nightThre2, 
 				bundType3, dayThre3, nightThre3,
 				bundType4, dayThre4, nightThre4, 
 				bundType5, dayThre5, nightThre5, 
-				bundType6, dayThre6,nightThre6, 
+				bundType6, dayThre6, nightThre6, 
 				bundType7, dayThre7, nightThre7);
+		
+		Log.e(TAG, "空气温度白天："+dayThre4+",空气温度夜间："+nightThre4);
+		
 	}
 	
 
@@ -348,9 +354,9 @@ public class MessageHandle {
 		Integer illu = Integer.parseInt(data.substring(16, 20));
 		
 		//每收到sensorid＝1的实时值，就将所有传感器设置为offline
-		if (sensorid == 1) {
-			sensorService.modifyAllSensorOffline();  
-		}
+//		if (sensorid == 1) {
+//			sensorService.modifyAllSensorOffline();  
+//		}
 		
 		if (data.substring(2, 20).equals("000000000000000000")) {
 			sensorService.modifySensorCurrentValue(sensorid, 0, soiltemp, soilhum, soilph, airtemp, airhum, co2, illu);
@@ -401,7 +407,7 @@ public class MessageHandle {
 //		Log.d(TAG, "(SQLite TEST) Statistic: " + year+"/"+month+"/"+day+" " + hour + ":" + minute + ":" + seconed);
 		
 		
-		if (!statisticService.isCurrentDataSaved(year, month, day, hour, minute)) {
+		if (!statisticService.isCurrentDataSaved(year, month, day, hour)) {
 			statisticService.insertRecord(Launcher.selectMac , year, month, day, hour, minute, soiltemp, soilhum, soilph, airtemp, airhum, co2, illu);
 			Log.d(TAG, "[(数据库同步)统计查询]" + year+"/"+month+"/"+day+" " + hour + ":" + minute);
 		} 

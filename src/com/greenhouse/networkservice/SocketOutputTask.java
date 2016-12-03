@@ -74,7 +74,7 @@ public class SocketOutputTask implements Runnable{
 					}
 					
 					try {
-						Thread.sleep(1000);
+						Thread.sleep(400);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -87,19 +87,30 @@ public class SocketOutputTask implements Runnable{
 	}
 	
     public byte[] toByteArray (Object obj) {      
-        byte[] bytes = null;      
+        byte[] errLenBytes = null; 
+        byte[] bytes = new byte[44];
         ByteArrayOutputStream bos = new ByteArrayOutputStream();      
         try {        
             ObjectOutputStream oos = new ObjectOutputStream(bos);         
             oos.writeObject(obj);        
             oos.flush();         
-            bytes = bos.toByteArray ();      
+            errLenBytes = bos.toByteArray ();      
             oos.close();         
             bos.close();        
         } catch (IOException ex) {        
             ex.printStackTrace();   
         }      
 //        Log.d(TAG, "转换后的byte: " + bytes);
+        
+        for (int i=0; i<44; i++) {
+        	bytes[i] = errLenBytes[27+i];
+        }
+        
+        Log.e(TAG, "byte.length = " + bytes.length);
+        for (int i=0; i<bytes.length; i++) {
+        	Log.e(TAG, "转换后的byte: " + bytes[i]);
+        }
+        
         return bytes;    
     }
 	

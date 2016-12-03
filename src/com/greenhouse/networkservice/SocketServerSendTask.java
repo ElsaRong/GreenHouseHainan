@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.crypto.Mac;
@@ -12,6 +13,7 @@ import javax.crypto.Mac;
 import com.greenhouse.database.SensorService;
 import com.greenhouse.model.Sensor;
 import com.greenhouse.model.SocketServer;
+import com.greenhouse.ui.Launcher;
 import com.greenhouse.util.Const;
 import com.greenhouse.util.GreenHouseApplication;
 
@@ -38,7 +40,7 @@ public class SocketServerSendTask implements Runnable {
 	
 	private SensorService sensorService = new SensorService(GreenHouseApplication.getContext());
 	
-	private List<Sensor> sensors;
+	private List<Sensor> sensors = new ArrayList<Sensor>();
 	
 	private String id, soiltemp, soilhum, soilph, airtemp, airhum, co2, illum, tvMsg="";
 	private String initMsg = "HFUT00000000000000000000000000000000WANG";
@@ -83,8 +85,6 @@ public class SocketServerSendTask implements Runnable {
 				e.printStackTrace();
 			} 
 			
-
-			
 					
 		}
 		
@@ -93,46 +93,24 @@ public class SocketServerSendTask implements Runnable {
 	}
 
 
-
+	private void assembleMsgFour() {
+		for (int i=0; i<4; i++) {
+			
+		}
+	}
 	
 	public void AssembleSendMessage() {
 		
 		tvMsg = "";
-		sensors = sensorService.getOnlineSensor();// 从数据库中读取传感器值 3s／次
-		Log.d(TAG, "sensors.size = " + sensors.size());
+		sensors.clear();
+		sensors = new ArrayList<Sensor>();
+		sensors = sensorService.getAllSensor();
 		
-		//两个棚两个版本， 3/4组 条
-		if (sensors.size() == 0) {
-			tvMsg = initMsg+initMsg+initMsg;
-		} else if (sensors.size() == 1) {
-			Log.e(TAG, "sensors.size == 1");
-			Sensor sensor = sensors.get(0);
-			id = ModifyDataFormat(sensor.getId().toString());
-			soiltemp = ModifyDataFormat(sensor.getSoiltemp().toString());
-			soilhum = ModifyDataFormat(sensor.getSoilhum().toString());
-			soilph = ModifyDataFormat(sensor.getSoilph().toString());
-			airtemp = ModifyDataFormat(sensor.getAirtemp().toString());
-			airhum = ModifyDataFormat(sensor.getAirhum().toString());
-			co2 = ModifyDataFormat(sensor.getCo2().toString());
-			illum = ModifyDataFormat(sensor.getIllumination().toString());
-			tvMsg = "HFUT" + id + soiltemp + soilhum + soilph + airtemp + airhum + co2 + illum + "WANG"+initMsg+initMsg+initMsg;
-		} else if (sensors.size() == 2) {
-			Log.e(TAG, "sensors.size == 2");
-			for (int i = 0; i < 2; i++) {
-				Sensor sensor = sensors.get(i);
-				id = ModifyDataFormat(sensor.getId().toString());
-				soiltemp = ModifyDataFormat(sensor.getSoiltemp().toString());
-				soilhum = ModifyDataFormat(sensor.getSoilhum().toString());
-				soilph = ModifyDataFormat(sensor.getSoilph().toString());
-				airtemp = ModifyDataFormat(sensor.getAirtemp().toString());
-				airhum = ModifyDataFormat(sensor.getAirhum().toString());
-				co2 = ModifyDataFormat(sensor.getCo2().toString());
-				illum = ModifyDataFormat(sensor.getIllumination().toString());
-				tvMsg += "HFUT" + id + soiltemp + soilhum + soilph + airtemp + airhum + co2 + illum + "WANG";
-			}
-			tvMsg = tvMsg+initMsg+initMsg;
-		} else if (sensors.size() == 3) {
-			Log.e(TAG, "sensors.size == 3");
+//		sensors = sensorService.getOnlineSensor();
+//		Log.d(TAG, "当前传感器在线个数＝" + sensors.size());
+		
+		if (Launcher.selectMac.equals("ACCF2357F44E")) {
+//			txtController.setText("二号棚");
 			for (int i = 0; i < 3; i++) {
 				Sensor sensor = sensors.get(i);
 				id = ModifyDataFormat(sensor.getId().toString());
@@ -145,10 +123,9 @@ public class SocketServerSendTask implements Runnable {
 				illum = ModifyDataFormat(sensor.getIllumination().toString());
 				tvMsg += "HFUT" + id + soiltemp + soilhum + soilph + airtemp + airhum + co2 + illum + "WANG";
 			}
-			tvMsg = tvMsg+initMsg;
-		} else if (sensors.size() == 4) {
-			Log.e(TAG, "sensors.size == 3");
-			for (int i = 0; i < 3; i++) {
+		} else if (Launcher.selectMac.equals("ACCF236FA948")) {
+//			txtController.setText("一号棚");
+			for (int i = 0; i < 4; i++) {
 				Sensor sensor = sensors.get(i);
 				id = ModifyDataFormat(sensor.getId().toString());
 				soiltemp = ModifyDataFormat(sensor.getSoiltemp().toString());
@@ -161,6 +138,7 @@ public class SocketServerSendTask implements Runnable {
 				tvMsg += "HFUT" + id + soiltemp + soilhum + soilph + airtemp + airhum + co2 + illum + "WANG";
 			}
 		}
+			
 	}
 	
 	

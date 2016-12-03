@@ -2,6 +2,13 @@ package com.greenhouse.specialversion;
 
 import java.util.List;
 import java.util.Map;
+import com.greenhouse.ui.JackFragmentShowinfo;
+import com.greenhouse.ui.JackFragmentSwitchTest;
+import com.greenhouse.util.GreenHouseApplication;
+import com.greenhouse.util.ToastUtil;
+
+import android.content.Context;
+import android.util.Log;
 
 /** 
 * @author       Elsa 
@@ -14,20 +21,20 @@ import java.util.Map;
 
 
 public class LockCheck {
-//	
-//	private static final String TAG = "LockCheck.java";
-//	
+	
+	private static final String TAG = "LockCheck.java";
+	
 	public static boolean CheckLockStateAccordingMac(int id, int state, String mac) {
 		boolean b = true;
-////		if (mac.equals("ACCF236FA948")) {
-////			b = CheckLockState1(id,state);
-////		} else if (mac.equals("ACCF2357F44E")) {
-////			b = CheckLockState2(id,state);
-////		}
+		if (mac.equals("ACCF236FA948")) {
+			b = CheckLockState1(id,state);
+		} else if (mac.equals("ACCF2357F44E")) {
+			b = CheckLockState2(id,state);
+		}
 		return b;
 	}
-//	
-//	private static Context context = GreenHouseApplication.getContext();
+	
+	private static Context context = GreenHouseApplication.getContext();
 //	
 //	public static boolean CheckLockStateAccordingMac(int id, int state, String mac) {
 //		boolean b = true;
@@ -39,110 +46,110 @@ public class LockCheck {
 //	
 //	
 //	
-//	public static boolean CheckLockState2(int id, int state) {
-//		int lockstate;
-//		boolean b = true;
-//		String name = "";
-//		switch (id) {
-//		case 1:
-//			name = JackFragmentSwitchTest.jacks.get(id-1).getName();
-//			lockstate = JackFragmentSwitchTest.jacks.get(id-1).getSwitchstate();//�����Ĳ�����״̬
-//			if (lockstate == state) {//��������Ĳ�����ǰ״̬lockstate��1����Ҫִ�е�״̬��1��
-////				ToastUtil.TextToastLong(context, "��ȷ�� " + name + " �Ƿ�ر�");
-//				b = false;
-//			}
-//			break;
-//		case 3:
-//			name = JackFragmentSwitchTest.jacks.get(id-1).getName();
-//			lockstate = JackFragmentSwitchTest.jacks.get(id-1).getSwitchstate();
-//			if (lockstate == state) {
-////				ToastUtil.TextToastLong(context, "��ȷ�� " + name + " �Ƿ�ر�");
-//				b = false;
-//			}
-//			break;
-//		case 5:
-//			name = JackFragmentSwitchTest.jacks.get(id-1).getName();
-//			lockstate = JackFragmentSwitchTest.jacks.get(id-1).getSwitchstate();
-//			if (lockstate == state) {
-////				ToastUtil.TextToastLong(context, "��ȷ�� " + name + " �Ƿ�ر�");
-//				b = false;
-//			}
-//			break;
-//		case 7:
-//			name = JackFragmentSwitchTest.jacks.get(id-1).getName();
-//			lockstate = JackFragmentSwitchTest.jacks.get(id-1).getSwitchstate();
-//			if (lockstate == state) {
-////				ToastUtil.TextToastLong(context, "��ȷ�� " + name + " �Ƿ�ر�");
-//				b = false;
-//			}
-//			break;
-//		case 9:
-//			name = JackFragmentSwitchTest.jacks.get(id-1).getName();
-//			lockstate = JackFragmentSwitchTest.jacks.get(id-1).getSwitchstate();
-//			if (lockstate == state) {
-////				ToastUtil.TextToastLong(context, "��ȷ�� " + name + " �Ƿ�ر�");
-//				b = false;
-//			}
-//			break;
-//		case 11:
-//			name = JackFragmentSwitchTest.jacks.get(id-1).getName();
-//			lockstate = JackFragmentSwitchTest.jacks.get(id-1).getSwitchstate();
-//			if (lockstate == state) {
-////				ToastUtil.TextToastLong(context, "��ȷ�� " + name + " �Ƿ�ر�");
-//				b = false;
-//			}
-//			break;
-//		case 0:
-//			name = JackFragmentSwitchTest.jacks.get(id+1).getName();
-//			lockstate = JackFragmentSwitchTest.jacks.get(id+1).getSwitchstate();//�����Ĳ�����״̬
-//			if (lockstate == state) {//��������Ĳ�����ǰ״̬lockstate��1����Ҫִ�е�״̬��1��
-////				ToastUtil.TextToastLong(context, "��ȷ�� " + name + " �Ƿ�ر�");
-//				b = false;
-//			}
-//			break;
-//		case 2:
-//			name = JackFragmentSwitchTest.jacks.get(id+1).getName();
-//			lockstate = JackFragmentSwitchTest.jacks.get(id+1).getSwitchstate();
-//			if (lockstate == state) {
-////				ToastUtil.TextToastLong(context, "��ȷ�� " + name + " �Ƿ�ر�");
-//				b = false;
-//			}
-//			break;
-//		case 4:
-//			name = JackFragmentSwitchTest.jacks.get(id+1).getName();
-//			lockstate = JackFragmentSwitchTest.jacks.get(id+1).getSwitchstate();
-//			if (lockstate == state) {
-////				ToastUtil.TextToastLong(context, "��ȷ�� " + name + " �Ƿ�ر�");
-//				b = false;
-//			}
-//			break;
-//		case 6:
-//			name = JackFragmentSwitchTest.jacks.get(id+1).getName();
-//			lockstate = JackFragmentSwitchTest.jacks.get(id+1).getSwitchstate();
-//			if (lockstate == state) {
-////				ToastUtil.TextToastLong(context, "��ȷ�� " + name + " �Ƿ�ر�");
-//				b = false;
-//			}
-//			break;
-//		case 8:
-//			name = JackFragmentSwitchTest.jacks.get(id+1).getName();
-//			lockstate = JackFragmentSwitchTest.jacks.get(id+1).getSwitchstate();
-//			if (lockstate == state) {
-////				ToastUtil.TextToastLong(context, "��ȷ�� " + name + " �Ƿ�ر�");
-//				b = false;
-//			}
-//			break;
-//		case 10:
-//			name = JackFragmentSwitchTest.jacks.get(id+1).getName();
-//			lockstate = JackFragmentSwitchTest.jacks.get(id+1).getSwitchstate();
-//			if (lockstate == state) {
-////				ToastUtil.TextToastLong(context, "��ȷ�� " + name + " �Ƿ�ر�");
-//				b = false;
-//			}
-//			break;
-//		}
-//		return b;
-//	}
+	public static boolean CheckLockState2(int id, int state) {
+		int lockstate;
+		boolean b = true;
+		String name = "";
+		switch (id) {
+		case 1:
+			name = JackFragmentSwitchTest.jackSwitchInfoList.get(id-1).getName();
+			lockstate = JackFragmentSwitchTest.jackSwitchInfoList.get(id-1).getSwitchstate();
+			if (lockstate == state) {
+				ToastUtil.TextToastLong(context, "请确认" + name + "是否关闭");
+				b = false;
+			}
+			break;
+		case 3:
+			name = JackFragmentSwitchTest.jackSwitchInfoList.get(id-1).getName();
+			lockstate = JackFragmentSwitchTest.jackSwitchInfoList.get(id-1).getSwitchstate();
+			if (lockstate == state) {
+				ToastUtil.TextToastLong(context, "请确认" + name + "是否关闭");
+				b = false;
+			}
+			break;
+		case 5:
+			name = JackFragmentSwitchTest.jackSwitchInfoList.get(id-1).getName();
+			lockstate = JackFragmentSwitchTest.jackSwitchInfoList.get(id-1).getSwitchstate();
+			if (lockstate == state) {
+				ToastUtil.TextToastLong(context, "请确认" + name + "是否关闭");
+				b = false;
+			}
+			break;
+		case 7:
+			name = JackFragmentSwitchTest.jackSwitchInfoList.get(id-1).getName();
+			lockstate = JackFragmentSwitchTest.jackSwitchInfoList.get(id-1).getSwitchstate();
+			if (lockstate == state) {
+				ToastUtil.TextToastLong(context, "请确认" + name + "是否关闭");
+				b = false;
+			}
+			break;
+		case 9:
+			name = JackFragmentSwitchTest.jackSwitchInfoList.get(id-1).getName();
+			lockstate = JackFragmentSwitchTest.jackSwitchInfoList.get(id-1).getSwitchstate();
+			if (lockstate == state) {
+				ToastUtil.TextToastLong(context, "请确认" + name + "是否关闭");
+				b = false;
+			}
+			break;
+		case 11:
+			name = JackFragmentSwitchTest.jackSwitchInfoList.get(id-1).getName();
+			lockstate = JackFragmentSwitchTest.jackSwitchInfoList.get(id-1).getSwitchstate();
+			if (lockstate == state) {
+				ToastUtil.TextToastLong(context, "请确认" + name + "是否关闭");
+				b = false;
+			}
+			break;
+		case 0:
+			name = JackFragmentSwitchTest.jackSwitchInfoList.get(id+1).getName();
+			lockstate = JackFragmentSwitchTest.jackSwitchInfoList.get(id+1).getSwitchstate();//�����Ĳ�����״̬
+			if (lockstate == state) {//��������Ĳ�����ǰ״̬lockstate��1����Ҫִ�е�״̬��1��
+				ToastUtil.TextToastLong(context, "请确认" + name + "是否关闭");
+				b = false;
+			}
+			break;
+		case 2:
+			name = JackFragmentSwitchTest.jackSwitchInfoList.get(id+1).getName();
+			lockstate = JackFragmentSwitchTest.jackSwitchInfoList.get(id+1).getSwitchstate();
+			if (lockstate == state) {
+				ToastUtil.TextToastLong(context, "请确认" + name + "是否关闭");
+				b = false;
+			}
+			break;
+		case 4:
+			name = JackFragmentSwitchTest.jackSwitchInfoList.get(id+1).getName();
+			lockstate = JackFragmentSwitchTest.jackSwitchInfoList.get(id+1).getSwitchstate();
+			if (lockstate == state) {
+				ToastUtil.TextToastLong(context, "请确认" + name + "是否关闭");
+				b = false;
+			}
+			break;
+		case 6:
+			name = JackFragmentSwitchTest.jackSwitchInfoList.get(id+1).getName();
+			lockstate = JackFragmentSwitchTest.jackSwitchInfoList.get(id+1).getSwitchstate();
+			if (lockstate == state) {
+				ToastUtil.TextToastLong(context, "请确认" + name + "是否关闭");
+				b = false;
+			}
+			break;
+		case 8:
+			name = JackFragmentSwitchTest.jackSwitchInfoList.get(id+1).getName();
+			lockstate = JackFragmentSwitchTest.jackSwitchInfoList.get(id+1).getSwitchstate();
+			if (lockstate == state) {
+				ToastUtil.TextToastLong(context, "请确认" + name + "是否关闭");
+				b = false;
+			}
+			break;
+		case 10:
+			name = JackFragmentSwitchTest.jackSwitchInfoList.get(id+1).getName();
+			lockstate = JackFragmentSwitchTest.jackSwitchInfoList.get(id+1).getSwitchstate();
+			if (lockstate == state) {
+				ToastUtil.TextToastLong(context, "请确认" + name + "是否关闭");
+				b = false;
+			}
+			break;
+		}
+		return b;
+	}
 //	
 //	
 //	/**
@@ -159,106 +166,108 @@ public class LockCheck {
 	public static boolean CheckLockState1(int id, int state) {
 		int lockstate;
 		boolean b = true;
-//		String name;
-//		switch (id) {
-//		case 1:
-//			name = JackFragmentSwitchTest.jacks.get(id-1).getName();
-//			lockstate = JackFragmentSwitchTest.jacks.get(id-1).getSwitchstate();
-//			if (lockstate == state) {
-//				ToastUtil.TextToastLong(context, "请确认 \"" + name + "\" 是否关闭");
-//				b = false;
-//			}
-//			break;
-//		case 3:
-//			name = JackFragmentSwitchTest.jacks.get(id-1).getName();
-//			lockstate = JackFragmentSwitchTest.jacks.get(id-1).getSwitchstate();
-//			if (lockstate == state) {
-//				ToastUtil.TextToastLong(context, "请确认 \"" + name + "\" 是否关闭");
-//				b = false;
-//			}
-//			break;
-//		case 5:
-//			name = JackFragmentSwitchTest.jacks.get(id-1).getName();
-//			lockstate = JackFragmentSwitchTest.jacks.get(id-1).getSwitchstate();
-//			if (lockstate == state) {
-//				ToastUtil.TextToastLong(context, "请确认 \"" + name + "\" 是否关闭");
-//				b = false;
-//			}
-//			break;
-//		case 7:
-//			name = JackFragmentSwitchTest.jacks.get(id-1).getName();
-//			lockstate = JackFragmentSwitchTest.jacks.get(id-1).getSwitchstate();
-//			if (lockstate == state) {
-//				ToastUtil.TextToastLong(context, "请确认 \"" + name + "\" 是否关闭");
-//				b = false;
-//			}
-//			break;
-//		case 9:
-//			name = JackFragmentSwitchTest.jacks.get(id-1).getName();
-//			lockstate = JackFragmentSwitchTest.jacks.get(id-1).getSwitchstate();
-//			if (lockstate == state) {
-//				ToastUtil.TextToastLong(context, "请确认 \"" + name + "\" 是否关闭");
-//				b = false;
-//			}
-//			break;
-//		case 11:
-//			name = JackFragmentSwitchTest.jacks.get(id-1).getName();
-//			lockstate = JackFragmentSwitchTest.jacks.get(id-1).getSwitchstate();
-//			if (lockstate == state) {
-//				ToastUtil.TextToastLong(context, "请确认 \"" + name + "\" 是否关闭");
-//				b = false;
-//			}
-//			break;
-//	
-//		case 0:
-//			name = JackFragmentSwitchTest.jacks.get(id+1).getName();
-//			lockstate = JackFragmentSwitchTest.jacks.get(id+1).getSwitchstate();//�����Ĳ�����״̬
-//			if (lockstate == state) {//��������Ĳ�����ǰ״̬lockstate��1����Ҫִ�е�״̬��1��
-//				ToastUtil.TextToastLong(context, "请确认 \"" + name + "\" 是否关闭");
-//				b = false;
-//			}
-//			break;
-//		case 2:
-//			name = JackFragmentSwitchTest.jacks.get(id+1).getName();
-//			lockstate = JackFragmentSwitchTest.jacks.get(id+1).getSwitchstate();
-//			if (lockstate == state) {
-//				ToastUtil.TextToastLong(context, "请确认 \"" + name + "\" 是否关闭");
-//				b = false;
-//			}
-//			break;
-//		case 4:
-//			name = JackFragmentSwitchTest.jacks.get(id+1).getName();
-//			lockstate = JackFragmentSwitchTest.jacks.get(id+1).getSwitchstate();
-//			if (lockstate == state) {
-//				ToastUtil.TextToastLong(context, "请确认 \"" + name + "\" 是否关闭");
-//				b = false;
-//			}
-//			break;
-//		case 6:
-//			name = JackFragmentSwitchTest.jacks.get(id+1).getName();
-//			lockstate = JackFragmentSwitchTest.jacks.get(id+1).getSwitchstate();
-//			if (lockstate == state) {
-//				ToastUtil.TextToastLong(context, "请确认 \"" + name + "\" 是否关闭");
-//				b = false;
-//			}
-//			break;
-//		case 8:
-//			name = JackFragmentSwitchTest.jacks.get(id+1).getName();
-//			lockstate = JackFragmentSwitchTest.jacks.get(id+1).getSwitchstate();
-//			if (lockstate == state) {
-//				ToastUtil.TextToastLong(context, "请确认 \"" + name + "\" 是否关闭");
-//				b = false;
-//			}
-//			break;
-//		case 10:
-//			name = JackFragmentSwitchTest.jacks.get(id+1).getName();
-//			lockstate = JackFragmentSwitchTest.jacks.get(id+1).getSwitchstate();
-//			if (lockstate == state) {
-//				ToastUtil.TextToastLong(context, "请确认 \"" + name + "\" 是否关闭");
-//				b = false;
-//			}
-//			break;
-//		}
+		String name;
+		switch (id) {
+		case 1:
+			name = JackFragmentSwitchTest.jackSwitchInfoList.get(id-1).getName();
+			lockstate = JackFragmentSwitchTest.jackSwitchInfoList.get(id-1).getSwitchstate();
+			Log.e(TAG, "检查上一位状态：id="+(id-1)+",current state="+lockstate);
+			if (lockstate == state) {
+				ToastUtil.TextToastLong(context, "请确认 \"" + name + "\" 是否关闭");
+				b = false;
+			}
+			break;
+		case 3:
+			name = JackFragmentSwitchTest.jackSwitchInfoList.get(id-1).getName();
+			lockstate = JackFragmentSwitchTest.jackSwitchInfoList.get(id-1).getSwitchstate();
+			Log.e(TAG, "id="+(id-1)+",current state="+lockstate);
+			if (lockstate == state) {
+				ToastUtil.TextToastLong(context, "请确认 \"" + name + "\" 是否关闭");
+				b = false;
+			}
+			break;
+		case 5:
+			name = JackFragmentShowinfo.jackInfoList.get(id-1).getName();
+			lockstate = JackFragmentShowinfo.jackInfoList.get(id-1).getSwitchstate();
+			if (lockstate == state) {
+				ToastUtil.TextToastLong(context, "请确认 \"" + name + "\" 是否关闭");
+				b = false;
+			}
+			break;
+		case 7:
+			name = JackFragmentShowinfo.jackInfoList.get(id-1).getName();
+			lockstate = JackFragmentShowinfo.jackInfoList.get(id-1).getSwitchstate();
+			if (lockstate == state) {
+				ToastUtil.TextToastLong(context, "请确认 \"" + name + "\" 是否关闭");
+				b = false;
+			}
+			break;
+		case 9:
+			name = JackFragmentShowinfo.jackInfoList.get(id-1).getName();
+			lockstate = JackFragmentShowinfo.jackInfoList.get(id-1).getSwitchstate();
+			if (lockstate == state) {
+				ToastUtil.TextToastLong(context, "请确认 \"" + name + "\" 是否关闭");
+				b = false;
+			}
+			break;
+		case 11:
+			name = JackFragmentShowinfo.jackInfoList.get(id-1).getName();
+			lockstate = JackFragmentShowinfo.jackInfoList.get(id-1).getSwitchstate();
+			if (lockstate == state) {
+				ToastUtil.TextToastLong(context, "请确认 \"" + name + "\" 是否关闭");
+				b = false;
+			}
+			break;
+	
+		case 0:
+			name = JackFragmentShowinfo.jackInfoList.get(id+1).getName();
+			lockstate = JackFragmentShowinfo.jackInfoList.get(id+1).getSwitchstate();//�����Ĳ�����״̬
+			if (lockstate == state) {//��������Ĳ�����ǰ״̬lockstate��1����Ҫִ�е�״̬��1��
+				ToastUtil.TextToastLong(context, "请确认 \"" + name + "\" 是否关闭");
+				b = false;
+			}
+			break;
+		case 2:
+			name = JackFragmentShowinfo.jackInfoList.get(id+1).getName();
+			lockstate = JackFragmentShowinfo.jackInfoList.get(id+1).getSwitchstate();
+			if (lockstate == state) {
+				ToastUtil.TextToastLong(context, "请确认 \"" + name + "\" 是否关闭");
+				b = false;
+			}
+			break;
+		case 4:
+			name = JackFragmentShowinfo.jackInfoList.get(id+1).getName();
+			lockstate = JackFragmentShowinfo.jackInfoList.get(id+1).getSwitchstate();
+			if (lockstate == state) {
+				ToastUtil.TextToastLong(context, "请确认 \"" + name + "\" 是否关闭");
+				b = false;
+			}
+			break;
+		case 6:
+			name = JackFragmentShowinfo.jackInfoList.get(id+1).getName();
+			lockstate = JackFragmentShowinfo.jackInfoList.get(id+1).getSwitchstate();
+			if (lockstate == state) {
+				ToastUtil.TextToastLong(context, "请确认 \"" + name + "\" 是否关闭");
+				b = false;
+			}
+			break;
+		case 8:
+			name = JackFragmentShowinfo.jackInfoList.get(id+1).getName();
+			lockstate = JackFragmentShowinfo.jackInfoList.get(id+1).getSwitchstate();
+			if (lockstate == state) {
+				ToastUtil.TextToastLong(context, "请确认 \"" + name + "\" 是否关闭");
+				b = false;
+			}
+			break;
+		case 10:
+			name = JackFragmentShowinfo.jackInfoList.get(id+1).getName();
+			lockstate = JackFragmentShowinfo.jackInfoList.get(id+1).getSwitchstate();
+			if (lockstate == state) {
+				ToastUtil.TextToastLong(context, "请确认 \"" + name + "\" 是否关闭");
+				b = false;
+			}
+			break;
+		}
 		return b;
 	}
 //	

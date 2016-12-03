@@ -24,6 +24,7 @@ import com.greenhouse.database.JackService;
 import com.greenhouse.database.SensorService;
 import com.greenhouse.database.StatisticService;
 import com.greenhouse.networkservice.NetworkManager;
+import com.greenhouse.util.Const;
 import com.greenhouse.util.GreenHouseApplication;
 import com.greenhouse.util.ToastUtil;
 
@@ -184,13 +185,23 @@ public class Smartlink extends Activity {
 					smManipulator.StopConnection();
 
 					try {
-						Thread.sleep(1000);
+						Thread.sleep(1500);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 
-					startActivity(new Intent(Smartlink.this, Launcher.class));
+					//Version1.0
+//					Launcher.handler.sendEmptyMessageDelayed(Const.UI_REFRESH, 3000);
+					
+					//Version1.1
+//					startActivity(new Intent(Smartlink.this, Launcher.class));
+					
+					//Version2.0
+					Intent intent = new Intent();
+					intent.setClass(Smartlink.this, Launcher.class);
+					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					startActivity(intent);
 				
 				}
 			});

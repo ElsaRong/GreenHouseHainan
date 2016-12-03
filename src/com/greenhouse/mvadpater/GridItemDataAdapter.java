@@ -65,9 +65,9 @@ public class GridItemDataAdapter extends BaseAdapter {
 			
 			String mac = scrollControllers.get(position).toString();
 			if (mac.equals("ACCF2357F44E")) {
-				txtController.setText("＊号棚");
+				txtController.setText("二号棚");
 			} else if (mac.equals("ACCF236FA948")) {
-				txtController.setText("＊号棚");
+				txtController.setText("一号棚");
 			} else {
 				txtController.setText("控制柜－" + scrollControllers.get(position).toString().substring(8, 12));
 			}

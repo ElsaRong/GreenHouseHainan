@@ -9,7 +9,6 @@ import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
 import com.greenhouse.R;
 import com.greenhouse.database.StatisticService;
-import com.greenhouse.model.Jack;
 import com.greenhouse.util.GreenHouseApplication;
 import com.greenhouse.util.OnFragmentRefreshInterface;
 import com.greenhouse.util.ToastUtil;
@@ -144,23 +143,47 @@ public class JackFragmentStatistics extends Fragment {
 		xyRenderer.setPointStyle(PointStyle.CIRCLE);
 		xyRenderer.setFillPoints(true);
 		xyRenderer.setLineWidth(1);
+//		xyRenderer.setDisplayChartValues(true);    //显示每个点的值
+		xyRenderer.setChartValuesSpacing(3);//显示的点的值与图的距离 
+//		xyRenderer.setChartValuesTextSize(8);//点的值的文字大小
 		mRenderer.addSeriesRenderer(xyRenderer);
+		
+		mRenderer.setMargins(new int[] { 20, 50, 30, 10 });// 图形4边距 
+		mRenderer.setChartTitleTextSize(26);
+		mRenderer.setAxisTitleTextSize(24);
+		mRenderer.setXTitle("时间");
+		mRenderer.setYTitle("历史值");
+		mRenderer.setPanEnabled(true, false);      //设置X轴和Y轴是否可以滑动
+		mRenderer.setZoomEnabled(true, false);     //直接设置ZoomEnable不管用？
+		mRenderer.setZoomButtonsVisible(true);
 		mRenderer.setShowGrid(true);
 		mRenderer.setMarginsColor(Color.argb(0, 0xff, 0, 0));
 		mRenderer.setMarginsColor(Color.WHITE);
+		
 		mRenderer.setBackgroundColor(Color.TRANSPARENT);
 		mRenderer.setApplyBackgroundColor(true);
 		mRenderer.setZoomEnabled(false, false);
+		mRenderer.setPanLimits(new double[] { -100, 24*30*8, 0, 0 }); //设置拖动时X轴Y轴允许
+		
 		mRenderer.setXAxisMin(0);
-		mRenderer.setXAxisMax(60*24);//每天24个点，每月24＊30个点
-		mRenderer.setXLabels(24);
-		mRenderer.setPanLimits(new double[] { 0, 300, 0, 100 }); //设置拖动时X轴Y轴允许的�?大�?�最小�??.  
+		mRenderer.setXAxisMax(24*30*6);//每天24个点，每月24＊30个点
+		mRenderer.setXLabels(0);
+		mRenderer.addXTextLabel(24*30, "1月");
+		mRenderer.addXTextLabel(24*30*2, "2月");
+		mRenderer.addXTextLabel(24*30*3, "3月");
+		mRenderer.addXTextLabel(24*30*4, "4月");
+		mRenderer.addXTextLabel(24*30*5, "5月");
+		mRenderer.addXTextLabel(24*30*6, "6月");
+		
+		mRenderer.setYAxisMin(0);
+		
 		mRenderer.setAxesColor(Color.rgb(242, 103, 16));
 		mRenderer.setLabelsColor(Color.rgb(25, 110, 172));
 		mRenderer.setLabelsTextSize(20); //横纵坐标字体单位大小
 		mRenderer.setPointSize(2);
 		mRenderer.setChartTitleTextSize(28);
 		mRenderer.setShowLegend(true);
+		mRenderer.setLegendTextSize(20); //设置图例文本大小
 	}
 	
 	public void InitDataset() {
@@ -180,7 +203,7 @@ public class JackFragmentStatistics extends Fragment {
 			mRenderer.setChartTitle("[2]土壤湿度－历史曲线");
 		} else if (JackFragmentMaster.FragmentFlag.equals("32")) {
 			mRenderer.setYAxisMin(0);
-			mRenderer.setYAxisMax(100);
+			mRenderer.setYAxisMax(10);
 			series = new XYSeries("土壤酸酸碱度" + " [查询起始时间: " + JackStatisticCustomDatePicker.sYear + "-" + JackStatisticCustomDatePicker.sMonth + 
 					"-" + JackStatisticCustomDatePicker.sDay + "  时间跨度: "  + JackStatisticCustomNumberPicker.timeSpan  + "个月]");
 			series.add(0,0);

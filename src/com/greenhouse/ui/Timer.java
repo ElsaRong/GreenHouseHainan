@@ -140,6 +140,11 @@ private Handler handler = new Handler(); //handler.removeCallbacks
 						SocketOutputTask.sendMsgQueue.addLast(createTASKmsg());
 						SocketOutputTask.sendMsgQueue.addLast(createTASKmsg());
 						SocketOutputTask.sendMsgQueue.addLast(createTASKmsg());
+						SocketOutputTask.sendMsgQueue.addLast(createTASKmsg());
+						SocketOutputTask.sendMsgQueue.addLast(createTASKmsg());
+						SocketOutputTask.sendMsgQueue.addLast(createTASKmsg());
+						SocketOutputTask.sendMsgQueue.addLast(createTASKmsg());
+						SocketOutputTask.sendMsgQueue.addLast(createTASKmsg());
 						
 						Intent intent = new Intent();
 						intent.setClass(Timer.this, AlarmclockListView.class);
@@ -176,6 +181,11 @@ private Handler handler = new Handler(); //handler.removeCallbacks
 						poweronFlag = poweroffFlag = circleFlag= false;
 						
 						// 1-加入消息队列
+						SocketOutputTask.sendMsgQueue.addLast(createTASKmsg());
+						SocketOutputTask.sendMsgQueue.addLast(createTASKmsg());
+						SocketOutputTask.sendMsgQueue.addLast(createTASKmsg());
+						SocketOutputTask.sendMsgQueue.addLast(createTASKmsg());
+						SocketOutputTask.sendMsgQueue.addLast(createTASKmsg());
 						SocketOutputTask.sendMsgQueue.addLast(createTASKmsg());
 						SocketOutputTask.sendMsgQueue.addLast(createTASKmsg());
 						SocketOutputTask.sendMsgQueue.addLast(createTASKmsg());

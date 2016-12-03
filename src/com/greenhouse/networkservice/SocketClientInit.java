@@ -52,7 +52,7 @@ public class SocketClientInit{
 	
 	public static Integer connAliyun() {
 		Integer ret = Integer.valueOf(-1);
-		Launcher.client = RequestServer("112.74.115.147", 5000);
+		Launcher.client = RequestServer("120.76.202.110", 5000);
 		if (Launcher.client != null) {
 			ret = Integer.valueOf(1);
 			return ret;

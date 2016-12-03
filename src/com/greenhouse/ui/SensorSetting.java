@@ -161,6 +161,11 @@ public class SensorSetting extends Activity implements View.OnClickListener{
 				SocketOutputTask.sendMsgQueue.addLast(createBUNDmsg());
 				SocketOutputTask.sendMsgQueue.addLast(createBUNDmsg());
 				SocketOutputTask.sendMsgQueue.addLast(createBUNDmsg());
+				SocketOutputTask.sendMsgQueue.addLast(createBUNDmsg());
+				SocketOutputTask.sendMsgQueue.addLast(createBUNDmsg());
+				SocketOutputTask.sendMsgQueue.addLast(createBUNDmsg());
+				SocketOutputTask.sendMsgQueue.addLast(createBUNDmsg());
+				SocketOutputTask.sendMsgQueue.addLast(createBUNDmsg());
 				Intent intent = new Intent(SensorSetting.this, JackFragmentMaster.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);				

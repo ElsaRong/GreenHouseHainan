@@ -54,11 +54,11 @@ public class StatisticService {
 	 * @author       Elsa elsarong715@gmail.com
 	 * @data         Aug 27, 2016, 9:58:49 PM
 	 */
-	public boolean isCurrentDataSaved(Integer year, Integer month, Integer day, Integer hour, Integer minute) {
+	public boolean isCurrentDataSaved(Integer year, Integer month, Integer day, Integer hour) {
 		boolean b = false;
 		SQLiteDatabase db = databaseHelper.getWritableDatabase();
-		String s = "select * from statistic where year=? and month=? and day=? and hour=? and minute=?";
-		String[] ss = new String[]{year+"", month+"", day+"", hour+"", minute+""};
+		String s = "select * from statistic where year=? and month=? and day=? and hour=?";
+		String[] ss = new String[]{year+"", month+"", day+"", hour+""};
 		Cursor cursor = db.rawQuery(s, ss);
 		while(cursor.moveToNext()) {
 			b = true;
@@ -67,6 +67,21 @@ public class StatisticService {
 		db.close();
 		return b;
 	}
+	
+//  每分钟保存一次
+//	public boolean isCurrentDataSaved(Integer year, Integer month, Integer day, Integer hour, Integer minute) {
+//		boolean b = false;
+//		SQLiteDatabase db = databaseHelper.getWritableDatabase();
+//		String s = "select * from statistic where year=? and month=? and day=? and hour=? and minute=?";
+//		String[] ss = new String[]{year+"", month+"", day+"", hour+"", minute+""};
+//		Cursor cursor = db.rawQuery(s, ss);
+//		while(cursor.moveToNext()) {
+//			b = true;
+//		}
+//		cursor.close();
+//		db.close();
+//		return b;
+//	}
 	
 	public List<Integer> getSoiltempHistory(Integer month, Integer time_span) {
 		List<Integer> listHistory = new ArrayList<Integer>();
@@ -121,7 +136,7 @@ public class StatisticService {
 			String[] ss = new String[]{month+"", Launcher.selectMac};
 			Cursor cursor = db.rawQuery(s, ss);
 			while(cursor.moveToNext()) {
-				listHistory.add(Integer.parseInt(cursor.getString(cursor.getColumnIndex("soilph"))));
+				listHistory.add(Integer.parseInt(cursor.getString(cursor.getColumnIndex("soilph")))/10);
 			}
 			cursor.close();
 		}

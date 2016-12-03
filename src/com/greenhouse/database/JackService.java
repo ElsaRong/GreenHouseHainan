@@ -362,6 +362,7 @@ public class JackService {
 	
 	//CONT
 	public void modifySwitchstate(int switchstate, int jackId) {
+		Log.e(TAG, "(SQLite) modify jackId="+jackId + ", switchstate="+switchstate);
 		SQLiteDatabase db = databaseHelper.getWritableDatabase();
 		String s = "update jack set switch_state=? where jackId=? and mac=?";
 		Object[] object = new Object[]{switchstate, jackId, Launcher.selectMac};
@@ -505,7 +506,13 @@ public class JackService {
 				db.execSQL(s, object);
 			} 
 		}
-		Object[] object = new Object[]{};
+		db.close();
+	}
+	
+	public void deleteOneJackTask(String jackId) {
+		SQLiteDatabase db = databaseHelper.getWritableDatabase();
+		String s = "update jack set bund=?, start=?, poweron=?, poweroff=?, cycle=? where jackId=? and mac=?";
+		Object[] object = new Object[]{0, "0000-00-00", "00:00", "00:00", 0, jackId, Launcher.selectMac};
 		db.execSQL(s, object);
 		db.close();
 	}

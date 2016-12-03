@@ -37,8 +37,8 @@ public class ModifySpecificColumn {
 		jackService.modifyControllerJackNameTest("中遮阳\n收起", 4, mac);
 		jackService.modifyControllerJackNameTest("外遮阳\n铺开", 5, mac);
 		jackService.modifyControllerJackNameTest("外遮阳\n收起", 6, mac);
-		jackService.modifyControllerJackNameTest("水帘内卷\n铺开", 7, mac);
-		jackService.modifyControllerJackNameTest("水帘内卷\n收起", 8, mac);
+		jackService.modifyControllerJackNameTest("水帘内卷\n收起", 7, mac);
+		jackService.modifyControllerJackNameTest("水帘内卷\n铺开", 8, mac);
 		jackService.modifyControllerJackNameTest("水帘外卷\n铺开", 9, mac);
 		jackService.modifyControllerJackNameTest("水帘外卷\n收起", 10, mac);
 		jackService.modifyControllerJackNameTest("内保温\n铺开", 11, mac);
@@ -46,10 +46,10 @@ public class ModifySpecificColumn {
 		jackService.modifyControllerJackNameTest("1号风机\n运行", 13, mac);
 		jackService.modifyControllerJackNameTest("2号风机\n运行", 14, mac);
 		jackService.modifyControllerJackNameTest("3号风机\n运行", 15, mac);
-		jackService.modifyControllerJackNameTest("内循环风机\n运行", 16, mac);
-		jackService.modifyControllerJackNameTest("外循环风机\n运行", 17, mac);
-		jackService.modifyControllerJackNameTest("水帘水泵\n运行", 18, mac);
-		jackService.modifyControllerJackNameTest("水帘水泵\n运行", 19, mac);
+		jackService.modifyControllerJackNameTest("水帘水泵\n运行", 16, mac);
+		jackService.modifyControllerJackNameTest("喷淋水泵\n运行", 17, mac);
+		jackService.modifyControllerJackNameTest("内循环风机\n运行", 18, mac);
+		jackService.modifyControllerJackNameTest("外循环风机\n运行", 19, mac);
 		jackService.modifyControllerJackNameTest("1号阀", 20, mac);
 		jackService.modifyControllerJackNameTest("2号阀", 21, mac);
 		jackService.modifyControllerJackNameTest("3号阀", 22, mac);
@@ -121,57 +121,56 @@ public class ModifySpecificColumn {
 //		}
 		
 		
-		// ʵ���ϵ�2����
-//		public static void modifyControllerJackNameTest2(String mac) {
-//			JackService jackService = new JackService(GreenHouseApplication.getContext());
-//			jackService.modifyControllerJackNameTest("ˮ����Ĥ�̿�����", 1, mac);
-//			jackService.modifyControllerJackNameTest("ˮ����Ĥ��������", 2, mac);
-//			jackService.modifyControllerJackNameTest("������Ĥ�̿�����", 3, mac);
-//			jackService.modifyControllerJackNameTest("������Ĥ��������", 4, mac);
-//			jackService.modifyControllerJackNameTest("�������̿�����", 5, mac);
-//			jackService.modifyControllerJackNameTest("��������������", 6, mac);
-//			jackService.modifyControllerJackNameTest("�������̿�����", 7, mac);
-//			jackService.modifyControllerJackNameTest("��������������", 8, mac);
-//			jackService.modifyControllerJackNameTest("�������̿�����", 9, mac);
-//			jackService.modifyControllerJackNameTest("��������������", 10, mac);
-//			jackService.modifyControllerJackNameTest("ˮ����Ĥ�̿�����", 11, mac);
-//			jackService.modifyControllerJackNameTest("ˮ����Ĥ��������", 12, mac);
-//			jackService.modifyControllerJackNameTest("�������", 13, mac);
-//			jackService.modifyControllerJackNameTest("ˮ��ˮ������", 14, mac);
-//			jackService.modifyControllerJackNameTest("����ˮ������", 15, mac);
-//			jackService.modifyControllerJackNameTest("��ѭ���������", 16, mac);
-//			jackService.modifyControllerJackNameTest("17", 17, mac);
-//			jackService.modifyControllerJackNameTest("18", 18, mac);
-//			jackService.modifyControllerJackNameTest("1�ŷ�����", 19, mac);
-//			jackService.modifyControllerJackNameTest("2�ŷ�����", 20, mac);
-//			jackService.modifyControllerJackNameTest("3�ŷ�����", 21, mac);
-//			jackService.modifyControllerJackNameTest("4�ŷ�����", 22, mac);
-//			jackService.modifyControllerJackNameTest("5�ŷ�����", 23, mac);
-//			jackService.modifyControllerJackNameTest("6�ŷ�����", 24, mac);
-//			jackService.modifyControllerJackNameTest("7�ŷ�����", 25, mac);
-//			jackService.modifyControllerJackNameTest("8�ŷ�����", 26, mac);
-//			jackService.modifyControllerJackNameTest("9�ŷ�����", 27, mac);
-//			jackService.modifyControllerJackNameTest("10�ŷ�����", 28, mac);
-//			jackService.modifyControllerJackNameTest("��ǽ��Ĥ�̿�����", 29, mac);
-//			jackService.modifyControllerJackNameTest("��ǽ��Ĥ��������", 30, mac);
-//			jackService.modifyControllerJackNameTest("31", 31, mac);
-//			jackService.modifyControllerJackNameTest("32", 32, mac);
-//			jackService.modifyControllerJackNameTest("33", 33, mac);
-//			jackService.modifyControllerJackNameTest("34", 34, mac);
-//			jackService.modifyControllerJackNameTest("35", 35, mac);
-//			jackService.modifyControllerJackNameTest("36", 36, mac);
-//			jackService.modifyControllerJackNameTest("37", 37, mac);
-//			jackService.modifyControllerJackNameTest("38", 38, mac);
-//			jackService.modifyControllerJackNameTest("39", 39, mac);
-//			jackService.modifyControllerJackNameTest("40", 40, mac);
-//			jackService.modifyControllerJackNameTest("41", 41, mac);
-//			jackService.modifyControllerJackNameTest("42", 42, mac);
-//			jackService.modifyControllerJackNameTest("43", 43, mac);
-//			jackService.modifyControllerJackNameTest("44", 44, mac);
-//			jackService.modifyControllerJackNameTest("45", 45, mac);
-//			jackService.modifyControllerJackNameTest("46", 46, mac);
-//			jackService.modifyControllerJackNameTest("47", 47, mac);
-//			jackService.modifyControllerJackNameTest("48", 48, mac);
-//		}
+		public static void modifyControllerJackNameTest2(String mac) {
+			JackService jackService = new JackService(GreenHouseApplication.getContext());
+			jackService.modifyControllerJackNameTest("水帘外膜铺开", 1, mac);
+			jackService.modifyControllerJackNameTest("水帘外膜收起", 2, mac);
+			jackService.modifyControllerJackNameTest("撒花卷膜铺开", 3, mac);
+			jackService.modifyControllerJackNameTest("撒花卷膜收起", 4, mac);
+			jackService.modifyControllerJackNameTest("内遮阳铺开", 5, mac);
+			jackService.modifyControllerJackNameTest("内遮阳收起", 6, mac);
+			jackService.modifyControllerJackNameTest("中遮阳铺开", 7, mac);
+			jackService.modifyControllerJackNameTest("中遮阳收起", 8, mac);
+			jackService.modifyControllerJackNameTest("外遮阳铺开", 9, mac);
+			jackService.modifyControllerJackNameTest("外遮阳收起", 10, mac);
+			jackService.modifyControllerJackNameTest("水帘内膜铺开", 11, mac);
+			jackService.modifyControllerJackNameTest("水帘内膜收起", 12, mac);
+			jackService.modifyControllerJackNameTest("风机", 13, mac);
+			jackService.modifyControllerJackNameTest("水帘水泵运行", 14, mac);
+			jackService.modifyControllerJackNameTest("喷淋水泵运行", 15, mac);
+			jackService.modifyControllerJackNameTest("内循环风机", 16, mac);
+			jackService.modifyControllerJackNameTest("隔墙卷膜铺开", 17, mac);
+			jackService.modifyControllerJackNameTest("隔墙卷膜收起", 18, mac);
+			jackService.modifyControllerJackNameTest("1号阀", 19, mac);
+			jackService.modifyControllerJackNameTest("2号阀", 20, mac);
+			jackService.modifyControllerJackNameTest("3号阀", 21, mac);
+			jackService.modifyControllerJackNameTest("4号阀", 22, mac);
+			jackService.modifyControllerJackNameTest("5号阀", 23, mac);
+			jackService.modifyControllerJackNameTest("6号阀", 24, mac);
+			jackService.modifyControllerJackNameTest("7号阀", 25, mac);
+			jackService.modifyControllerJackNameTest("8号阀", 26, mac);
+			jackService.modifyControllerJackNameTest("9号阀", 27, mac);
+			jackService.modifyControllerJackNameTest("10号阀", 28, mac);
+			jackService.modifyControllerJackNameTest("隔墙卷膜铺开", 29, mac);
+			jackService.modifyControllerJackNameTest("隔墙卷膜收起", 30, mac);
+			jackService.modifyControllerJackNameTest("31", 31, mac);
+			jackService.modifyControllerJackNameTest("32", 32, mac);
+			jackService.modifyControllerJackNameTest("33", 33, mac);
+			jackService.modifyControllerJackNameTest("34", 34, mac);
+			jackService.modifyControllerJackNameTest("35", 35, mac);
+			jackService.modifyControllerJackNameTest("36", 36, mac);
+			jackService.modifyControllerJackNameTest("37", 37, mac);
+			jackService.modifyControllerJackNameTest("38", 38, mac);
+			jackService.modifyControllerJackNameTest("39", 39, mac);
+			jackService.modifyControllerJackNameTest("40", 40, mac);
+			jackService.modifyControllerJackNameTest("41", 41, mac);
+			jackService.modifyControllerJackNameTest("42", 42, mac);
+			jackService.modifyControllerJackNameTest("43", 43, mac);
+			jackService.modifyControllerJackNameTest("44", 44, mac);
+			jackService.modifyControllerJackNameTest("45", 45, mac);
+			jackService.modifyControllerJackNameTest("46", 46, mac);
+			jackService.modifyControllerJackNameTest("47", 47, mac);
+			jackService.modifyControllerJackNameTest("48", 48, mac);
+		}
 	
 }

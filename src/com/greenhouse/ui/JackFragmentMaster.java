@@ -60,6 +60,7 @@ public class JackFragmentMaster extends Activity
 	
 	public static boolean isConnecting = false;
 	public static int reconnNum = 0;
+	public static boolean MCU_IS_STOP = false;
 	
 	
 	private Handler handler = new Handler(); //handler.removeCallbacks
@@ -83,7 +84,7 @@ public class JackFragmentMaster extends Activity
 			if (mCallback != null) {
 				mCallback.onSwitchTestRefresh();
 			}
-			handler.postDelayed(refreshFragmentSwtich, 30000);
+			handler.postDelayed(refreshFragmentSwtich, 10000);
 		}
 	};
 	
@@ -111,7 +112,13 @@ public class JackFragmentMaster extends Activity
 	};
 	
 	private void refreshSocketConnect() {
-		if (Launcher.client == null) {
+		if (MCU_IS_STOP) {
+			MCU_IS_STOP = false;
+			Intent intent = new Intent();
+			intent.setClass(JackFragmentMaster.this, Launcher.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(intent);
+		} else if (Launcher.client == null) {
 			title_waiting.setVisibility(View.VISIBLE);	
 			text_waiting.setVisibility(View.VISIBLE);
 			threadPoolManager.destroyClientTasks();
@@ -153,6 +160,8 @@ public class JackFragmentMaster extends Activity
 			
 			if(NetworkManager.getNetworkState(GreenHouseApplication.getContext()) == NetworkManager.NETWORK_MOBILE) {
 				Log.i(TAG, "NETWORK_MOBILE");
+				// 20161125 special
+//				return ret;
 				ret = SocketClientInit.connAliyun();
 			} else if(NetworkManager.getNetworkState(GreenHouseApplication.getContext()) == NetworkManager.NETWORK_WIFI) {
 				Log.i(TAG, "NETWORK_WIFI");
@@ -206,17 +215,17 @@ public class JackFragmentMaster extends Activity
 		LauncherViewConfig.init(JackFragmentMaster.this);
 	
 		//修改一号柜命名
-		ModifySpecificColumn.modifyControllerJackNameTest1(Launcher.selectMac);
+		if (Launcher.selectMac.equals("ACCF2357F44E")) {
+//			txtController.setText("二号棚");
+			ModifySpecificColumn.modifyControllerJackNameTest2(Launcher.selectMac);
+		} else if (Launcher.selectMac.equals("ACCF236FA948")) {
+//			txtController.setText("一号棚");
+			ModifySpecificColumn.modifyControllerJackNameTest1(Launcher.selectMac);
+		} else {
+		}
 		
-		/*各种定制版
-		// Special Version 修改2号棚
-		//ModifySpecificColumn.modifyControllerJackNameTest2("ACCF2357F44E");
-//		Special Version 修改1号棚
-		// Special Version 修改测试控制�?
-//		modifyjackname.modifyControllerJackDrawableTest1(Launcher.selectMac);
-		//ModifySpecificColumn.modifyControllerJackNameTest1(Launcher.selectMac);
-//		ModifySpecificColumn.modifyJackBund(Launcher.selectMac);
-		 */
+//		ModifySpecificColumn.modifyControllerJackNameTest1(Launcher.selectMac);
+		
 		
 		// title_bar theme
 		localTextView = (TextView) findViewById(R.id.title);
@@ -224,13 +233,6 @@ public class JackFragmentMaster extends Activity
 		
 		title_waiting = (ProgressBar) findViewById(R.id.title_waiting);
 		text_waiting = (TextView)findViewById(R.id.text_waiting);
-		
-		
-//		IntentFilter filter=new IntentFilter();
-//		filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-//		filter.addAction("com.greenhosue.backtolauncheraction");
-//        myReceiver = new NetBroadcastReceiver(handler);
-//        this.registerReceiver(myReceiver, filter);
 		
 		ImageView localImageView = (ImageView) findViewById(R.id.title_btn);
 		localImageView.setImageResource(R.drawable.go_back);
@@ -350,8 +352,23 @@ public class JackFragmentMaster extends Activity
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog,	int whichButton) {
 						
-						final String msg = "HFUT" + Launcher.selectMac + "INTE00000000000000000000WANG";							
+						final String msg = "HFUT" + Launcher.selectMac + "INTE00000000000000000000WANG";	
+						
 						SocketOutputTask.sendMsgQueue.addLast(msg);
+						SocketOutputTask.sendMsgQueue.addLast(msg);
+						SocketOutputTask.sendMsgQueue.addLast(msg);
+						SocketOutputTask.sendMsgQueue.addLast(msg);
+						SocketOutputTask.sendMsgQueue.addLast(msg);
+						SocketOutputTask.sendMsgQueue.addLast(msg);
+						SocketOutputTask.sendMsgQueue.addLast(msg);
+						SocketOutputTask.sendMsgQueue.addLast(msg);
+						
+						try {
+							Thread.sleep(500);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						
 						JackFragmentSwitchTest jackFragmentSwitchTest = new JackFragmentSwitchTest();
 						
@@ -392,6 +409,7 @@ public class JackFragmentMaster extends Activity
 	private void refreshStatistics() {
 		FragmentManager fragmentManager = getFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+		localTextView.setText("统计查询" );
 		JackFragmentStatistics jackFragmentStatistics = new JackFragmentStatistics();
 		fragmentTransaction.replace(R.id.jack_fragment_container, jackFragmentStatistics);			
 		fragmentTransaction.commit();

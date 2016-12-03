@@ -13,8 +13,8 @@
             android:layout_marginRight="40dp"
             android:background="@android:color/transparent"
             android:numColumns="4"
-            android:horizontalSpacing="80sp" 
-            android:verticalSpacing="30sp" 
+            android:horizontalSpacing="60sp" 
+            android:verticalSpacing="50sp" 
             android:stretchMode="columnWidth">
         </GridView>
 

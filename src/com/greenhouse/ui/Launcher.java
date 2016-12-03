@@ -17,6 +17,7 @@ import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.os.Vibrator;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -89,6 +90,7 @@ public class Launcher extends Activity {
 	public static boolean BACK_TO_LAUNCHER = false;
 	
 
+
 	//线程池对象，持有对主线程的引用
 	private ThreadPoolManager threadPoolManager =  ThreadPoolManager.getInstance();
 	public static GreenHouseApplication mApplication = null;
@@ -103,7 +105,19 @@ public class Launcher extends Activity {
 	private JackService jackService = new JackService(this);				   //数据库Jack表对象
 	private SensorService sensorService = new SensorService(this);			   //数据库Sensor表对象	
 	
-	private Handler handler = new Handler(); //handler.removeCallbacks
+//	public static Handler handler = new Handler(); //handler.removeCallbacks
+	
+	public static Handler handler = new Handler() {
+		public void handleMessage(Message msg) {
+			
+		}
+	};
+	
+//	handler = new Handler() {
+//		public void handleMessage(Message msg) {
+//			
+//		}
+//	};
 	
 	//1s刷新一次时间显示和socket状态
 	private Runnable refreshTitleBar = new Runnable() {
@@ -115,6 +129,22 @@ public class Launcher extends Activity {
 			handler.postDelayed(refreshTitleBar, 1000);
 		}
 	};
+	
+	private Runnable refreshLauncher = new Runnable() {
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			initControllerList();              //初始化所有mac信息到ArrayList<String>
+			initClassifiedControllers();       //初始化分页mac信息到ArrayList<ArrayList<String>>
+			initScrollLayoutAndGridViewItem(); //分页绘制界面
+			initSlideMenu();
+			initSensor();
+			runAnimation();
+		}
+	};
+	
+	
+
 	
 	private void refreshGridItem() {
 		initControllerList();
@@ -139,6 +169,8 @@ public class Launcher extends Activity {
 		
 		handler.post(refreshTitleBar);
 	}
+	
+
 	
 	public void initControllerList() {
 		if(!controllersList.isEmpty()){
@@ -216,6 +248,8 @@ public class Launcher extends Activity {
 			
 			if(NetworkManager.getNetworkState(GreenHouseApplication.getContext()) == NetworkManager.NETWORK_MOBILE) {
 				Log.i(TAG, "NETWORK_MOBILE");
+				// 20161125 special
+//				return ret;
 				ret = SocketClientInit.connAliyun();
 			} else if(NetworkManager.getNetworkState(GreenHouseApplication.getContext()) == NetworkManager.NETWORK_WIFI) {
 				Log.i(TAG, "NETWORK_WIFI");

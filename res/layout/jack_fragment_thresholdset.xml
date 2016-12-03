@@ -20,7 +20,7 @@
     	    android:layout_weight="1"
     	    android:gravity="center"
             android:textColor="#000000"
-            android:textSize="30sp"
+            android:textSize="15sp"
             android:text="@string/soiltemp" />
 
         <EditText
@@ -29,16 +29,16 @@
    	 	    android:layout_height="match_parent"
     	    android:layout_weight="0.5"
             android:ems="5"
-            android:textSize="30sp"
+            android:textSize="15sp"
             android:focusableInTouchMode="true"
             android:inputType="number" />
 
         <Button
             android:id="@+id/Button1"
             android:layout_width="wrap_content"
-            android:layout_height="80dp"
+            android:layout_height="40dp"
             android:text="@string/confirm"
-            android:textSize="30dp" />
+            android:textSize="15dp" />
 
         <TextView
             android:id="@+id/TextView11"
@@ -46,7 +46,7 @@
    	 	    android:layout_height="match_parent"
     	    android:layout_weight="1"
     	    android:gravity="center"
-    	    android:textSize="30dp"
+    	    android:textSize="15dp"
             android:text="历史阈值：" />
     </LinearLayout>
     
@@ -70,7 +70,7 @@
     	    android:layout_weight="1"
     	    android:gravity="center"
             android:textColor="#000000"
-            android:textSize="30sp"
+            android:textSize="15sp"
             android:text="@string/soilhum" />
 
         <EditText
@@ -80,15 +80,15 @@
     	    android:layout_weight="0.5"
     	    android:focusableInTouchMode="true"
             android:ems="5"
-            android:textSize="30sp"
+            android:textSize="15sp"
             android:inputType="number" />
 
         <Button
             android:id="@+id/Button2"
             android:layout_width="wrap_content"
-            android:layout_height="80dp"
+            android:layout_height="40dp"
             android:text="@string/confirm"
-            android:textSize="30dp" />
+            android:textSize="15dp" />
 
         <TextView
             android:id="@+id/TextView22"
@@ -96,7 +96,7 @@
    	 	    android:layout_height="match_parent"
     	    android:layout_weight="1"
     	    android:gravity="center"
-    	    android:textSize="30dp"
+    	    android:textSize="15dp"
             android:text="历史阈值：" />
     </LinearLayout>
     
@@ -121,7 +121,7 @@
     	    android:layout_weight="1"
     	    android:gravity="center"
             android:textColor="#000000"
-            android:textSize="30sp"
+            android:textSize="15sp"
             android:text="@string/ph" />
 
         <EditText
@@ -131,15 +131,15 @@
     	    android:layout_weight="0.5"
     	    android:focusableInTouchMode="true"
             android:ems="10"
-            android:textSize="30sp"
+            android:textSize="15sp"
             android:inputType="number" />
 
         <Button
             android:id="@+id/Button3"
             android:layout_width="wrap_content"
-            android:layout_height="80dp"
+            android:layout_height="40dp"
             android:text="@string/confirm"
-            android:textSize="30dp" />
+            android:textSize="15dp" />
 
         <TextView
             android:id="@+id/TextView33"
@@ -147,7 +147,7 @@
    	 	    android:layout_height="match_parent"
     	    android:layout_weight="1"
     	    android:gravity="center"
-    	    android:textSize="30dp"
+    	    android:textSize="15dp"
             android:text="历史阈值：" />
     </LinearLayout>
     
@@ -172,7 +172,7 @@
     	    android:layout_weight="1"
     	    android:gravity="center"
             android:textColor="#000000"
-            android:textSize="30sp"
+            android:textSize="15sp"
             android:text="@string/airtemp" />
 
         <EditText
@@ -182,15 +182,15 @@
     	    android:layout_weight="0.5"
     	    android:focusableInTouchMode="true"
             android:ems="10"
-            android:textSize="30sp"
+            android:textSize="15sp"
             android:inputType="number" />
 
         <Button
             android:id="@+id/Button4"
             android:layout_width="wrap_content"
-            android:layout_height="80dp"
+            android:layout_height="40dp"
             android:text="@string/confirm"
-            android:textSize="30dp" />
+            android:textSize="15dp" />
 
         <TextView
             android:id="@+id/TextView44"
@@ -198,7 +198,7 @@
    	 	    android:layout_height="match_parent"
     	    android:layout_weight="1"
     	    android:gravity="center"
-    	    android:textSize="30dp"
+    	    android:textSize="15dp"
             android:text="历史阈值：" />
     </LinearLayout>
 
@@ -217,7 +217,7 @@
     	    android:layout_weight="1"
     	    android:gravity="center"
             android:textColor="#000000"
-            android:textSize="30sp"
+            android:textSize="15sp"
             android:text="@string/airhum" />
 
         <EditText
@@ -227,15 +227,15 @@
     	    android:layout_weight="0.5"
     	    android:focusableInTouchMode="true"
             android:ems="10"
-            android:textSize="30sp"
+            android:textSize="15sp"
             android:inputType="number" />
 
         <Button
             android:id="@+id/Button5"
             android:layout_width="wrap_content"
-            android:layout_height="80dp"
+            android:layout_height="40dp"
             android:text="@string/confirm"
-            android:textSize="30dp" />
+            android:textSize="15dp" />
 
         <TextView
             android:id="@+id/TextView55"
@@ -243,7 +243,7 @@
    	 	    android:layout_height="match_parent"
     	    android:layout_weight="1"
     	    android:gravity="center"
-    	    android:textSize="30dp"
+    	    android:textSize="15dp"
             android:text="历史阈值：" />
     </LinearLayout>
     
@@ -269,7 +269,7 @@
     	    android:gravity="center"
     	    
             android:textColor="#000000"
-            android:textSize="30sp"
+            android:textSize="15sp"
             android:text="@string/co2" />
 
         <EditText
@@ -279,15 +279,15 @@
     	    android:layout_weight="0.5"
     	    android:focusableInTouchMode="true"
             android:ems="10"
-            android:textSize="30sp"
+            android:textSize="15sp"
             android:inputType="number" />
 
         <Button
             android:id="@+id/Button6"
             android:layout_width="wrap_content"
-            android:layout_height="80dp"
+            android:layout_height="40dp"
             android:text="@string/confirm"
-            android:textSize="30dp" />
+            android:textSize="15dp" />
 
         <TextView
             android:id="@+id/TextView66"
@@ -295,7 +295,7 @@
    	 	    android:layout_height="match_parent"
     	    android:layout_weight="1"
     	    android:gravity="center"
-    	    android:textSize="30dp"
+    	    android:textSize="15dp"
             android:text="历史阈值：" />
     </LinearLayout>
 
@@ -314,7 +314,7 @@
     	    android:layout_weight="1"
     	    android:gravity="center"
             android:textColor="#000000"
-            android:textSize="30sp"
+            android:textSize="15sp"
             android:text="@string/illum" />
 
         <EditText
@@ -324,7 +324,7 @@
     	    android:layout_weight="0.5"
     	    android:focusableInTouchMode="true"
             android:ems="10"
-            android:textSize="30sp"
+            android:textSize="15sp"
             android:inputType="number" >
 
             <requestFocus />
@@ -335,9 +335,9 @@
         <Button
             android:id="@+id/Button7"
             android:layout_width="wrap_content"
-            android:layout_height="80dp"
+            android:layout_height="40dp"
             android:text="@string/confirm"
-            android:textSize="30dp" />
+            android:textSize="15dp" />
 
         <TextView
             android:id="@+id/TextView77"
@@ -345,7 +345,7 @@
    	 	    android:layout_height="match_parent"
     	    android:layout_weight="1"
     	    android:gravity="center"
-    	    android:textSize="30dp"
+    	    android:textSize="15dp"
             android:text="历史阈值：" />
 
     </LinearLayout>

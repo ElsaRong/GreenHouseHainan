@@ -49,17 +49,6 @@ public class SensorRecyclerView extends Activity {
 	
 	private Handler handler = new Handler();
 	
-	private Runnable refreshRecyclerView = new Runnable() {
-		@Override
-		public void run() {
-			// TODO Auto-generated method stub
-			refreshHeavenView();
-			sOnlineSensorInfo = sensorService.getAllOnlineSensor();
-			sensorsRecyclerViewAdapter.notifyDataSetChanged();
-			handler.postDelayed(refreshRecyclerView, 1000);
-		}
-	};
-	
 	private void refreshHeavenView() {
 		HeavenAnimateView localHeavenAnimateView = (HeavenAnimateView) findViewById(R.id.heaven);
 		if (localHeavenAnimateView != null) {
@@ -144,8 +133,6 @@ public class SensorRecyclerView extends Activity {
 			}
 		});
 		
-		handler.post(refreshRecyclerView);
-		
 	}
 	
 	
@@ -159,7 +146,6 @@ public class SensorRecyclerView extends Activity {
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
-		handler.removeCallbacks(refreshRecyclerView);
 		super.onDestroy();
 	}
 

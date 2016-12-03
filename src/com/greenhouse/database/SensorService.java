@@ -241,10 +241,7 @@ public class SensorService {
 		return sensorAverage;
 	}
 	
-	/**
-	 * 
-	 * @return
-	 */
+	
 	public List<Sensor> getAllSensor() {
 		List<Sensor> sensors = new ArrayList<Sensor>();
 		SQLiteDatabase db = databaseHelper.getWritableDatabase();
@@ -275,7 +272,6 @@ public class SensorService {
 		String s = "select * from sensor where online=? and mac=?";
 		String[] formatid = new String[]{1+"", Launcher.selectMac};
 		Cursor cursor = db.rawQuery(s, formatid);
-		//rawQuery()�����ĵ�һ������Ϊselect��䣻�ڶ�������Ϊselect�����ռλ��������ֵ������ռλ��������Ϊnull��
 		while(cursor.moveToNext()) {
 			Sensor sensor = new Sensor();
 			sensor.setId(cursor.getInt(cursor.getColumnIndex("sensorid")));
@@ -311,8 +307,8 @@ public class SensorService {
 	
 	public void modifyAllSensorOffline() {
 		SQLiteDatabase db = databaseHelper.getWritableDatabase();
-		String s = "update sensor set online=? where mac=?";
-		Object[] object = new Object[]{0, Launcher.selectMac};
+		String s = "update sensor set online=?, soiltemp=?, soilhum=?, soilph=?, airtemp=?, airhum=?, co2=?, illum=? where mac=?";
+		Object[] object = new Object[]{0,0,0,0,0,0,0,0,Launcher.selectMac};
 		db.execSQL(s, object);
 		db.close();
 	}

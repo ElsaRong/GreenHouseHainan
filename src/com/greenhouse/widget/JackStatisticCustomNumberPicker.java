@@ -29,7 +29,7 @@ public class JackStatisticCustomNumberPicker {
 		timeSpanLayout = (LinearLayout)View.inflate(activity, R.layout.number_picker, null);
 		numberPicker = (NumberPicker) timeSpanLayout.findViewById(R.id.pick);
 		numberPicker.setMinValue(1);
-		numberPicker.setMaxValue(3);
+		numberPicker.setMaxValue(6);
 		numberPicker.setValue(1);
 		numberPicker.setOnValueChangedListener(onChange);
 		ad = new AlertDialog.Builder(activity)
